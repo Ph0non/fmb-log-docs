@@ -8,11 +8,10 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "vitepress": "^1.0.0-rc.45",
+    "vitepress": "^1.0.0",
     "vue": "^3.3.13"
   },
   "devDependencies": {
-    "@mdit-vue/plugin-mathjax": "^1.0.0",
     "markdown-it-mathjax3": "^4.3.2"
   }
 }
