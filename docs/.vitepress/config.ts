@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+	base: "/fmb-log-docs/",
 	lang: "de-DE",
 	title: "FMB Log",
 	description: "Benutzer- und Administratorhandbuch",
