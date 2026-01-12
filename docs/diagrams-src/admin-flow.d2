@@ -1,0 +1,70 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 26
+  border-radius: 8
+}
+
+intro: {
+  direction: down
+  label: "Teil A – Grundsetup"
+
+  setup: "Ersteinrichtung\n(Admin)" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  groups: "Gruppen anlegen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  permissions: "Rechte zuweisen\n(Matrix)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  cont_a: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  setup -> groups -> permissions -> cont_a
+}
+
+work: {
+  direction: down
+  label: "Teil B – Betrieb"
+
+  cont_b: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  users: "Benutzer anlegen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  assign: "Gruppen zuordnen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  master: "Stammdaten pflegen\n(NV / FGW / FMK)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  fgw: "FGW prüfen/ändern" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  cont_b -> users -> assign -> master
+  master -> fgw: "bei Bedarf"
+}

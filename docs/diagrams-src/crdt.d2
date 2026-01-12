@@ -1,0 +1,71 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 24
+  border-radius: 8
+}
+
+title: "Local‑First / Hub‑Sync (CRDT)" {
+  near: top-center
+  shape: text
+  style.font-size: 26
+  style.bold: true
+}
+
+clients: {
+  direction: down
+  label: "Clients (pro Windows‑Benutzer)"
+
+  a: "Client A" {
+    replica: "Lokale Replica\n(AppLocalData/replicas/…)" {
+      shape: cylinder
+      style.fill: "#006e78"
+      style.font-color: "#ffffff"
+    }
+    style.fill: "#ffffff"
+  }
+
+  b: "Client B" {
+    replica: "Lokale Replica\n(AppLocalData/replicas/…)" {
+      shape: cylinder
+      style.fill: "#006e78"
+      style.font-color: "#ffffff"
+    }
+    style.fill: "#ffffff"
+  }
+}
+
+hub: {
+  direction: down
+  label: "Gemeinsamer Datenordner (Hub)"
+
+  db: "Hub‑DB\nfmblog.db" {
+    shape: cylinder
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  vaults: "Vaults\n(vaults/*.vault)" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+}
+
+clients.a.replica <-> hub.db: "Auto‑Sync\n(~10 s / Fokus)\nCR‑SQLite (CRR)" {
+  style.stroke: "#63a90f"
+  style.stroke-width: 2
+}
+
+clients.b.replica <-> hub.db: "Auto‑Sync\n(~10 s / Fokus)\nCR‑SQLite (CRR)" {
+  style.stroke: "#63a90f"
+  style.stroke-width: 2
+}
+
+note: "Hinweis: Vaults sind nicht Teil der DB‑Synchronisation.\nAdmin‑Operationen erfordern erreichbaren Hub‑Pfad." {
+  shape: text
+  near: bottom-center
+  style.font-size: 16
+  style.italic: true
+}

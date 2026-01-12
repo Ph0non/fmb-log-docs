@@ -1,0 +1,65 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 24
+  border-radius: 8
+}
+
+flow: {
+  direction: down
+  label: "Import (RPT / Gammaspektrometrie)"
+
+  open: "Import öffnen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  container: "Gebinde wählen\noder neu anlegen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  meta: "Gebinde: Datenblatt/Herkunft/FMK\nMessungen: Masse/Fläche/Umrechnung\n(optional)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  fmk: "Optional: FMK wählen\n(empfohlen)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  files: "RPT-Dateien auswählen\n(Mehrfachauswahl möglich)" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  review: "Import-Tabelle prüfen:\nDatum/Einheit/Nuklide/Aktivität" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  date: "Optional: Messdatum ändern\n(Berechtigung)" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  import: "Import starten" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  complete: "Optional: Gebinde als vollständig markieren" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  detail: "Gebinde-Detail öffnen\n(Prüfen/Protokoll/ISO)" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  open -> container -> meta -> fmk -> files -> review -> date -> import -> complete -> detail
+}

@@ -1,0 +1,62 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 22
+  border-radius: 8
+}
+
+title: "CR‑SQLite Sync (FMB Log)" {
+  near: top-center
+  shape: text
+  style.font-size: 26
+  style.bold: true
+}
+
+local: "Lokale Replica" {
+  db: "SQLite\n(+ CRR Tabellen)" {
+    shape: cylinder
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+  changes: "crsql_changes\n(Change‑Events)" {
+    shape: document
+    style.fill: "#e4e1d2"
+    style.font-color: "#3d3e3d"
+  }
+  style.fill: "#ffffff"
+}
+
+hub: "Hub‑DB" {
+  db: "SQLite\n(+ CRR Tabellen)" {
+    shape: cylinder
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+  changes: "crsql_changes\n(Change‑Events)" {
+    shape: document
+    style.fill: "#e4e1d2"
+    style.font-color: "#3d3e3d"
+  }
+  style.fill: "#ffffff"
+}
+
+local.db -> local.changes: "CR‑SQLite trackt Änderungen" {
+  style.stroke: "#63a90f"
+}
+hub.db -> hub.changes: "CR‑SQLite trackt Änderungen" {
+  style.stroke: "#63a90f"
+}
+
+local.changes <-> hub.changes: "crsqlitesync()\nPull + Push\n(Site‑ID / db_version)" {
+  style.stroke: "#63a90f"
+  style.stroke-width: 2
+}
+
+hinweis: "Sync kopiert nur Change‑Events.\nDie Tabellen konvergieren danach automatisch." {
+  shape: text
+  near: bottom-center
+  style.font-size: 16
+  style.italic: true
+}

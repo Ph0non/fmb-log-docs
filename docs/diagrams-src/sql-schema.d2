@@ -1,0 +1,242 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 16
+}
+
+auth: {
+  label: "Auth & Rechte"
+
+  users: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    username: text {constraint: unique}
+    is_admin: int
+    is_active: int
+  }
+
+  groups: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    name: text {constraint: unique}
+    is_active: int
+  }
+
+  user_groups: {
+    shape: sql_table
+    user_id: int {constraint: [primary_key, foreign_key]}
+    group_id: int {constraint: [primary_key, foreign_key]}
+  }
+
+  group_permissions: {
+    shape: sql_table
+    group_id: int {constraint: [primary_key, foreign_key]}
+    permission: text {constraint: primary_key}
+    allowed: int
+  }
+}
+
+master: {
+  label: "Stammdaten"
+
+  measurement_devices: {
+    shape: sql_table
+    code: text {constraint: primary_key}
+    name: text
+  }
+
+  nuclide_vectors: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    year: int
+    name: text
+  }
+
+  nuclide_vector_nuclides: {
+    shape: sql_table
+    nuclide_vector_id: int {constraint: [primary_key, foreign_key]}
+    nuclide_key: text {constraint: primary_key}
+    percent: real
+  }
+
+  nuclide_vector_paths: {
+    shape: sql_table
+    nuclide_vector_id: int {constraint: [primary_key, foreign_key]}
+    path_code: text {constraint: primary_key}
+  }
+
+  nuclide_vector_device_paths: {
+    shape: sql_table
+    nuclide_vector_id: int {constraint: [primary_key, foreign_key]}
+    device_code: text {constraint: [primary_key, foreign_key]}
+    path_code: text {constraint: primary_key}
+  }
+
+  fmks: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    code: text {constraint: unique}
+    nuclide_vector_id: int {constraint: foreign_key}
+  }
+
+  fmk_devices: {
+    shape: sql_table
+    fmk_id: int {constraint: [primary_key, foreign_key]}
+    device_code: text {constraint: [primary_key, foreign_key]}
+  }
+
+  fmk_paths: {
+    shape: sql_table
+    fmk_id: int {constraint: [primary_key, foreign_key]}
+    path_code: text {constraint: primary_key}
+    order_index: int
+    secondary_path_code: text
+  }
+
+  fmk_year_settings: {
+    shape: sql_table
+    fmk_id: int {constraint: [primary_key, foreign_key]}
+    year: int {constraint: primary_key}
+    sw: real
+    kf: real
+  }
+
+  fmk_path_year_settings: {
+    shape: sql_table
+    fmk_id: int {constraint: [primary_key, foreign_key]}
+    path_code: text {constraint: primary_key}
+    year: int {constraint: primary_key}
+    sw: real
+    kf: real
+  }
+
+  fmk_device_year_settings: {
+    shape: sql_table
+    fmk_id: int {constraint: [primary_key, foreign_key]}
+    device_code: text {constraint: [primary_key, foreign_key]}
+    year: int {constraint: primary_key}
+    sw: real
+    kf: real
+  }
+
+  fmk_device_path_year_settings: {
+    shape: sql_table
+    fmk_id: int {constraint: [primary_key, foreign_key]}
+    device_code: text {constraint: [primary_key, foreign_key]}
+    path_code: text {constraint: primary_key}
+    year: int {constraint: primary_key}
+    sw: real
+    kf: real
+  }
+
+  fgw_values: {
+    shape: sql_table
+    nuclide_key: text {constraint: primary_key}
+    path_code: text {constraint: primary_key}
+    value: real
+    unit: text
+  }
+}
+
+ops: {
+  label: "Betrieb"
+
+  datasheets: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    number: text {constraint: unique}
+  }
+
+  containers: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    gebinde_number: text {constraint: unique}
+    datasheet_id: int {constraint: foreign_key}
+    fmk_id: int {constraint: foreign_key}
+    is_complete: int
+  }
+
+  measurement_revisions: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    measurement_id: text
+    revision: int
+    container_id: int {constraint: foreign_key}
+    created_by_user_id: int {constraint: foreign_key}
+    device_code: text {constraint: foreign_key}
+    exported_report_id: int {constraint: foreign_key}
+    is_current: int
+    is_valid: int
+  }
+
+  measurement_protocols: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    measurement_revision_id: int {constraint: foreign_key}
+    filename: text
+    compression: text
+    pack_file: text
+    pack_offset: int
+    pack_length: int
+    dict_id: text
+    blake3: blob(32)
+  }
+}
+
+reports: {
+  label: "Tagesabrechnung"
+
+  daily_reports: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    report_date: text
+    created_by_user_id: int {constraint: foreign_key}
+    fmk_id: int {constraint: foreign_key}
+    snapshot_hash: blob(32)
+    pdf_sha256: blob(32)
+    tsa_snapshot_sha256: blob(32)
+    tsa_token_sha256: blob(32)
+  }
+
+  daily_report_measurements: {
+    shape: sql_table
+    report_id: int {constraint: [primary_key, foreign_key]}
+    measurement_revision_id: int {constraint: [primary_key, foreign_key]}
+    assigned_path_code: text
+  }
+}
+
+// FK edges (visual)
+auth.user_groups.user_id -> auth.users.id
+auth.user_groups.group_id -> auth.groups.id
+auth.group_permissions.group_id -> auth.groups.id
+
+master.nuclide_vector_nuclides.nuclide_vector_id -> master.nuclide_vectors.id
+master.nuclide_vector_paths.nuclide_vector_id -> master.nuclide_vectors.id
+master.nuclide_vector_device_paths.nuclide_vector_id -> master.nuclide_vectors.id
+master.nuclide_vector_device_paths.device_code -> master.measurement_devices.code
+master.fmks.nuclide_vector_id -> master.nuclide_vectors.id
+master.fmk_devices.fmk_id -> master.fmks.id
+master.fmk_devices.device_code -> master.measurement_devices.code
+master.fmk_paths.fmk_id -> master.fmks.id
+master.fmk_year_settings.fmk_id -> master.fmks.id
+master.fmk_path_year_settings.fmk_id -> master.fmks.id
+master.fmk_device_year_settings.fmk_id -> master.fmks.id
+master.fmk_device_year_settings.device_code -> master.measurement_devices.code
+master.fmk_device_path_year_settings.fmk_id -> master.fmks.id
+master.fmk_device_path_year_settings.device_code -> master.measurement_devices.code
+
+ops.containers.datasheet_id -> ops.datasheets.id
+ops.containers.fmk_id -> master.fmks.id
+ops.measurement_revisions.container_id -> ops.containers.id
+ops.measurement_revisions.created_by_user_id -> auth.users.id
+ops.measurement_revisions.device_code -> master.measurement_devices.code
+ops.measurement_revisions.exported_report_id -> reports.daily_reports.id
+ops.measurement_protocols.measurement_revision_id -> ops.measurement_revisions.id
+
+reports.daily_reports.created_by_user_id -> auth.users.id
+reports.daily_reports.fmk_id -> master.fmks.id
+reports.daily_report_measurements.report_id -> reports.daily_reports.id
+reports.daily_report_measurements.measurement_revision_id -> ops.measurement_revisions.id

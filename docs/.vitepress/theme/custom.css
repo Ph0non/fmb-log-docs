@@ -1,0 +1,63 @@
+:root {
+	--vp-c-brand-1: #006e78;
+	--vp-c-brand-2: #217ca3;
+	--vp-c-brand-3: #63a90f;
+	--vp-c-brand-soft: color-mix(in srgb, #006e78 12%, white);
+}
+
+.VPHomeHero .name {
+	color: var(--vp-c-brand-1);
+}
+
+.VPButton.brand {
+	background: var(--vp-c-brand-1);
+	border-color: var(--vp-c-brand-1);
+}
+
+.VPButton.brand:hover {
+	background: color-mix(in srgb, var(--vp-c-brand-1) 85%, black);
+	border-color: color-mix(in srgb, var(--vp-c-brand-1) 80%, black);
+}
+
+pre.mermaid {
+	background: var(--vp-c-bg-soft);
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 8px;
+	padding: 12px;
+	overflow: auto;
+}
+
+/* Custom blocks: improve contrast for Dark Mode (tip blocks) */
+.dark .custom-block.tip {
+	background: color-mix(in srgb, var(--vp-c-brand-1) 18%, var(--vp-c-bg) 82%);
+	border-color: color-mix(in srgb, var(--vp-c-brand-1) 65%, black);
+	color: var(--vp-c-text-1);
+}
+
+.dark .custom-block.tip .custom-block-title {
+	color: var(--vp-c-text-1);
+}
+
+.dark .custom-block.tip p,
+.dark .custom-block.tip li {
+	color: var(--vp-c-text-1);
+}
+
+.dark .custom-block.tip a {
+	color: var(--vp-c-brand-3);
+}
+
+/* MathJax (VitePress math): hide assistive MathML to avoid double rendering when inline <style> is stripped */
+.VPDoc mjx-assistive-mml,
+.vp-doc mjx-assistive-mml {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	border: 0;
+	white-space: nowrap;
+}

@@ -1,0 +1,83 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 26
+  border-radius: 8
+}
+
+app: "FMB Log\n(Tauri Desktop-App)" {
+  style.fill: "#006e78"
+  style.font-color: "#ffffff"
+
+  ui: "UI (Vue)\nRechte-UI & Workflows" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  auth: "Auth & Security\n(Argon2id, Signaturen)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  root: "Root Public Key\n(in Binary)" {
+    style.fill: "#3d3e3d"
+    style.font-color: "#ffffff"
+  }
+}
+
+local: "Lokale Daten\n(AppLocalData)" {
+  style.fill: "#888888"
+  style.font-color: "#ffffff"
+
+  replica: "Replica DB\nreplicas/fmblog.<hash>.db" {
+    style.fill: "#888888"
+    style.font-color: "#ffffff"
+  }
+}
+
+shared: "Gemeinsamer Datenordner\n(resources / Netzlaufwerk)" {
+  style.fill: "#e4e1d2"
+  style.font-color: "#3d3e3d"
+
+  hub: "Hub DB\nfmblog.db" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  vaults: "Vaults" {
+    style.fill: "#e4e1d2"
+    style.font-color: "#3d3e3d"
+
+    pepper: "Pepper je Nutzer\nvaults/<user_id>.vault" {
+      style.fill: "#63a90f"
+      style.font-color: "#ffffff"
+    }
+
+    integrity_vault: "Signierschlüssel\nvaults/<db>.integrity.vault" {
+      style.fill: "#f17119"
+      style.font-color: "#ffffff"
+    }
+  }
+
+  pub: "DB Public Key\n<db>.integrity.pub.json" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  cert: "DB-Key Zertifikat\n<db>.integrity.dbkey.json" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+}
+
+app.ui -> local.replica: "SQL (plugin-sql)"
+local.replica -> shared.hub: "CR-SQLite Sync"
+
+app.auth -> shared.vaults.pepper: "Stronghold\nPepper laden/speichern"
+app.auth -> shared.vaults.integrity_vault: "Stronghold\nSignierschlüssel (Admin)"
+
+shared.pub -> app.auth: "Verify Key (fallback)"
+shared.cert -> app.root: "prüft Root-Signatur"
+shared.cert -> app.auth: "liefert Verify Key"

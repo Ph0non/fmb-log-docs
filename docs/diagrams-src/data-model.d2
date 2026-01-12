@@ -1,0 +1,71 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  border-radius: 8
+  font-size: 16
+}
+
+auth: "Auth" {
+  style.fill: "#217ca3"
+  style.font-color: "#ffffff"
+}
+users: "users"
+groups: "groups"
+user_groups: "user_groups"
+group_permissions: "group_permissions"
+
+master: "Stammdaten" {
+  style.fill: "#006e78"
+  style.font-color: "#ffffff"
+}
+nuclide_vectors: "nuclide_vectors"
+nuclide_vector_nuclides: "nuclide_vector_nuclides"
+nuclide_vector_paths: "nuclide_vector_paths"
+fgw_values: "fgw_values"
+fmks: "fmks"
+fmk_paths: "fmk_paths"
+fmk_devices: "fmk_devices"
+fmk_year_settings: "fmk_year_settings"
+fmk_path_year_settings: "fmk_path_year_settings"
+
+ops: "Betrieb" {
+  style.fill: "#63a90f"
+  style.font-color: "#ffffff"
+}
+datasheets: "datasheets"
+containers: "containers"
+measurement_revisions: "measurement_revisions"
+measurement_protocols: "measurement_protocols"
+
+reports: "Tagesabrechnung" {
+  style.fill: "#f17119"
+  style.font-color: "#ffffff"
+}
+daily_reports: "daily_reports"
+daily_report_measurements: "daily_report_measurements"
+
+auth -> users
+auth -> groups
+groups -> user_groups
+groups -> group_permissions
+
+master -> nuclide_vectors
+nuclide_vectors -> nuclide_vector_nuclides
+nuclide_vectors -> nuclide_vector_paths
+master -> fgw_values
+master -> fmks
+fmks -> fmk_devices
+fmks -> fmk_paths
+fmks -> fmk_year_settings
+fmks -> fmk_path_year_settings
+
+ops -> datasheets
+ops -> containers
+containers -> measurement_revisions
+measurement_revisions -> measurement_protocols
+
+reports -> daily_reports
+daily_reports -> daily_report_measurements
+daily_report_measurements -> measurement_revisions

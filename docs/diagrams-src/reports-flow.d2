@@ -1,0 +1,50 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 24
+  border-radius: 8
+}
+
+flow: {
+  direction: down
+  label: "Tagesabrechnung"
+
+  open: "Tagesabrechnung öffnen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  mode: "Modus wählen:\nTag oder Gebinde" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  filter: "Optional: nach FMK filtern\nund Filter setzen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  preview: "Vorschau erzeugen" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  check: "Ergebnis prüfen:\nAbschnitte/Pfade/OG/FGW" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  export: "PDF exportieren" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  history: "Historie:\nPDF öffnen / verifizieren" {
+    style.fill: "#888888"
+    style.font-color: "#ffffff"
+  }
+
+  open -> mode -> filter -> preview -> check -> export -> history
+}

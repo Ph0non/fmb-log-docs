@@ -1,0 +1,85 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 24
+  border-radius: 8
+}
+
+intro: {
+  direction: down
+  label: "Teil A – NV anlegen"
+
+  open: "Stammdaten → Nuklidvektoren öffnen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  create: "Neu (＋) → Name & Beschreibung" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  year: "Jahr wählen\n(Version des NV)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  nuclides: "Nuklide hinzufügen\nund Anteile pflegen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  sum: "Summe = 100 %" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  paths: "Zulässige Freigabepfade wählen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  save: "Speichern" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  cont_a: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  open -> create -> year -> nuclides -> sum -> paths -> save -> cont_a
+}
+
+maint: {
+  direction: down
+  label: "Teil B – Versionen pro Jahr"
+
+  cont_b: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  load: "Jahr im Dropdown wechseln\n(Version laden)" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  copy: "Optional: neues Jahr anlegen\n(Anteile übernehmen und anpassen)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  fgw: "FGW anzeigen (Modal)\nfür gewählte Version" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  cont_b -> load -> copy -> fgw
+}
+

@@ -1,0 +1,92 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 26
+  border-radius: 8
+}
+
+intro: {
+  direction: down
+  label: "Teil A – Einstieg"
+
+  setup: "Ersteinrichtung\n(Admin)" {
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  login: "Anmeldung" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  overview: "Übersicht\n(Dashboard)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  master: "Stammdaten prüfen\n(NV / FGW / FMK)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  cont_a: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  setup -> login -> overview
+  overview -> master: "optional"
+  master -> cont_a
+  overview -> cont_a
+}
+
+work: {
+  direction: down
+  label: "Teil B – Erfassung & Export"
+
+  cont_b: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  containers: "Gebinde auswählen\noder anlegen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  import: "Import\n(RPT / GS)" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  review: "Messungen prüfen\n(inkl. Protokoll)" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  complete: "Gebinde als\nvollständig markieren" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  report: "Tagesabrechnung\n(Vorschau)\nTag oder Gebinde" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  export: "PDF exportieren" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  history: "Historie\n& Verifikation" {
+    style.fill: "#888888"
+    style.font-color: "#ffffff"
+  }
+
+  cont_b -> containers -> import -> review -> complete -> report -> export -> history
+}

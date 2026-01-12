@@ -1,0 +1,105 @@
+direction: down
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 22
+  border-radius: 8
+}
+
+title: Datenmodell Radioaktive Reststoffe {
+  near: top-center
+  shape: text
+  style.font-size: 26
+  style.bold: true
+}
+
+# Hauptentitäten
+datenblatt: Datenblatt {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#217ca3"
+}
+
+gebinde: Gebinde {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#006e78"
+}
+
+fmk: FMK {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#006e78"
+}
+
+messung: Messung\n(+ Protokoll-Ref) {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#006e78"
+}
+
+messwerte: Messwerte\n(pro Nuklid) {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#006e78"
+}
+
+# Nuklidvektor-Bereich
+nuklidvektor: Nuklidvektor\n(+ Jahr) {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#63a90f"
+}
+
+fmk_nv: FMK_NV\nZuordnung {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#63a90f"
+}
+
+nv_nuklide: NV_Nuklide\n(Anteile) {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#63a90f"
+}
+
+freigabewerte: Freigabewerte\n(FGW) {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#63a90f"
+}
+
+# User-Bereich
+user: User {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#f17119"
+}
+
+usergroup: UserGroup {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#f17119"
+}
+
+rechte: Rechte {
+  shape: rectangle
+  style.fill: "#e4e1d2"
+  style.stroke: "#f17119"
+}
+
+# Beziehungen Hauptentitäten
+datenblatt -> gebinde: 1:n
+fmk -> gebinde: 1:n
+gebinde -> messung: 1:n
+messung -> messwerte: 1:n
+
+# Beziehungen Nuklidvektor
+fmk -> fmk_nv
+fmk_nv -> nuklidvektor
+nuklidvektor -> nv_nuklide: 1:n
+
+# Beziehungen User
+user -> usergroup: n:m
+usergroup -> rechte: n:m

@@ -1,0 +1,90 @@
+direction: right
+
+style: {
+  stroke: "#3d3e3d"
+  stroke-width: 1
+  font-size: 24
+  border-radius: 8
+}
+
+intro: {
+  direction: down
+  label: "Teil A – FMK anlegen"
+
+  open: "Stammdaten → FMK öffnen" {
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  create: "Neu (＋) → Details ausfüllen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  nv: "Nuklidvektor wählen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  devices: "Messgeräte wählen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  paths: "Freigabepfade übernehmen\n(automatisch sortiert)" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  secondary: "Optional: Zusatzpfad setzen\n(z. B. 1a mit OF)" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  save: "Speichern" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  cont_a: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  open -> create -> nv -> devices -> paths -> secondary -> save -> cont_a
+}
+
+factors: {
+  direction: down
+  label: "Teil B – SW/KF pflegen"
+
+  cont_b: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  pick: "Jahr wählen\nund 'Gilt für' (Alle / Gerät)" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  global: "SW/KF (global) setzen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  per_path: "Optional: SW/KF pro Pfad setzen" {
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  save2: "Speichern" {
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  cont_b -> pick -> global -> per_path -> save2
+}
+
