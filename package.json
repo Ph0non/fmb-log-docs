@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "FMB Log Documentation",
   "private": true,
+  "type": "module",
   "scripts": {
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
