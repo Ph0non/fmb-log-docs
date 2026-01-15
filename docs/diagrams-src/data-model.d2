@@ -1,71 +1,92 @@
-direction: right
+direction: down
 
 style: {
   stroke: "#3d3e3d"
   stroke-width: 1
   border-radius: 8
-  font-size: 16
+  font-size: 18
 }
 
-auth: "Auth" {
-  style.fill: "#217ca3"
-  style.font-color: "#ffffff"
+title: "Datenmodell (Übersicht)" {
+  near: top-center
+  shape: text
+  style.font-size: 24
+  style.bold: true
 }
-users: "users"
-groups: "groups"
-user_groups: "user_groups"
-group_permissions: "group_permissions"
 
-master: "Stammdaten" {
-  style.fill: "#006e78"
-  style.font-color: "#ffffff"
+# Top row: Auth and Stammdaten side by side
+row1: {
+  direction: right
+
+  auth: "Auth" {
+    direction: down
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+
+    users: "users" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    groups: "groups" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    user_groups: "user_groups" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    group_permissions: "group_permissions" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+
+    groups -> user_groups
+    groups -> group_permissions
+  }
+
+  master: "Stammdaten" {
+    direction: down
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+
+    nuclide_vectors: "nuclide_vectors" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    nv_nuclides: "nuclide_vector_nuclides" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    nv_paths: "nuclide_vector_paths" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    fgw_values: "fgw_values" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    fmks: "fmks" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    fmk_paths: "fmk_paths" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    fmk_devices: "fmk_devices" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    fmk_year: "fmk_year_settings" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    fmk_path_year: "fmk_path_year_settings" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+
+    nuclide_vectors -> nv_nuclides
+    nuclide_vectors -> nv_paths
+    fmks -> fmk_paths
+    fmks -> fmk_devices
+    fmks -> fmk_year
+    fmks -> fmk_path_year
+  }
 }
-nuclide_vectors: "nuclide_vectors"
-nuclide_vector_nuclides: "nuclide_vector_nuclides"
-nuclide_vector_paths: "nuclide_vector_paths"
-fgw_values: "fgw_values"
-fmks: "fmks"
-fmk_paths: "fmk_paths"
-fmk_devices: "fmk_devices"
-fmk_year_settings: "fmk_year_settings"
-fmk_path_year_settings: "fmk_path_year_settings"
 
-ops: "Betrieb" {
-  style.fill: "#63a90f"
-  style.font-color: "#ffffff"
+# Bottom row: Betrieb and Tagesabrechnung side by side
+row2: {
+  direction: right
+
+  ops: "Betrieb" {
+    direction: down
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+
+    datasheets: "datasheets" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    containers: "containers" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    meas_rev: "measurement_revisions" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    meas_proto: "measurement_protocols" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+
+    containers -> meas_rev
+    meas_rev -> meas_proto
+  }
+
+  reports: "Tagesabrechnung" {
+    direction: down
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+
+    daily_reports: "daily_reports" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+    daily_meas: "daily_report_measurements" { style.fill: "#ffffff"; style.font-color: "#3d3e3d" }
+
+    daily_reports -> daily_meas
+  }
 }
-datasheets: "datasheets"
-containers: "containers"
-measurement_revisions: "measurement_revisions"
-measurement_protocols: "measurement_protocols"
 
-reports: "Tagesabrechnung" {
-  style.fill: "#f17119"
-  style.font-color: "#ffffff"
+# Cross-container relationship
+row2.reports.daily_meas -> row2.ops.meas_rev: "referenziert" {
+  style.stroke-dash: 3
 }
-daily_reports: "daily_reports"
-daily_report_measurements: "daily_report_measurements"
-
-auth -> users
-auth -> groups
-groups -> user_groups
-groups -> group_permissions
-
-master -> nuclide_vectors
-nuclide_vectors -> nuclide_vector_nuclides
-nuclide_vectors -> nuclide_vector_paths
-master -> fgw_values
-master -> fmks
-fmks -> fmk_devices
-fmks -> fmk_paths
-fmks -> fmk_year_settings
-fmks -> fmk_path_year_settings
-
-ops -> datasheets
-ops -> containers
-containers -> measurement_revisions
-measurement_revisions -> measurement_protocols
-
-reports -> daily_reports
-daily_reports -> daily_report_measurements
-daily_report_measurements -> measurement_revisions

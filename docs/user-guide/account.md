@@ -1,5 +1,9 @@
 # Konto & Passwort
 
+::: tip Hinweis
+Wenn Ihr Account deaktiviert wurde oder Ihnen Rechte entzogen wurden, kann FMB Log die Sitzung beim nächsten Sicherheits‑Check als ungültig behandeln. In diesem Fall melden Sie sich bitte erneut an oder wenden Sie sich an einen Administrator.
+:::
+
 ## Eigenes Passwort ändern
 
 Sie können Ihr eigenes Passwort unter **Passwort ändern** aktualisieren. Aus Sicherheitsgründen verlangt die Anwendung dabei das **aktuelle Passwort**, bevor ein neues gesetzt werden kann. So wird verhindert, dass ein bereits angemeldeter, aber unberechtigter Zugriff im offenen Client unbemerkt Passwörter ändern kann.

@@ -3,13 +3,21 @@ direction: right
 style: {
   stroke: "#3d3e3d"
   stroke-width: 1
-  font-size: 24
+  font-size: 22
   border-radius: 8
 }
 
-flow: {
+title: "Tagesabrechnung" {
+  near: top-center
+  shape: text
+  style.font-size: 24
+  style.bold: true
+}
+
+# Teil A: Auswahl
+select: {
   direction: down
-  label: "Tagesabrechnung"
+  label: "Teil A – Auswahl"
 
   open: "Tagesabrechnung öffnen" {
     style.fill: "#006e78"
@@ -21,9 +29,29 @@ flow: {
     style.font-color: "#ffffff"
   }
 
-  filter: "Optional: nach FMK filtern\nund Filter setzen" {
+  filter: "Optional: nach FMK\nfiltern" {
     style.fill: "#217ca3"
     style.font-color: "#ffffff"
+  }
+
+  cont_a: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  open -> mode -> filter -> cont_a
+}
+
+# Teil B: Export
+export: {
+  direction: down
+  label: "Teil B – Export"
+
+  cont_b: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
   }
 
   preview: "Vorschau erzeugen" {
@@ -31,20 +59,45 @@ flow: {
     style.font-color: "#ffffff"
   }
 
-  check: "Ergebnis prüfen:\nAbschnitte/Pfade/OG/FGW" {
+  check: "Ergebnis prüfen:\nPfade / OG / FGW" {
     style.fill: "#217ca3"
     style.font-color: "#ffffff"
   }
 
-  export: "PDF exportieren" {
+  pdf: "PDF exportieren" {
     style.fill: "#63a90f"
     style.font-color: "#ffffff"
   }
 
-  history: "Historie:\nPDF öffnen / verifizieren" {
+  cont_c: "2" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  cont_b -> preview -> check -> pdf -> cont_c
+}
+
+# Teil C: Historie
+history: {
+  direction: down
+  label: "Teil C – Historie"
+
+  cont_d: "2" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  list: "Exportierte PDFs\nanzeigen" {
     style.fill: "#888888"
     style.font-color: "#ffffff"
   }
 
-  open -> mode -> filter -> preview -> check -> export -> history
+  verify: "PDF öffnen\noder verifizieren" {
+    style.fill: "#888888"
+    style.font-color: "#ffffff"
+  }
+
+  cont_d -> list -> verify
 }

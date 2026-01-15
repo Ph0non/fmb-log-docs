@@ -4,7 +4,14 @@
 
 Beim ersten Start ist die Anwendung im Setup‑Modus. In diesem Schritt wird der **erste Administrator** angelegt. Dieser Account ist notwendig, weil ohne Admin niemand Nutzer, Gruppen und Stammdaten verwalten kann.
 
-Nach dem Anlegen des Administrators wechselt die Anwendung zur Anmeldung. Ab diesem Zeitpunkt können weitere Nutzer und Gruppen angelegt werden.
+Nach dem Anlegen des Administrators führt FMB Log zusätzlich eine einmalige Initialisierung durch (kann einige Sekunden dauern):
+
+- RFC3161‑Zeitstempel für Tagesabrechnungen wird als **verpflichtend** aktiviert.
+- Delegations‑Zertifikate für den Admin werden erstellt (Scopes: `masterdata.fgw`, `masterdata.nv`, `masterdata.fmk`).
+- Die bereits vorhandenen Stammdaten aus der Stub‑DB werden mit dem Admin‑Signierschlüssel signiert (FGW/NV/FMK/SW/KF).
+- Die Sicherheitsdaten in der DB (Benutzer/Gruppen/Rechte/Delegationen/Admin‑Einstellungen) werden mit dem DB‑Signierschlüssel signiert.
+
+Anschließend wechselt die Anwendung zur Anmeldung. Ab diesem Zeitpunkt können weitere Nutzer und Gruppen angelegt werden.
 
 Technischer Hinweis: Die Anwendung erkennt „Ersteinrichtung erforderlich“, wenn in der Datenbank noch **kein** Benutzer existiert.
 
@@ -70,4 +77,51 @@ Dabei gilt:
 - Ohne `<db>.integrity.dbkey.json` gilt der Integritätsschutz als **nicht funktionsfähig** (Fail‑Closed) und FMB Log blockiert sicherheitsrelevante Vorgänge, bis das Zertifikat wieder vorhanden ist.
 - Bewahren Sie den Root‑Private‑Key außerhalb des Repos sicher auf.
 - Das Zertifikat ist nicht geheim, aber wichtig für Recovery/Deployment: Sie können es zusätzlich separat sichern.
+:::
+
+## Smoke‑Test (nach der Ersteinrichtung)
+
+Diese kurze Checkliste hilft, eine frische Installation in wenigen Minuten zu verifizieren – besonders wichtig vor dem Rollout auf weitere Clients.
+
+### 1) Integritätsschutz / Dateien prüfen
+
+1. Als Admin anmelden.
+2. **Administration → Einstellungen → Integritätsschutz**
+   - Status muss **„aktiviert (zertifiziert)“** sein.
+3. Neben der Hub‑DB müssen (im gleichen Ordner) vorhanden sein:
+   - `<db>.integrity.pub.json`
+   - `<db>.integrity.dbkey.json`
+   - `vaults/<db>.integrity.vault`
+
+::: tip Warum ist das wichtig?
+Ohne Zertifikat (dbkey) läuft FMB Log fail‑closed und blockiert sicherheitsrelevante Funktionen. Fehlende Vaults führen zu „Passwort falsch“/DoS‑Symptomen.
+:::
+
+### 2) Stammdaten‑Signaturen (FGW/NV/FMK) prüfen
+
+1. **Stammdaten → Freigabewerte (FGW)** öffnen → Tabelle muss ohne Signatur‑Fehler laden.
+2. **Stammdaten → Nuklidvektoren** öffnen → NV‑Liste/Detail muss ohne Signatur‑Fehler laden.
+3. **Stammdaten → FMK** öffnen → FMK‑Liste/Detail muss ohne Signatur‑Fehler laden.
+
+::: info Hinweis
+Bei der Ersteinrichtung signiert FMB Log die vorhandenen Stammdaten automatisch. Wenn hier Fehlermeldungen auftreten, ist meist der Integritätsschutz nicht korrekt aktiv (Zertifikat fehlt/inkonsistent) oder die Datenquelle zeigt auf eine nicht initialisierte DB.
+:::
+
+### 3) Delegation (Capability‑Zertifikate) prüfen
+
+1. **Administration → Einstellungen → Stammdaten‑Delegation**:
+   - Für den Admin sollten Delegationen für `masterdata.fgw`, `masterdata.nv` und `masterdata.fmk` sichtbar sein.
+
+### 4) Audit / Tagesabrechnung (kurzer Funktionscheck)
+
+1. **Administration → Audit → Audit ausführen**
+   - Erwartung: Audit läuft durch und meldet keine kritischen Fehler.
+2. **Tagesabrechnung**
+   - Vorschau erstellen (mit Testdaten).
+   - Optional: **PDF exportieren**.
+3. **Administration → Einstellungen → Tagesabrechnung**
+   - „RFC3161‑Zeitstempel verpflichtend“ sollte **aktiviert** sein (Default nach Ersteinrichtung).
+
+::: warning Hinweis
+Wenn RFC3161 verpflichtend ist, benötigt der PDF‑Export eine Internetverbindung (FreeTSA). Ohne Verbindung schlägt der Export fehl – die Vorschau funktioniert weiterhin.
 :::

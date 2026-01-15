@@ -176,6 +176,24 @@ Ein Key‑User darf z. B. Stammdaten nur signieren, wenn ein gültiges Zertifi
 - Key‑User signieren Stammdaten per User‑Key + Admin‑Delegation (Capability‑Zertifikat).
 :::
 
+### 5.3 Signatur‑Metadaten deduplizieren (`signing_metas`)
+
+In vielen Tabellen wiederholen sich Signatur‑Metadaten sehr häufig (z. B. `signed_by_user_id`, `signed_by_key_id`, `capability_id`, `signed_at`). Das ist für eine Datei‑DB und insbesondere für CR‑SQLite‑Sync unnötige Datenmenge.
+
+FMB Log reduziert diese Redundanz über eine zentrale Tabelle:
+
+- `signing_metas`: enthält eindeutige Tupel aus `(signed_by_user_id, signed_by_key_id, capability_id, signed_at)`
+- `signing_meta_id`: referenziert das Tupel in den signierten Tabellen
+
+Dadurch muss pro signiertem Datensatz nur noch die `signing_meta_id` gespeichert werden – die Metadaten selbst stehen einmalig in `signing_metas`. Für Abwärtskompatibilität existieren die ursprünglichen Spalten weiterhin, können aber (je nach Tabelle) leer/`NULL` sein, wenn `signing_meta_id` gesetzt ist.
+In aktuellen Datenbanken werden diese ursprünglichen Metadaten‑Spalten nach der Umstellung entfernt, sodass Signatur‑Metadaten ausschließlich über `signing_meta_id` + `signing_metas` abgebildet werden.
+
+Typisch betroffen sind u. a.:
+- Stammdaten‑Tabellen (FGW/NV/FMK inkl. Untertabellen)
+- `containers` (Gebinde‑Signaturen)
+- `measurement_revisions` (Messdaten‑Signaturen)
+- `daily_report_invalidations` (Invalidierungen)
+
 ## 6) Hash‑Algorithmen: BLAKE3 vs. SHA‑256
 
 In FMB Log werden zwei Hash‑Algorithmen bewusst parallel genutzt:

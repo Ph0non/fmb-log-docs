@@ -11,6 +11,13 @@ Die Administration ist in der UI daher in zwei Bereiche aufgeteilt:
 
 Admins besitzen immer alle Rechte und sehen die Administrationsseiten. Für Nicht‑Admins gilt das Prinzip „Least Privilege“: Sie erhalten Rechte ausschließlich über Gruppen (Matrix). Damit ist transparent nachvollziehbar, warum jemand eine Funktion nutzen darf – oder eben nicht.
 
+::: tip Hinweis: Rechte wirken „live“
+Wenn ein Admin während einer laufenden Sitzung Rechte entzieht (z. B. Admin‑Haken entfernen, Gruppen deaktivieren, Matrix ändern), prüft FMB Log vor sensiblen Aktionen die aktuellen Rechte erneut. Das reduziert TOCTOU‑Risiken. Für Nutzer kann sich das so zeigen:
+
+- Aktionen werden mit „Keine Berechtigung“ abgelehnt, obwohl die Seite noch geöffnet ist.
+- Wenn ein Konto deaktiviert wurde, wird die Sitzung beim nächsten Check als ungültig behandelt und der Nutzer muss sich erneut anmelden.
+:::
+
 ## Gruppen
 
 In der Praxis werden Gruppen als Rollen genutzt (z. B. „Messung“, „Auswertung“, „Key‑User“). Eine Gruppe kann aktiv oder inaktiv sein; nur aktive Gruppen verleihen Rechte.

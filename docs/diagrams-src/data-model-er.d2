@@ -3,103 +3,131 @@ direction: down
 style: {
   stroke: "#3d3e3d"
   stroke-width: 1
-  font-size: 22
+  font-size: 20
   border-radius: 8
 }
 
-title: Datenmodell Radioaktive Reststoffe {
+title: "Datenmodell Radioaktive Reststoffe" {
   near: top-center
   shape: text
-  style.font-size: 26
+  style.font-size: 24
   style.bold: true
 }
 
-# Hauptentitäten
-datenblatt: Datenblatt {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#217ca3"
+# Row 1: Stammdaten und Nuklidvektor
+row1: {
+  direction: right
+  label: ""
+  style.fill: transparent
+  style.stroke: transparent
+
+  stamm: "Stammdaten" {
+    direction: down
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+
+    fmk: "FMK" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    fmk_nv: "FMK_NV\nZuordnung" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    fmk -> fmk_nv
+  }
+
+  nuklid: "Nuklidvektor" {
+    direction: down
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+
+    nuklidvektor: "Nuklidvektor\n(+ Jahr)" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    nv_nuklide: "NV_Nuklide\n(Anteile)" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    freigabewerte: "Freigabewerte\n(FGW)" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    nuklidvektor -> nv_nuklide: 1:n
+  }
+
+  stamm.fmk_nv -> nuklid.nuklidvektor
 }
 
-gebinde: Gebinde {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#006e78"
+# Row 2: Betriebsdaten
+row2: {
+  direction: right
+  label: ""
+  style.fill: transparent
+  style.stroke: transparent
+
+  betrieb: "Betriebsdaten" {
+    direction: down
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+
+    datenblatt: "Datenblatt" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    gebinde: "Gebinde" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    messung: "Messung\n(+ Protokoll-Ref)" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    messwerte: "Messwerte\n(pro Nuklid)" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    datenblatt -> gebinde: 1:n
+    gebinde -> messung: 1:n
+    messung -> messwerte: 1:n
+  }
+
+  auth: "Benutzer & Rechte" {
+    direction: down
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+
+    user: "User" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    usergroup: "UserGroup" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    rechte: "Rechte" {
+      style.fill: "#ffffff"
+      style.font-color: "#3d3e3d"
+    }
+
+    user -> usergroup: n:m
+    usergroup -> rechte: n:m
+  }
 }
 
-fmk: FMK {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#006e78"
+# Cross-container relationships
+row1.stamm.fmk -> row2.betrieb.gebinde: 1:n {
+  style.stroke-dash: 3
 }
-
-messung: Messung\n(+ Protokoll-Ref) {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#006e78"
-}
-
-messwerte: Messwerte\n(pro Nuklid) {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#006e78"
-}
-
-# Nuklidvektor-Bereich
-nuklidvektor: Nuklidvektor\n(+ Jahr) {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#63a90f"
-}
-
-fmk_nv: FMK_NV\nZuordnung {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#63a90f"
-}
-
-nv_nuklide: NV_Nuklide\n(Anteile) {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#63a90f"
-}
-
-freigabewerte: Freigabewerte\n(FGW) {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#63a90f"
-}
-
-# User-Bereich
-user: User {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#f17119"
-}
-
-usergroup: UserGroup {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#f17119"
-}
-
-rechte: Rechte {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.stroke: "#f17119"
-}
-
-# Beziehungen Hauptentitäten
-datenblatt -> gebinde: 1:n
-fmk -> gebinde: 1:n
-gebinde -> messung: 1:n
-messung -> messwerte: 1:n
-
-# Beziehungen Nuklidvektor
-fmk -> fmk_nv
-fmk_nv -> nuklidvektor
-nuklidvektor -> nv_nuklide: 1:n
-
-# Beziehungen User
-user -> usergroup: n:m
-usergroup -> rechte: n:m

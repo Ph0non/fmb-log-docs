@@ -18,6 +18,10 @@ Gruppen können angelegt, umbenannt, deaktiviert/aktiviert und gelöscht werden.
 
 Die Rechte werden pro Gruppe in einer Matrix vergeben. Die UI blendet Funktionen entsprechend ein/aus; zusätzlich werden sensible Aktionen auch serverseitig geprüft.
 
+::: tip Hinweis: Änderungen greifen ohne Logout
+Rechte können sich während einer laufenden Sitzung ändern (z. B. durch Admin‑Änderungen). FMB Log prüft kritische Aktionen „Just‑in‑Time“ gegen den aktuellen DB‑Stand. Dadurch werden entziehene Rechte nicht zuverlässig „mitgenommen“, auch wenn die Seite noch geöffnet ist.
+:::
+
 Typische Beispiele für Rechte sind:
 
 - Messungen importieren/ändern/löschen sowie **Messdatum ändern**

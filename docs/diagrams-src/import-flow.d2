@@ -3,13 +3,21 @@ direction: right
 style: {
   stroke: "#3d3e3d"
   stroke-width: 1
-  font-size: 24
+  font-size: 22
   border-radius: 8
 }
 
-flow: {
+title: "Import (RPT / Gammaspektrometrie)" {
+  near: top-center
+  shape: text
+  style.font-size: 24
+  style.bold: true
+}
+
+# Teil A: Vorbereitung
+prep: {
   direction: down
-  label: "Import (RPT / Gammaspektrometrie)"
+  label: "Teil A – Vorbereitung"
 
   open: "Import öffnen" {
     style.fill: "#006e78"
@@ -21,22 +29,42 @@ flow: {
     style.font-color: "#ffffff"
   }
 
-  meta: "Gebinde: Datenblatt/Herkunft/FMK\nMessungen: Masse/Fläche/Umrechnung\n(optional)" {
+  meta: "Gebinde-Daten:\nDatenblatt / Herkunft / FMK" {
     style.fill: "#217ca3"
     style.font-color: "#ffffff"
   }
 
-  fmk: "Optional: FMK wählen\n(empfohlen)" {
+  fmk: "FMK wählen\n(empfohlen)" {
     style.fill: "#217ca3"
     style.font-color: "#ffffff"
   }
 
-  files: "RPT-Dateien auswählen\n(Mehrfachauswahl möglich)" {
+  cont_a: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  open -> container -> meta -> fmk -> cont_a
+}
+
+# Teil B: Import
+import: {
+  direction: down
+  label: "Teil B – Import"
+
+  cont_b: "1" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  files: "RPT-Dateien auswählen\n(Mehrfachauswahl)" {
     style.fill: "#006e78"
     style.font-color: "#ffffff"
   }
 
-  review: "Import-Tabelle prüfen:\nDatum/Einheit/Nuklide/Aktivität" {
+  review: "Import-Tabelle prüfen:\nDatum / Einheit / Nuklide" {
     style.fill: "#217ca3"
     style.font-color: "#ffffff"
   }
@@ -46,20 +74,40 @@ flow: {
     style.font-color: "#ffffff"
   }
 
-  import: "Import starten" {
+  start: "Import starten" {
     style.fill: "#63a90f"
     style.font-color: "#ffffff"
   }
 
-  complete: "Optional: Gebinde als vollständig markieren" {
+  cont_c: "2" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  cont_b -> files -> review -> date -> start -> cont_c
+}
+
+# Teil C: Abschluss
+finish: {
+  direction: down
+  label: "Teil C – Abschluss"
+
+  cont_d: "2" {
+    shape: circle
+    style.fill: "#ffffff"
+    style.font-color: "#3d3e3d"
+  }
+
+  complete: "Gebinde als\nvollständig markieren" {
     style.fill: "#63a90f"
     style.font-color: "#ffffff"
   }
 
-  detail: "Gebinde-Detail öffnen\n(Prüfen/Protokoll/ISO)" {
+  detail: "Gebinde-Detail öffnen\n(Prüfen / Protokoll / ISO)" {
     style.fill: "#006e78"
     style.font-color: "#ffffff"
   }
 
-  open -> container -> meta -> fmk -> files -> review -> date -> import -> complete -> detail
+  cont_d -> complete -> detail
 }

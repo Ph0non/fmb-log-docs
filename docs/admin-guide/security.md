@@ -45,8 +45,16 @@ Damit ist “jemand kann den Inhalt der DB-Datei ändern” ein realistisches Sz
   - `groups.signature`
   - `user_groups.signature`
   - `group_permissions.signature`
-- Bei aktivem Integritätsschutz werden diese Signaturen **bei der Anmeldung und bei Rechtesync/Anzeige geprüft**.
+- Bei aktivem Integritätsschutz werden diese Signaturen **bei der Anmeldung**, **nach DB‑Sync** und **unmittelbar vor sicherheitsrelevanten Aktionen (Just‑in‑Time)** geprüft.
 - Ist eine Signatur ungültig, wird das als Manipulation interpretiert und der Zugriff wird blockiert.
+
+::: tip TOCTOU‑Hardening (Warum „Just‑in‑Time“?)
+In einem Mehrnutzer‑Szenario (Netzlaufwerk) kann sich der Status eines eingeloggten Nutzers ändern, ohne dass er sich abmeldet (z. B. Admin‑Haken entfernt, Gruppe deaktiviert, Rechte entzogen).
+
+FMB Log reduziert das Risiko von *Time‑of‑Check vs. Time‑of‑Use* (TOCTOU) dadurch, dass vor sensiblen Aktionen die Session‑Berechtigungen frisch aus der DB geladen werden. Änderungen wirken damit „live“: Eine zuvor offene Sitzung kann eine Aktion nicht dauerhaft erzwingen, wenn die Berechtigung inzwischen entzogen wurde.
+
+Zusätzlich gilt: Wenn ein Nutzer nicht mehr Admin ist, wird der DB‑Signierschlüssel automatisch wieder gelockt.
+:::
 
 ### 4) DB‑Public‑Key und DB‑Key‑Zertifikat (Root‑Trust)
 
@@ -108,6 +116,7 @@ Die folgende Übersicht ist bewusst praxisnah: **welches Risiko** ist realistisc
 | Auslesen von Messdaten aus DB‑Datei | Vertraulichkeitsverlust | (keine, DB ist nicht verschlüsselt) | Schutz nur über Datei‑/Share‑Berechtigungen. Optional: separate Verschlüsselung wäre ein eigenes Projekt mit Trade‑offs. |
 | Malware/Administrator auf dem Client | Vollzugriff | (keine) | Nicht im Scope: Ein kompromittiertes System kann immer Daten auslesen/manipulieren. |
 | Manipulation von Fach‑/Messdaten (Gebinde, Messungen, FGW) | Falsche Freigabe / verfälschte Historie | Messdaten‑Signaturen (User‑Key), Stammdaten‑Signaturen (Delegation), Protokoll‑Integrität (BLAKE3) und Tagesabrechnungs‑Snapshot (BLAKE3 + optional TSA) | DoS bleibt möglich (Dateien löschen/überschreiben). Bei aktivem Integritätsschutz werden nicht verifizierbare Datensätze fail‑closed als ungültig behandelt. Tagesabrechnungen können nachträglich ungültig werden, wenn enthaltene Messungen später ungültig gesetzt werden. |
+| Stammdaten vor Report ändern, danach zurücksetzen | Bericht basiert auf manipulierten Daten ohne Nachweis | Audit‑Trail Hash‑Kette + TSA‑Pinning | Änderungen werden im Audit‑Trail protokolliert und nach Tagesabrechnung mit TSA‑Pin versehen. Nachträgliche Manipulation der Historie ist erkennbar. |
 
 ## Betriebsempfehlungen (Admin)
 
@@ -125,10 +134,10 @@ Wenn ein Nutzer nicht mehr Admin sein soll, ist wichtig zu unterscheiden, **welc
 ### 1) Nur Admin‑Rolle entziehen (kein Key‑Leak vermutet)
 
 1. In **Administration → Benutzer** den Haken/Status **Admin** entfernen und speichern.
-2. Den Nutzer abmelden lassen (oder App schließen), damit eine bestehende Session nicht weiter als Admin arbeitet.
+2. Optional: Den Nutzer abmelden lassen (oder App schließen), damit die UI‑Sichtbarkeit konsistent ist. Technisch werden kritische Aktionen ohnehin „Just‑in‑Time“ neu geprüft.
 3. Auf Dateiebene die Berechtigungen prüfen/anpassen (insbesondere `vaults/<db>.integrity.vault` und `<db>.integrity.*`).
 
-> Hinweis: Eine laufende Session kann nicht “remote” beendet werden. Wenn das kritisch ist, Nutzer zusätzlich deaktivieren (`is_active=0`) und später wieder aktivieren.
+> Hinweis: Eine laufende Session kann nicht “remote” beendet werden. FMB Log verhindert aber, dass eine demotete Session kritische Aktionen dauerhaft weiter ausführt, weil Rechte vor Aktionen frisch geprüft werden. Wenn das Risiko trotzdem zu hoch ist: Nutzer zusätzlich deaktivieren (`is_active=0`) und später wieder aktivieren.
 
 ### 2) Signier‑Passwort könnte bekannt sein (Zugriff entziehen)
 
@@ -258,6 +267,7 @@ Messungen werden typischerweise von „normalen“ Nutzern importiert. Dafür is
   - Private Key: im bestehenden `vaults/<user_id>.vault` (Stronghold), verschlüsselt durch `user_id + password`.
   - Public Key: in der DB, **zertifiziert** durch den DB‑Integritätsschlüssel (damit Public‑Key‑Swap erkennbar ist).
 - Beim Import/Ändern einer Mess‑Revision wird eine kanonische Darstellung der fachlichen Felder gehasht (BLAKE3) und mit dem User‑Key signiert.
+- Die Signatur wird als `user_signature` gespeichert; die Signatur‑Metadaten (`signed_by_user_id`, `signed_by_key_id`, `signed_at`) werden über `signing_meta_id` referenziert (`signing_metas`).
 - Bei der Anzeige und bei Tagesabrechnungs‑Berechnungen wird diese Signatur geprüft. Ungültige/fehlende Signatur führt zu „ungültig“ (kein Freigabe‑Nachweis).
 
 Damit bleibt Offline‑Import möglich (User‑Key ist lokal verfügbar, weil im User‑Vault).
@@ -266,7 +276,7 @@ Damit bleibt Offline‑Import möglich (User‑Key ist lokal verfügbar, weil im
 
 Stammdaten werden in FMB Log als **User‑Signaturen mit Admin‑Delegation** umgesetzt:
 
-- Tabellen wie `fgw_values`, `nuclide_vectors`, `nuclide_vector_nuclides`, `fmks`, `fmk_year_settings` usw. tragen pro Datensatz eine **User‑Signatur** + `capability_id`.
+- Tabellen wie `fgw_values`, `nuclide_vectors`, `nuclide_vector_nuclides`, `fmks`, `fmk_year_settings` usw. tragen pro Datensatz eine **User‑Signatur** (`user_signature`) + `signing_meta_id` (Metadaten‑Tupel in `signing_metas`, inkl. `capability_id`).
 - Ein Admin erteilt dafür **Delegationen** (Capability‑Zertifikate, DB‑signiert). Dafür muss der DB‑Signierschlüssel entsperrt sein.
 - Key‑User können danach Stammdaten pflegen, **ohne** Admin‑Signier‑Passwort zu kennen.
 - Berechnungen (Dashboard/Preview/PDF) nutzen im Integritätsmodus nur **verifizierte** Stammdaten (Fail‑Closed für Freigabe‑Entscheidungen).
@@ -320,11 +330,12 @@ Es gibt zwei praktikable Muster:
 **Ablauf: Key‑User ändert Stammdaten**
 
 1. Key‑User meldet sich an.
-2. Beim Speichern von FGW/NV/FMK wird der Datensatz mit dem **User‑Key** signiert und die zugehörige Delegation (`capability_id`) mitgeschrieben.
+2. Beim Speichern von FGW/NV/FMK wird der Datensatz mit dem **User‑Key** signiert und die zugehörige Delegation (`capability_id`) über `signing_meta_id` referenziert (`signing_metas`).
 3. Die Anwendung nutzt für Berechnungen (insb. Tagesabrechnung/Preview/Dashboard) nur **verifizierte** Stammdaten:
    - User‑Signatur gültig
    - User‑Public‑Key ist DB‑signiert (Public‑Key‑Swap erkennbar)
    - Delegation gültig zum Signaturzeitpunkt (`issued_at`/`expires_at`/`revoked_at`)
+   - Hinweis: Wenn FMB Log Delegationen automatisch erzeugt (z. B. Ersteinrichtung oder „Stammdaten neu signieren“), wird `signed_at` immer **nach** `issued_at` gesetzt, damit keine „Delegation war zum Signierzeitpunkt nicht aktiv“‑Fehler entstehen.
 
 **Widerruf / Entzug**
 
@@ -417,8 +428,51 @@ Die CSV enthält u. a. `event_at`, `user_id`, `username`, `action`, `entity_ta
 - Benutzerverwaltung: `users.create`, `users.update`, `users.delete`, `users.reset_password`
 - Gruppen/Rechte: `groups.create`, `groups.update`, `groups.delete`, `group_permissions.update`, `user_groups.update`
 - Stammdaten: `fgw.update`, `fmks.create/update/delete`, `nuclide_vectors.create/update/delete`
-- Tagesabrechnung: `daily_reports.invalidate`
+- Tagesabrechnung: `daily_reports.create`, `daily_reports.invalidate`
 
 ::: tip Hinweis
 Sensible Geheimnisse (z. B. temporäre Passwörter) werden **nicht** im Audit‑Trail gespeichert. Es werden nur die fachlich relevanten Metadaten und Vorher/Nachher‑Snapshots protokolliert.
+:::
+
+### Kryptografische Integrität des Audit‑Trails (Hash‑Kette + TSA)
+
+Der Audit‑Trail ist zusätzlich durch eine **kryptografische Hash‑Kette** abgesichert. Dies schützt vor dem Bedrohungsszenario, dass ein böswilliger Nutzer:
+
+1. Stammdaten ändert (z. B. FMK‑Zuordnung, Freigabewerte)
+2. Eine Tagesabrechnung signiert erstellt
+3. Die Stammdaten wieder zurückändert
+
+Ohne Hash‑Kette wäre eine solche Manipulation im Nachhinein schwer nachvollziehbar.
+
+**Umsetzung:**
+
+- Jeder Audit‑Trail‑Eintrag erhält einen **Entry‑Hash** (BLAKE3 über Inhalt und Zeitstempel).
+- Optional wird jeder Eintrag mit dem **User‑Signierschlüssel** signiert (`user_signature`), sofern der Nutzer eingeloggt ist und sein Vault entsperrt.
+- Die **Chain‑Hash** wird bei TSA‑Pinning und Verifikation berechnet: Ein rollierender BLAKE3‑Hash über alle Einträge in deterministischer Reihenfolge (`ORDER BY event_at, id`).
+
+**TSA‑Pinning:**
+
+- Nach jeder **Tagesabrechnung** wird automatisch ein TSA‑Pin erstellt.
+- Ein Pin speichert:
+  - `chain_hash`: Hash‑Ketten‑Zustand zum Pin‑Zeitpunkt
+  - `entries_count`: Anzahl der Einträge zum Pin‑Zeitpunkt
+  - `tsa_token_base64`: RFC‑3161 Zeitstempel‑Token
+  - `triggered_by`: Auslöser (z. B. `daily_report`)
+- Pins werden in der Tabelle `audit_trail_pins` gespeichert und sind CR‑SQLite sync‑kompatibel.
+
+**Verifikation (für Nutzer einfach):**
+
+Die Anwendung prüft diese Punkte automatisch im Menü **Administration → Audit** im Abschnitt
+**Audit‑Trail (Hash‑Kette)**. Dort wird in einer kompakten Zusammenfassung angezeigt:
+
+- ob **Entry‑Hashes** vollständig sind und passen,
+- ob vorhandene **User‑Signaturen** verifizierbar sind (gegen die signierten User‑Public‑Keys),
+- ob der **letzte TSA‑Pin** konsistent ist (Chain‑Hash/Entry‑Count) und ob das **TSA‑Imprint** zum gespeicherten
+  Snapshot passt.
+
+Details werden nur dann eingeblendet, wenn Warnungen/Fehler vorliegen. Eine manuelle Nachprüfung ist damit in der
+Regel nicht nötig.
+
+::: warning Sync‑Kompatibilität
+Die Hash‑Kette ist so konzipiert, dass sie **CR‑SQLite Last‑Writer‑Wins** kompatibel bleibt. Entry‑Hashes sind pro Eintrag stabil; die Chain‑Hash wird erst bei Verifikation/Pinning berechnet. Nach einem Sync gibt es eine konsistente Wahrheit im Audit‑Trail.
 :::

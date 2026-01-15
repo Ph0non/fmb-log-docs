@@ -3,88 +3,109 @@ direction: down
 style: {
   stroke: "#3d3e3d"
   stroke-width: 1
-  font-size: 22
+  font-size: 20
   border-radius: 8
 }
 
 title: "Sync‑Prozess (Replica ↔ Hub)" {
   near: top-center
   shape: text
-  style.font-size: 26
+  style.font-size: 24
   style.bold: true
 }
 
-step1: |md
-  **1. Änderung in lokaler Replica**
+# Row 1: Trigger phase
+trigger: {
+  direction: right
+  label: ""
+  style.fill: transparent
+  style.stroke: transparent
 
-  INSERT/UPDATE/DELETE
-  ↓
-  sofort lokal verfügbar
-| {
-  shape: rectangle
-  style.fill: "#006e78"
-  style.font-color: "#ffffff"
+  step1: |md
+    **1. Änderung lokal**
+
+    INSERT / UPDATE / DELETE
+    → sofort verfügbar
+  | {
+    shape: rectangle
+    style.fill: "#006e78"
+    style.font-color: "#ffffff"
+  }
+
+  step2: |md
+    **2. Sync ausgelöst**
+
+    • beim App‑Fokus
+    • periodisch (~10 s)
+    • Hub offline → retry
+  | {
+    shape: rectangle
+    style.fill: "#f17119"
+    style.font-color: "#ffffff"
+  }
+
+  step1 -> step2: Trigger
 }
 
-step2: |md
-  **2. Sync wird ausgelöst**
+# Row 2: Data exchange
+exchange: {
+  direction: right
+  label: ""
+  style.fill: transparent
+  style.stroke: transparent
 
-  automatisch:
-  • beim App‑Fokus
-  • periodisch (~10 s)
+  step3: |md
+    **3. Pull: Hub → Replica**
 
-  wenn Hub offline:
-  • später erneut versuchen
-| {
-  shape: rectangle
-  style.fill: "#f17119"
-  style.font-color: "#ffffff"
+    Change‑Events anderer
+    Sites holen (crsql_changes)
+  | {
+    shape: rectangle
+    style.fill: "#217ca3"
+    style.font-color: "#ffffff"
+  }
+
+  step4: |md
+    **4. Push: Replica → Hub**
+
+    Eigene Change‑Events
+    hochladen (crsql_changes)
+  | {
+    shape: rectangle
+    style.fill: "#63a90f"
+    style.font-color: "#ffffff"
+  }
+
+  step3 -> step4
 }
 
-step3: |md
-  **3. Pull: Hub → Replica**
+# Row 3: Result
+result: {
+  direction: right
+  label: ""
+  style.fill: transparent
+  style.stroke: transparent
 
-  neue Change‑Events
-  anderer Sites holen
-  (crsql_changes)
-| {
-  shape: rectangle
-  style.fill: "#217ca3"
-  style.font-color: "#ffffff"
+  step5: |md
+    **5. Konvergenz**
+
+    Alle Clients konvergieren
+    deterministisch auf
+    denselben Stand
+  | {
+    shape: rectangle
+    style.fill: "#e4e1d2"
+    style.font-color: "#3d3e3d"
+    style.stroke: "#3d3e3d"
+  }
 }
 
-step4: |md
-  **4. Push: Replica → Hub**
+trigger.step2 -> exchange.step3
+exchange.step4 -> result.step5
 
-  eigene Change‑Events
-  in Hub schreiben
-  (crsql_changes)
-| {
-  shape: rectangle
-  style.fill: "#63a90f"
-  style.font-color: "#ffffff"
-}
-
-step5: |md
-  **5. Konvergenz (eventual consistency)**
-
-  alle Clients konvergieren
-  deterministisch auf
-  denselben Stand
-| {
-  shape: rectangle
-  style.fill: "#e4e1d2"
-  style.font-color: "#3d3e3d"
-}
-
-step1 -> step2: Trigger
-step2 -> step3
-step3 -> step4
-step4 -> step5
-
-note: "Konflikte werden deterministisch gelöst\n(z. B. Last‑Write‑Wins auf Zellenebene; Delete dominiert)." {
+note: "Konflikte: deterministisch gelöst (Last‑Write‑Wins auf Zellenebene; Delete dominiert)" {
   shape: text
   near: bottom-center
-  style.font-size: 16
+  style.font-size: 14
   style.italic: true
 }
