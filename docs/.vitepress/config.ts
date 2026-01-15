@@ -1,6 +1,10 @@
 import { defineConfig } from "vitepress";
 
+const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1];
+const base = process.env.VITEPRESS_BASE ?? (repoName ? `/${repoName}/` : "/");
+
 export default defineConfig({
+	base,
 	lang: "de-DE",
 	title: "FMB Log",
 	description: "Benutzer- und Administratorhandbuch",
