@@ -269,17 +269,18 @@ Der Updater verlangt ein Signatur‑Keypair. **Der Private Key bleibt geheim** (
 
 Key‑Generierung (Windows):
 
-`pnpm tauri signer generate --write-keys .secrets\\tauri-updater.key --ci`
+`pnpm tauri signer generate --password "<PASSWORT>" --write-keys .secrets\\tauri-updater.key --force --ci`
 
 Dabei entstehen:
 
 - `.secrets/tauri-updater.key` (Private Key, niemals committen)
 - `.secrets/tauri-updater.key.pub` (Public Key, wird in `tauri.conf.json` hinterlegt)
+- `.secrets/tauri-updater.key.password` (Passwort, niemals committen; wird für CI benötigt)
 
 Build‑Zeit‑Variablen:
 
 - `TAURI_SIGNING_PRIVATE_KEY` (Pfad oder Inhalt des Private Keys)
-- `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (optional)
+- `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (Passwort für den Private Key)
 
 ### 10.2 Release‑Artefakte & Hosting (GitHub)
 
