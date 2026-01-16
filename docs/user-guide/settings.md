@@ -41,3 +41,16 @@ Der Cache wird automatisch verwaltet: ältere, nicht mehr benötigte Einträge w
 - Wenn Sie den Cache leeren, können Protokolle offline nicht mehr angezeigt werden, bis der Hub wieder erreichbar ist.
 - Leeren Sie den Cache nur, wenn der Hub erreichbar ist und ausstehende Uploads bereits erfolgt sind.
 :::
+
+## Updates
+
+FMB Log kann Updates automatisch über den integrierten Updater beziehen. Die Einstellungen finden Sie im Benutzer-Menü oben rechts unter **Updates**.
+
+- **Beim Programmstart automatisch nach Updates suchen**: Ist diese Option aktiv, prüft FMB Log beim Start, ob eine neue Version verfügbar ist.
+- Wenn ein Update gefunden wurde, erscheint ein Hinweis mit drei Optionen:
+  - **Jetzt installieren**: Download und Installation starten.
+  - **Beim nächsten Start erinnern**: Hinweis schließen (bei nächstem Start erneut prüfen).
+  - **Nicht mehr erinnern**: Die gefundene Version wird ignoriert, bis Sie die Ignorierung zurücksetzen oder ein neueres Update verfügbar ist.
+- Zusätzlich kann ein Update jederzeit manuell über **Jetzt prüfen** gesucht werden.
+
+Wichtig: Update-Einstellungen werden **nur lokal** gespeichert (in der lokalen Replica-Datenbank) und nicht mit dem Hub synchronisiert.

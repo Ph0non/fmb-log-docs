@@ -258,3 +258,55 @@ Betroffene Aktionen:
 - **Tagesabrechnung → PDF exportieren**
 
 Die Logzeilen enthalten JSON mit `action`, `ok`, `total_ms` und `phases` (je Phase: `name`, `ms`). So können Sie bei Performance‑Problemen nachvollziehen, ob z. B. **I/O (Hub/Protokolle)**, **Hashing** oder **DB‑Zugriffe** dominieren.
+
+## 10) Auto‑Update (Tauri Updater)
+
+FMB Log nutzt den **Tauri Updater** für In‑App‑Updates. Im Unterschied zum „Installer herunterladen und manuell ausführen“ kann die App Updates direkt finden, herunterladen und installieren.
+
+### 10.1 Schlüssel (Update‑Signatur)
+
+Der Updater verlangt ein Signatur‑Keypair. **Der Private Key bleibt geheim** (nur Build‑Server/Release‑Pipeline), der **Public Key ist in der App eingebettet** (`src-tauri/tauri.conf.json`).
+
+Key‑Generierung (Windows):
+
+`pnpm tauri signer generate --write-keys .secrets\\tauri-updater.key --ci`
+
+Dabei entstehen:
+
+- `.secrets/tauri-updater.key` (Private Key, niemals committen)
+- `.secrets/tauri-updater.key.pub` (Public Key, wird in `tauri.conf.json` hinterlegt)
+
+Build‑Zeit‑Variablen:
+
+- `TAURI_SIGNING_PRIVATE_KEY` (Pfad oder Inhalt des Private Keys)
+- `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (optional)
+
+### 10.2 Release‑Artefakte & Hosting (GitHub)
+
+Der Update‑Server ist in FMB Log auf GitHub Releases konfiguriert:
+
+- Endpoint: `https://github.com/Ph0non/fmb-log-docs/releases/latest/download/latest.json`
+
+Beim Release‑Build werden Updater‑Artefakte erzeugt (u. a. `latest.json`, Signaturen, Update‑Paket). GitLab CI lädt diese Artefakte anschließend als **GitHub Release Assets** in das Repo `Ph0non/fmb-log-docs` hoch (Release‑Tag = Git‑Tag).
+
+Wichtig: Damit `latest.json` korrekt ist, müssen die Artefakte im selben GitHub Release (Assets) liegen.
+
+### 10.3 Client‑Verhalten (UI)
+
+- Beim Start (Release‑Build) prüft FMB Log optional automatisch auf Updates.
+- Wenn ein Update verfügbar ist, erscheint ein Dialog mit:
+  - **Jetzt installieren**
+  - **Beim nächsten Start erinnern**
+  - **Nicht mehr erinnern** (ignoriert die gefundene Version lokal)
+- Einstellungen: Benutzer‑Menü → **Updates**
+  - Auto‑Check beim Start aktivieren/deaktivieren
+  - manuell prüfen
+  - ignorierte Version zurücksetzen
+
+Update‑Einstellungen werden **nur lokal** gespeichert (Replica‑DB) und nicht über den Hub synchronisiert.
+
+::: info Zusammenfassung (Updater)
+- Signierung: Private Key nur im Build/CI, Public Key in der App.
+- Hosting: GitHub Releases (`latest.json` + Assets).
+- Nutzer: Start‑Check + Dialog + manuelle Prüfung in **Updates**.
+:::
