@@ -255,6 +255,7 @@ Betroffene Aktionen:
 
 - **Administration → Audit** (prüft Security/Stammdaten/Messdaten/Protokolle)
 - **Administration → Einstellungen → Stammdaten neu signieren**
+- **Administration → Einstellungen → Fehlende Signaturen nachholen**
 - **Tagesabrechnung → PDF exportieren**
 
 Die Logzeilen enthalten JSON mit `action`, `ok`, `total_ms` und `phases` (je Phase: `name`, `ms`). So können Sie bei Performance‑Problemen nachvollziehen, ob z. B. **I/O (Hub/Protokolle)**, **Hashing** oder **DB‑Zugriffe** dominieren.

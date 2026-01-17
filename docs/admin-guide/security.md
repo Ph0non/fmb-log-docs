@@ -337,6 +337,13 @@ Es gibt zwei praktikable Muster:
    - Delegation gültig zum Signaturzeitpunkt (`issued_at`/`expires_at`/`revoked_at`)
    - Hinweis: Wenn FMB Log Delegationen automatisch erzeugt (z. B. Ersteinrichtung oder „Stammdaten neu signieren“), wird `signed_at` immer **nach** `issued_at` gesetzt, damit keine „Delegation war zum Signierzeitpunkt nicht aktiv“‑Fehler entstehen.
 
+::: tip Nach Update: fehlende Signaturen nachholen (Attestation)
+Wenn nach einem Update neue Signatur‑Felder eingeführt wurden, können bestehende Datensätze zunächst „Signatur fehlt“ anzeigen.  
+Ein Admin kann dann unter **Administration → Einstellungen → Fehlende Signaturen nachholen** gezielt nur die fehlenden Signaturen nachziehen (ohne alle Daten „neu zu signieren“).
+
+Die Aktion schreibt zusätzlich einen Audit‑Trail‑Eintrag (`signatures.attest`) mit einem Snapshot‑Hash und erstellt einen Audit‑Trail‑Pin (mit TSA, falls verfügbar; sonst ohne TSA). Damit ist die Nachsignierung als *post‑update Attestation* nachvollziehbar.
+:::
+
 **Widerruf / Entzug**
 
 - Admin kann Delegationen widerrufen. Signaturen, die **nach** `revoked_at` erstellt wurden, gelten als ungültig.

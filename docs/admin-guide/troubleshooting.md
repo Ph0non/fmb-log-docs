@@ -69,6 +69,23 @@ Für die Diagnose ist die Logdatei hilfreich:
 - Öffnen über **Administration → Einstellungen → Diagnose → Log öffnen**
 - Pfad (Windows): `%LOCALAPPDATA%\\com.ewn.fmblog\\logs\\fmb-log.log`
 
+## „Signatur fehlt“ / „Signatur ungültig“ (nach Update oder Datenübernahme)
+
+Wenn in **Administration → Audit** oder in Stammdaten‑Ansichten Meldungen wie „Signatur fehlt“ oder „Signatur ungültig“ erscheinen, sind typische Ursachen:
+
+1. **Falsche Datenquelle** (z. B. noch lokale Stub‑DB statt Hub‑DB).
+2. **Integritätsschutz nicht vollständig aktiv** (Zertifikat `<db>.integrity.dbkey.json` fehlt/inkonsistent).
+3. **Nach Update wurden neue Signatur‑Felder eingeführt**, aber bestehende Datensätze wurden noch nicht nachgezogen.
+
+Vorgehen (empfohlen):
+
+1. Als Admin anmelden.
+2. **Administration → Einstellungen → Integritätsschutz** prüfen:
+   - Status muss **„aktiviert (zertifiziert)“** sein.
+3. Falls Signaturen wirklich fehlen: **Administration → Einstellungen → Fehlende Signaturen nachholen** ausführen.
+   - Signiert nur Datensätze, bei denen `user_signature`/`signing_meta_id` fehlen.
+   - Schreibt einen Audit‑Trail‑Eintrag und erstellt einen Audit‑Trail‑Pin (mit TSA, falls verfügbar; sonst ohne TSA).
+
 ::: info Kurzcheck
 - Browser‑Modus (`pnpm dev`) eignet sich für UI‑Layout, nicht für Tauri‑Funktionen.
 - Desktop‑Tests immer mit `pnpm tauri dev`.
