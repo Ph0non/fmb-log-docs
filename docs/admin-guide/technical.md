@@ -279,7 +279,7 @@ Dabei entstehen:
 
 Build‑Zeit‑Variablen:
 
-- `TAURI_SIGNING_PRIVATE_KEY` (Pfad oder Inhalt des Private Keys)
+- `TAURI_SIGNING_PRIVATE_KEY` (**Base64‑String** des Private‑Key‑Inhalts; z. B. Inhalt aus `.secrets/tauri-updater.key`)
 - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (Passwort für den Private Key)
 
 ### 10.2 Release‑Artefakte & Hosting (GitHub)
@@ -288,7 +288,11 @@ Der Update‑Server ist in FMB Log auf GitHub Releases konfiguriert:
 
 - Endpoint: `https://github.com/Ph0non/fmb-log-docs/releases/latest/download/latest.json`
 
-Beim Release‑Build werden Updater‑Artefakte erzeugt (u. a. `latest.json`, Signaturen, Update‑Paket). GitLab CI lädt diese Artefakte anschließend als **GitHub Release Assets** in das Repo `Ph0non/fmb-log-docs` hoch (Release‑Tag = Git‑Tag).
+Beim Release‑Build erzeugt Tauri die **Installer‑Artefakte** und (bei gesetztem Signier‑Key) die **Signaturdatei** `*.exe.sig` (Windows/NSIS). Die Datei `latest.json` wird **nicht automatisch** von Tauri generiert. Stattdessen erstellt GitLab CI das `latest.json` im Release‑Step (Script `scripts/github_publish_updater.mjs`) und lädt anschließend **alle Updater‑Assets** in das Repo `Ph0non/fmb-log-docs` hoch (Release‑Tag = Git‑Tag):
+
+- NSIS‑Installer `*.exe`
+- Signatur `*.exe.sig`
+- `latest.json` (statisches Updater‑Manifest für `@tauri-apps/plugin-updater`)
 
 Wichtig: Damit `latest.json` korrekt ist, müssen die Artefakte im selben GitHub Release (Assets) liegen.
 
