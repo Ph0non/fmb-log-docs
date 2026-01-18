@@ -73,6 +73,107 @@ Dabei gilt:
    - `<db>.integrity.dbkey.json` (Zertifikat)
    - `<db>.integrity.pub.json` (Public Key)
 
+### Alternative: Zertifikat per GitHub Actions erzeugen (Variante A, manuell)
+
+Wenn der Root‑Private‑Key nicht auf dem Arbeitsplatz verfügbar sein soll, kann das DB‑Key‑Zertifikat auch über einen **geschützten GitHub Actions Workflow** erzeugt werden. Die App kann das nicht „automatisch“ auslösen (Sicherheitsgründe), aber die Schritte sind dadurch reproduzierbar und zentralisiert.
+
+**Einmalig in GitHub einrichten (Repo z. B. `Ph0non/fmb-log-docs`):**
+
+1. **Environment** anlegen (empfohlen): `integrity-signing`
+   - Settings → Environments → New environment
+   - Optional: Required reviewers aktivieren (damit nicht jeder den Workflow laufen lassen kann).
+2. **Secret** hinterlegen (im Environment oder Repo):
+   - Name: `INTEGRITY_ROOT_PRIVATE_JWK_BASE64`
+   - Wert: Base64 des Root‑Private‑Key‑JWK (`.secrets/integrity-root-private.jwk.json`)
+     - Beispiel (Node): `node -e "console.log(Buffer.from(require('fs').readFileSync('.secrets/integrity-root-private.jwk.json','utf8')).toString('base64'))"`
+3. Workflow Datei anlegen: `.github/workflows/integrity-certify-dbkey.yml` (Manual Dispatch)
+   - Der Workflow erwartet als Input `db_public_jwk_base64` (Base64 der Datei `<db>.integrity.pub.json`) und erstellt als Artifact die Datei `*.integrity.dbkey.json`.
+
+Beispiel‑Workflow (kopieren nach GitHub, Repo `Ph0non/fmb-log-docs`):
+
+```yaml
+name: integrity-certify-dbkey
+
+on:
+  workflow_dispatch:
+    inputs:
+      db_public_jwk_base64:
+        description: "Base64 von <db>.integrity.pub.json"
+        required: true
+      out_filename:
+        description: "Ziel-Dateiname (z. B. fmblog.db.integrity.dbkey.json)"
+        required: true
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    # Optional aber empfohlen: nur in einem geschützten Environment mit Required Reviewers
+    environment: integrity-signing
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Generate certificate
+        env:
+          ROOT_PRIV_B64: ${{ secrets.INTEGRITY_ROOT_PRIVATE_JWK_BASE64 }}
+          DB_PUB_B64: ${{ inputs.db_public_jwk_base64 }}
+          OUT_FILENAME: ${{ inputs.out_filename }}
+        run: |
+          node <<'NODE'
+          import { webcrypto } from "node:crypto";
+          import fs from "node:fs";
+
+          function recordMessage(parts) {
+            return parts.map((p) => String(p)).join("\u001f");
+          }
+          function dbKeyCertificateMessage(jwk) {
+            if (!jwk?.kty || !jwk?.crv || !jwk?.x) {
+              throw new Error("Invalid DB public JWK (expected kty/crv/x).");
+            }
+            return recordMessage(["v2", "dbkey", jwk.kty, jwk.crv, jwk.x]);
+          }
+
+          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64").toString("utf8"));
+          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64").toString("utf8"));
+
+          const rootPrivKey = await webcrypto.subtle.importKey(
+            "jwk",
+            rootPrivateJwk,
+            { name: "Ed25519" },
+            false,
+            ["sign"],
+          );
+
+          const msg = new TextEncoder().encode(dbKeyCertificateMessage(dbPublicJwk));
+          const sig = await webcrypto.subtle.sign({ name: "Ed25519" }, rootPrivKey, msg);
+
+          const cert = {
+            version: 2,
+            dbPublicJwk,
+            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64"),
+            createdAt: new Date().toISOString(),
+          };
+
+          fs.writeFileSync(process.env.OUT_FILENAME, `${JSON.stringify(cert, null, 2)}\n`, "utf8");
+          console.log(`Wrote: ${process.env.OUT_FILENAME}`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbkey-certificate
+          path: ${{ inputs.out_filename }}
+```
+
+**Workflow ausführen (pro DB, manuell):**
+
+1. In FMB Log (Setup oder Administration → Einstellungen → Integritätsschutz) den Public Key laden und den Wert `db_public_jwk_base64` kopieren.
+2. In GitHub Actions den Workflow `integrity-certify-dbkey` starten und `db_public_jwk_base64` einfügen.
+3. Artifact herunterladen und als `<db>.integrity.dbkey.json` neben der DB ablegen.
+4. In der App „Zertifikat prüfen“ klicken.
+
+::: warning Sicherheit
+Der Root‑Private‑Key in GitHub Secrets ist nur so sicher wie die GitHub‑Repo‑Berechtigungen und Workflow‑Policies. Verwenden Sie nach Möglichkeit ein Environment mit Required Reviewers und erlauben Sie Workflow‑Änderungen nur auf protected branches/tags.
+:::
+
 ::: warning Hinweise
 - Ohne `<db>.integrity.dbkey.json` gilt der Integritätsschutz als **nicht funktionsfähig** (Fail‑Closed) und FMB Log blockiert sicherheitsrelevante Vorgänge, bis das Zertifikat wieder vorhanden ist.
 - Bewahren Sie den Root‑Private‑Key außerhalb des Repos sicher auf.
