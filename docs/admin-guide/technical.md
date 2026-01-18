@@ -316,3 +316,28 @@ Update‑Einstellungen werden **nur lokal** gespeichert (Replica‑DB) und nicht
 - Hosting: GitHub Releases (`latest.json` + Assets).
 - Nutzer: Start‑Check + Dialog + manuelle Prüfung in **Updates**.
 :::
+
+## 11) GitLab CI – optimiertes Build‑Image
+
+Auf Build‑Runnern mit begrenztem Speicherplatz (z. B. ~15 GB) ist es sinnvoll, ein eigenes Docker‑Image zu verwenden, das die nötigen System‑Pakete bereits enthält. Dadurch muss GitLab CI nicht in jedem Job große `apt-get install` Schritte ausführen.
+
+### 11.1 Repository‑Dateien
+
+- Dockerfile: `ci/Dockerfile`
+- Anleitung: `ci/README.md`
+
+### 11.2 Verwendung in GitLab CI
+
+Die Pipeline kann über eine Variable auf ein eigenes Image umgestellt werden:
+
+- `FMB_CI_NODE_IMAGE = $CI_REGISTRY_IMAGE/ci-node:node22-bookworm` (lint/tests/docs)
+- `FMB_CI_IMAGE = $CI_REGISTRY_IMAGE/ci:bookworm-22-nightly` (Rust/Tauri/Release)
+
+Wenn die Images existieren, kann `.gitlab-ci.yml` deutlich schlanker bleiben, weil:
+
+- Build‑Tools (cmake/ninja/clang/llvm/nsis …) bereits im Image vorhanden sind.
+- pnpm bereits verfügbar ist (oder schnell via corepack aktiviert werden kann).
+
+::: tip Hinweis
+Für spätere Playwright‑Tests (B1) ist meist ein separates Image sinnvoll (Browser + deps). Das kann als eigener Job‑Image‑Override umgesetzt werden, ohne das Build‑Image unnötig aufzublähen.
+:::
