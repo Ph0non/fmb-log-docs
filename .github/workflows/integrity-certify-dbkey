@@ -1,0 +1,69 @@
+name: integrity-certify-dbkey
+
+on:
+  workflow_dispatch:
+    inputs:
+      db_public_jwk_base64:
+        description: "Base64 von <db>.integrity.pub.json"
+        required: true
+      out_filename:
+        description: "Ziel-Dateiname (z. B. fmblog.db.integrity.dbkey.json)"
+        required: true
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    # Optional aber empfohlen: nur in einem geschützten Environment mit Required Reviewers
+    environment: integrity-signing
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Generate certificate
+        env:
+          ROOT_PRIV_B64: ${{ secrets.INTEGRITY_ROOT_PRIVATE_JWK_BASE64 }}
+          DB_PUB_B64: ${{ inputs.db_public_jwk_base64 }}
+          OUT_FILENAME: ${{ inputs.out_filename }}
+        run: |
+          node <<'NODE'
+          import { webcrypto } from "node:crypto";
+          import fs from "node:fs";
+
+          function recordMessage(parts) {
+            return parts.map((p) => String(p)).join("\u001f");
+          }
+          function dbKeyCertificateMessage(jwk) {
+            if (!jwk?.kty || !jwk?.crv || !jwk?.x) {
+              throw new Error("Invalid DB public JWK (expected kty/crv/x).");
+            }
+            return recordMessage(["v2", "dbkey", jwk.kty, jwk.crv, jwk.x]);
+          }
+
+          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64").toString("utf8"));
+          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64").toString("utf8"));
+
+          const rootPrivKey = await webcrypto.subtle.importKey(
+            "jwk",
+            rootPrivateJwk,
+            { name: "Ed25519" },
+            false,
+            ["sign"],
+          );
+
+          const msg = new TextEncoder().encode(dbKeyCertificateMessage(dbPublicJwk));
+          const sig = await webcrypto.subtle.sign({ name: "Ed25519" }, rootPrivKey, msg);
+
+          const cert = {
+            version: 2,
+            dbPublicJwk,
+            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64"),
+            createdAt: new Date().toISOString(),
+          };
+
+          fs.writeFileSync(process.env.OUT_FILENAME, `${JSON.stringify(cert, null, 2)}\n`, "utf8");
+          console.log(`Wrote: ${process.env.OUT_FILENAME}`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbkey-certificate
+          path: ${{ inputs.out_filename }}
