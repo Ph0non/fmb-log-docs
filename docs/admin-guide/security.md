@@ -380,13 +380,14 @@ Gerade bei Tagesabrechnungen kann zusätzlich ein RFC3161‑Zeitstempel hinterle
   - Enthält immer `snapshot_hash`
   - Wenn TSA aktiv: zusätzlich `tsa_token_sha256` (das Token selbst ist zu groß für QR und liegt in der DB‑Historie)
 
-In der **Historie** kann FMB Log den TSA‑Token zusätzlich technisch prüfen („plausibel“):
+In der **Historie** prüft FMB Log den TSA‑Token kryptografisch:
 
-- Token lässt sich parsen (TSTInfo)
-- Hash‑Algorithmus ist SHA‑256
-- Imprint im Token passt zu `tsa_snapshot_sha256`
+- Token lässt sich parsen (CMS/SignedData + TSTInfo)
+- Imprint im Token passt zu `tsa_snapshot_sha256` (FreeTSA nutzt SHA‑256 als Message‑Imprint)
+- CMS‑Signatur ist gültig (SignedAttributes inkl. `messageDigest`)
+- Zertifikatskette ist gültig bis zur in der App **gepinnten FreeTSA Root CA** (inkl. EKU `timeStamping` und Gültigkeit zum `gen_time`)
 
-Hinweis: Das ist keine vollständige PKI‑Vertrauensprüfung der TSA‑Signaturkette, erhöht aber die Konsistenzprüfung (Token/Imprint gehören zusammen).
+Hinweis: Trust erfolgt via **Root‑Pinning** (nicht über die OS‑Zertifikatsspeicher). Wenn FreeTSA die CA austauscht, ist ein App‑Update erforderlich.
 
 ::: tip Hinweis (warum TSA weiterhin SHA‑256 nutzt)
 FreeTSA/RFC3161 erwartet einen Standard‑Hash (hier SHA‑256) als „Message Imprint“.  

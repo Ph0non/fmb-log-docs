@@ -110,6 +110,13 @@ Technisch wichtig sind Schema‑Constraints von CR‑SQLite:
 - `NOT NULL`‑Spalten benötigen Defaults (Forward/Backward‑Compatibility).
 - Schema‑Änderungen erfolgen über App‑Migrations.
 
+Wichtig für Updates im Mehrplatzbetrieb:
+
+- **Replica‑DBs** (lokal) werden wie bisher im App‑Code migriert.
+- **Hub‑DB** (Netzlaufwerk) wird **Rust‑seitig** migriert: beim Verbinden mit einer Datenquelle führt das Backend
+  `crsqlitehubprepare(...)` aus und bringt die Hub‑DB auf die neueste Migration (Tabelle `schema_migrations`).
+  Das ist notwendig, weil CR‑SQLite **kein DDL synchronisiert**.
+
 Die CR‑SQLite Extension wird als Datei `resources/extensions/crsqlite.dll` gebündelt und vom SQL‑Plugin geladen.
 
 ::: info Zusammenfassung (CR‑SQLite)
