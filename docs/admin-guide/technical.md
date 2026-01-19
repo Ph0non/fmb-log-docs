@@ -51,6 +51,19 @@ Die Stub‑DB ist die „Baseline“ für neue DB‑Dateien (Hub/Replica). Wenn 
 Wichtig: Das Skript muss auf **Windows** ausgeführt werden (nicht in WSL), da es die lokal installierten Build‑Tools/Abhängigkeiten nutzt.
 :::
 
+::: tip Migrationen: Quelle der Wahrheit
+FMB Log nutzt **eine Quelle der Wahrheit** für Schema‑Migrationen:
+
+- **Quelle:** `src/lib/db/migrations.ts` (TypeScript)
+- **Rust‑Hub‑Migrationen:** `src-tauri/src/db_migrations_generated.rs` ist **generiert** und darf nicht manuell editiert werden.
+
+Wenn `migrations.ts` geändert wird, muss danach die Rust‑Datei aktualisiert und mit committed werden:
+
+- `pnpm -s db:migrations:export-rust`
+
+In CI kann mit `pnpm -s db:migrations:check` geprüft werden, dass die generierte Datei zum Repo‑Stand passt.
+:::
+
 ## 2) Messprotokolle: zstd‑Kompression, Packfiles und lokaler Cache
 
 Messprotokolle werden aus Performance‑ und Sync‑Gründen **nicht** als BLOB in der CR‑SQLite‑Datenbank synchronisiert. Stattdessen:
