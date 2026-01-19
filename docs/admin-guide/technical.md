@@ -302,6 +302,20 @@ Build‑Zeit‑Variablen:
 
 - `TAURI_SIGNING_PRIVATE_KEY` (**Base64‑String** des Private‑Key‑Inhalts; z. B. Inhalt aus `.secrets/tauri-updater.key`)
 - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (Passwort für den Private Key)
+- `FMB_UPDATER_KEK_B64` (**Base64**, 32 Byte) – Key‑Encryption‑Key (KEK) für verschlüsselte Update‑Artefakte (`*.cha`)
+
+KEK generieren (Beispiel):
+
+`openssl rand -base64 32`
+
+Optional (Chunk‑Größe für `*.cha`, Standard: 1 MiB):
+
+- `FMB_UPDATER_CHACHA_CHUNK_SIZE` (64 KiB .. 16 MiB)
+
+::: warning Hinweis (Update‑Verschlüsselung / Threat Model)
+Die `.cha`‑Verschlüsselung ist **kein Ersatz** für die Updater‑Signatur.  
+Der KEK muss der App zum Entschlüsseln zur Verfügung stehen (Release‑Build), daher schützt die Verschlüsselung primär **At‑Rest/Transport‑Obfuskation** und „kurzzeitiges Klartext‑Handling“, während die **Authentizität/Integrität** weiterhin über die Minisign‑Signatur abgesichert wird.
+:::
 
 ### 10.2 Release‑Artefakte & Hosting (GitHub)
 
@@ -313,9 +327,19 @@ Beim Release‑Build erzeugt Tauri die **Installer‑Artefakte** und (bei gesetz
 
 - NSIS‑Installer `*.exe`
 - Signatur `*.exe.sig`
+- Verschlüsseltes Update‑Artefakt `*.cha` (ChaCha20‑Poly1305, chunked; enthält den Installer verschlüsselt)
 - `latest.json` (statisches Updater‑Manifest für `@tauri-apps/plugin-updater`)
 
 Wichtig: Damit `latest.json` korrekt ist, müssen die Artefakte im selben GitHub Release (Assets) liegen.
+
+Wenn `FMB_UPDATER_KEK_B64` gesetzt ist, erweitert `scripts/github_publish_updater.mjs` das Manifest zusätzlich um `platforms.windows-x86_64.encrypted_url` (Download‑URL des `*.cha`). Die App bevorzugt dann das verschlüsselte Artefakt für die Installation.
+
+Technisch ist `*.cha` ein „Envelope“:
+
+- pro Release wird ein zufälliger **Content‑Key (CEK)** erzeugt
+- der CEK wird unter dem **KEK** per ChaCha20‑Poly1305 **gewrappt** (im Header)
+- der Installer wird mit dem CEK **chunkweise** (Nonce‑Prefix + Counter) per ChaCha20‑Poly1305 verschlüsselt
+- der Header ist über AEAD‑AAD mit authentifiziert; zusätzlich enthält der Header die Minisign‑Signatur des Klartext‑Installers, die vor dem Ausführen verifiziert wird
 
 ### 10.3 Client‑Verhalten (UI)
 
@@ -333,7 +357,7 @@ Update‑Einstellungen werden **nur lokal** gespeichert (Replica‑DB) und nicht
 
 ::: info Zusammenfassung (Updater)
 - Signierung: Private Key nur im Build/CI, Public Key in der App.
-- Hosting: GitHub Releases (`latest.json` + Assets).
+- Hosting: GitHub Releases (`latest.json` + Assets), optional zusätzlich verschlüsselt (`*.cha`).
 - Nutzer: Start‑Check + Dialog + manuelle Prüfung in **Updates**.
 :::
 
