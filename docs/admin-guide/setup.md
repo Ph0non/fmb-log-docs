@@ -84,10 +84,10 @@ Wenn der Root‑Private‑Key nicht auf dem Arbeitsplatz verfügbar sein soll, k
    - Optional: Required reviewers aktivieren (damit nicht jeder den Workflow laufen lassen kann).
 2. **Secret** hinterlegen (im Environment oder Repo):
    - Name: `INTEGRITY_ROOT_PRIVATE_JWK_BASE64`
-   - Wert: Base64 des Root‑Private‑Key‑JWK (`.secrets/integrity-root-private.jwk.json`)
-     - Beispiel (Node): `node -e "console.log(Buffer.from(require('fs').readFileSync('.secrets/integrity-root-private.jwk.json','utf8')).toString('base64'))"`
+   - Wert: Base64URL des Root‑Private‑Key‑JWK (`.secrets/integrity-root-private.jwk.json`)
+     - Beispiel (Node): `node -e "console.log(Buffer.from(require('fs').readFileSync('.secrets/integrity-root-private.jwk.json','utf8')).toString('base64url'))"`
 3. Workflow Datei anlegen: `.github/workflows/integrity-certify-dbkey.yml` (Manual Dispatch)
-   - Der Workflow erwartet als Input `db_public_jwk_base64` (Base64 der Datei `<db>.integrity.pub.json`) und erstellt als Artifact die Datei `*.integrity.dbkey.json`.
+   - Der Workflow erwartet als Input `db_public_jwk_base64` (Base64URL der Datei `<db>.integrity.pub.json`) und erstellt als Artifact die Datei `*.integrity.dbkey.json`.
 
 Beispiel‑Workflow (kopieren nach GitHub, Repo `Ph0non/fmb-log-docs`):
 
@@ -98,7 +98,7 @@ on:
   workflow_dispatch:
     inputs:
       db_public_jwk_base64:
-        description: "Base64 von <db>.integrity.pub.json"
+        description: "Base64URL von <db>.integrity.pub.json"
         required: true
       out_filename:
         description: "Ziel-Dateiname (z. B. fmblog.db.integrity.dbkey.json)"
@@ -133,8 +133,8 @@ jobs:
             return recordMessage(["v2", "dbkey", jwk.kty, jwk.crv, jwk.x]);
           }
 
-          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64").toString("utf8"));
-          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64").toString("utf8"));
+          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64url").toString("utf8"));
+          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64url").toString("utf8"));
 
           const rootPrivKey = await webcrypto.subtle.importKey(
             "jwk",
@@ -150,7 +150,7 @@ jobs:
           const cert = {
             version: 2,
             dbPublicJwk,
-            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64"),
+            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64url"),
             createdAt: new Date().toISOString(),
           };
 
