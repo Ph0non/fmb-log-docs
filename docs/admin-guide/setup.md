@@ -156,6 +156,9 @@ jobs:
 
           fs.writeFileSync(process.env.OUT_FILENAME, `${JSON.stringify(cert, null, 2)}\n`, "utf8");
           console.log(`Wrote: ${process.env.OUT_FILENAME}`);
+          console.log(`::group::DB key certificate (${process.env.OUT_FILENAME})`);
+          console.log(JSON.stringify(cert, null, 2));
+          console.log("::endgroup::");
           NODE
       - uses: actions/upload-artifact@v4
         with:
