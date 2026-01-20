@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       db_public_jwk_base64:
-        description: "Base64 von <db>.integrity.pub.json"
+        description: "Base64url von <db>.integrity.pub.json"
         required: true
       out_filename:
         description: "Ziel-Dateiname (z. B. fmblog.db.integrity.dbkey.json)"
@@ -39,8 +39,8 @@ jobs:
             return recordMessage(["v2", "dbkey", jwk.kty, jwk.crv, jwk.x]);
           }
 
-          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64").toString("utf8"));
-          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64").toString("utf8"));
+          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64url").toString("utf8"));
+          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64url").toString("utf8"));
 
           const rootPrivKey = await webcrypto.subtle.importKey(
             "jwk",
@@ -56,7 +56,7 @@ jobs:
           const cert = {
             version: 2,
             dbPublicJwk,
-            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64"),
+            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64url"),
             createdAt: new Date().toISOString(),
           };
 
