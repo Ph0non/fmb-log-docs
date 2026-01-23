@@ -13,7 +13,7 @@ Zusätzlich soll **Offline‑Import** möglich sein: Protokolle können lokal im
 
 FMB Log speichert Messprotokolle **außerhalb der Datenbank** in einem Hub‑Ordner `protocols/` als **append‑only Packfiles**:
 
-- Protokoll‑Bytes werden **zstd‑komprimiert** (optional mit Dictionary, z. B. `rpt-v1.dict`).
+- Protokoll‑Bytes werden **zstd‑komprimiert** (optional mit Dictionary, z. B. `rpt-v2.dict`).
 - Die komprimierten Bytes werden in ein Packfile geschrieben (Append).
 - In SQLite wird nur eine Referenz gespeichert (`measurement_protocols`):
   - `pack_file`, `pack_offset`, `pack_length` (Position im Packfile)
@@ -47,4 +47,3 @@ Wenn der Hub nicht erreichbar ist:
 - **Integrität:** Protokoll‑Integrität wird über BLAKE3 gesichert; Abweichungen werden beim Lesen erkannt.
 - **Backup:** Hub‑Backups müssen `protocols/` enthalten (nicht nur die DB).
 - **Dictionary‑Training:** Zstd‑Dictionaries können (optional) nachtrainiert werden, um Speicher/I/O weiter zu reduzieren.
-

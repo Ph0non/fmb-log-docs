@@ -20,7 +20,8 @@ Typische Struktur (vereinfacht):
 - **Programmordner** (lokal)
   - `resources/`
     - `extensions/crsqlite.dll` (CR‑SQLite Extension)
-    - `zstd-dicts/rpt-v1.dict` (optional, Zstd‑Dictionary für RPT‑Kompression)
+    - `zstd-dicts/rpt-v2.dict` (optional, aktuelles Zstd‑Dictionary für RPT‑Kompression)
+    - `zstd-dicts/rpt-v1.dict` (optional, Legacy‑Dictionary für ältere Protokolle)
     - `Logo_EWN_RGB.png` (Logo für Tagesabrechnung)
     - `fmblog.stub.db` (Stub‑DB als „Baseline“; wird nur kopiert, wenn noch keine DB existiert)
 - **Hub‑Datenordner** (gemeinsam)
@@ -68,7 +69,7 @@ In CI kann mit `pnpm -s db:migrations:check` geprüft werden, dass die generiert
 
 Messprotokolle werden aus Performance‑ und Sync‑Gründen **nicht** als BLOB in der CR‑SQLite‑Datenbank synchronisiert. Stattdessen:
 
-1. Die Protokoll‑Bytes werden **zstd‑komprimiert** (optional mit Dictionary, z. B. `rpt-v1.dict`).
+1. Die Protokoll‑Bytes werden **zstd‑komprimiert** (optional mit Dictionary, z. B. `rpt-v2.dict`).
 2. Die komprimierten Bytes werden als **Packfile‑Eintrag** in den Hub geschrieben (append‑only).
 3. In der DB wird nur eine **Referenz** gespeichert (`measurement_protocols`):
    - `pack_file`, `pack_offset`, `pack_length` (wo liegt das Protokoll im Packfile?)
@@ -101,7 +102,8 @@ Der lokale Protokoll‑Cache ist ein Performance‑/Offline‑Feature. Ein „Ca
 Da RPT‑Protokolle oft sehr ähnlich sind, kann ein Zstd‑Dictionary den Speicherbedarf und die I/O‑Last deutlich reduzieren. Das Dictionary kann bei Bedarf neu trainiert werden:
 
 - `pnpm -s dict:train:rpt`  
-  Trainiert `src-tauri/res/zstd-dicts/rpt-v1.dict` aus den Beispieldateien unter `./RPT`.
+  Trainiert standardmäßig `src-tauri/res/zstd-dicts/rpt-v2.dict` aus den Beispieldateien unter `./RPT`.
+  (Optional: `RPT_DICT_ID=rpt-v1 pnpm -s dict:train:rpt` für das Legacy‑Dictionary.)
 
 ::: info Zusammenfassung (Protokolle)
 - Protokolle liegen als zstd‑Bytes in `protocols/...` (Hub) – nicht als DB‑BLOB.
