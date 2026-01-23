@@ -12,6 +12,13 @@ Unter **Gebinde** finden Sie eine tabellarische Übersicht. Über die Filterzeil
 
 Die Spalte **Messungen** zählt bewusst nur die **aktuellen Revisionen**. Das macht die Übersicht übersichtlich, auch wenn einzelne Messungen im Laufe der Zeit aktualisiert wurden.
 
+![Gebinde (Übersicht)](../screenshots/gebinde-uebersicht.annotated.png)
+
+- (1) Stammdaten bearbeiten (Stift-Symbol)
+- (2) Arbeitsstatus „Vollständig“
+- (3) Umschalten zwischen „aktuellen Revisionen“ und „Alle Revisionen“
+- (4) Messungsliste (zeigt standardmäßig nur aktuelle Revisionen)
+
 ::: info In der Übersicht sehen Sie
 - Gebindenummer, Datenblattnummer, Herkunft, FMK
 - „Vollständig" als Arbeitsstatus (keine weiteren Messungen erwartet)
@@ -43,6 +50,14 @@ Für das Ändern dieser Werte ist die Berechtigung `measurements.update` erforde
 ### Protokoll und ISO-Tabelle
 
 Wenn Sie eine Messung auswählen, lädt die Anwendung das gespeicherte Protokoll und zeigt die ISO-11929-Werte (sofern im Protokoll vorhanden). Das Originalprotokoll wird archiviert, damit es auch später (z. B. für Nachweise) wieder angezeigt werden kann.
+
+![Gebinde (Detail: ISO & Protokoll)](../screenshots/gebinde-details.annotated.png)
+
+- (1) Masse (pro Messung)
+- (2) Fläche (pro Messung)
+- (3) Umrechnung $g/cm^2$ (optional)
+- (4) ISO‑11929 Tabelle
+- (5) Protokoll (Archiv)
 
 Bei einem **Offline-Import** kann es vorkommen, dass das Protokoll noch nicht hochgeladen wurde. In diesem Fall ist das Protokoll zunächst nur auf dem importierenden Rechner abrufbar, bis nach dem nächsten erfolgreichen Sync der Upload automatisch nachgeholt wurde.
 

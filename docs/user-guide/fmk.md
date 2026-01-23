@@ -18,6 +18,14 @@ Die Jahreszuordnung ergibt sich dabei aus dem Messdatum der jeweiligen Messung: 
 
 ![Ablauf (FMK)](../diagrams/fmk-flow.svg)
 
+![FMK](../screenshots/freimesskampagne.annotated.png)
+
+- (1) FMK‑Liste + Neu
+- (2) Details (Kürzel, NV, Messgeräte)
+- (3) Freigabepfade (Reihenfolge)
+- (4) SW/KF je Jahr
+- (5) Speichern/Löschen
+
 ## Freigabepfade (Reihenfolge)
 
 Die Prüfung erfolgt in der FMK in einer festgelegten Reihenfolge. Die Anwendung prüft pfadweise und weist einem Gebinde den **ersten** Pfad zu, den **alle** gültigen Messungen des Gebindes bestehen. Damit entspricht die Auswertung dem üblichen Vorgehen: Man startet mit den „strengeren“/kleineren Pfaden und arbeitet sich nach oben.

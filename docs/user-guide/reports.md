@@ -30,6 +30,16 @@ Markieren Sie ein Gebinde erst dann als vollständig, wenn keine weiteren Messun
 
 Der Workflow ist zweistufig: Zuerst erzeugen Sie eine **Vorschau**, dann exportieren Sie das PDF. So können Sie die Inhalte vor dem finalen Export prüfen.
 
+![Tagesabrechnung (Vorschau)](../screenshots/tagesabrechnung-vorschau.annotated.png)
+
+- (1) FMK als Filter (optional)
+- (2) Abrechnungsdatum
+- (3) Modus (Tag/Gebinde)
+- (4) Vorschau erstellen
+- (5) PDF exportieren
+- (6) Filter „Nur vollständig“
+- (7) Vorschau‑Tabelle
+
 Wenn **keine FMK** gewählt ist, erstellt die Anwendung die Tagesabrechnung automatisch für **alle passenden FMKs** (z. B. mit Messungen am gewählten Tag). Die FMK-Auswahl dient dann nur als optionaler Filter.
 
 Nach erfolgreichem Export setzt FMB Log pro Messung ein Export-Flag. Dadurch werden Messungen nicht versehentlich mehrfach exportiert (außer Sie aktivieren explizit den Filter „Bereits exportierte Messungen einschließen").
@@ -46,6 +56,12 @@ Nach erfolgreichem Export setzt FMB Log pro Messung ein Export-Flag. Dadurch wer
 
 Jede exportierte Tagesabrechnung enthält unten rechts in der Fußzeile einen **QR-Code**. Dieser enthält eine eindeutige Kennung der exportierten Datenbasis und dient als Referenz in der Historie.
 
+![Tagesabrechnung (PDF)](../screenshots/tagesabrechnung-pdf.annotated.png)
+
+- (1) Kopfzeile (Datum/FM K/Freigabepfad)
+- (2) Tabelle der enthaltenen Messungen
+- (3) QR‑Code + Fingerprints (z. B. `DATA: ...`)
+
 Optional kann der Admin den Export so konfigurieren, dass zusätzlich ein **Zeitstempel** (RFC 3161) erzeugt wird. In diesem Fall ist für den PDF-Export eine Internetverbindung erforderlich.
 
 ## Historie & Verifikation
@@ -55,6 +71,14 @@ Alle exportierten Tagesabrechnungen werden unter **Historie** gespeichert. Dort 
 - eine Tagesabrechnung auswählen und die enthaltenen Messungen ansehen,
 - das zugehörige PDF öffnen (falls der Pfad gespeichert ist),
 - optional eine vorhandene PDF-Datei gegen die Datenbank prüfen.
+
+![Historie (Tagesabrechnungen)](../screenshots/historie.annotated.png)
+
+- (1) Suche (Datum, FMK oder Fingerprint)
+- (2) Liste der Tagesabrechnungen (links)
+- (3) Details: enthaltene Messungen (rechts)
+- (4) PDF öffnen / ungültig markieren (Icons)
+- (5) Verifizierung (Snapshot/TSA)
 
 ### Status in der Historie
 
@@ -74,6 +98,13 @@ Das Suchfeld in der Historie akzeptiert neben Datum und FMK auch **Fingerprints*
 Mit **PDF prüfen…** können Sie eine Datei auswählen; FMB Log berechnet die Prüfsumme der PDF und sucht nach dem passenden Tagesabrechnungs-Eintrag in der Datenbank.
 
 Typischer Anwendungsfall: Sie haben die Original-PDF aus einem Export vorliegen und wollen verifizieren, ob sie genau zu einer gespeicherten Tagesabrechnung gehört und ob diese noch gültig ist.
+
+![PDF prüfen (Verifizierung)](../screenshots/verify-tagesabrechnung.annotated.png)
+
+- (1) Status (gültig / TSA)
+- (2) geprüfte Datei (Pfad)
+- (3) Match in der Datenbank
+- (4) Fingerprints (Kurzform)
 
 ::: warning Hinweis
 Die Prüfung funktioniert nur für die **unveränderte Original-PDF**. Sobald eine PDF neu gespeichert, gedruckt/gescannt oder anderweitig verändert wurde, stimmt die Prüfsumme nicht mehr überein.

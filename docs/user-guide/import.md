@@ -20,6 +20,14 @@ Beim Import werden Stammdaten eines bestehenden Gebindes **nicht** geändert –
 
 Danach ergänzen Sie bei Bedarf Stammdaten wie Herkunft, Datenblattnummer und (optional) eine FMK. **Masse/Fläche** werden (falls angegeben) **pro importierter Messung** gespeichert und können später im Gebinde-Detail pro Messung angepasst werden.
 
+![Import (RPT)](../screenshots/import.annotated.png)
+
+- (1) Bestehendes Gebinde auswählen (optional)
+- (2) Gebindenummer eintragen (legt ein neues Gebinde an)
+- (3) FMK als Filter/Zuordnung wählen (optional, aber empfohlen)
+- (4) RPT-Dateien auswählen (Mehrfachauswahl möglich)
+- (5) Dateitabelle prüfen (Mess‑ID, Aktion, Status)
+
 Falls im Protokoll Messwerte in unterschiedlichen Einheiten vorkommen (z. B. massenspezifisch vs. oberflächenspezifisch), kann eine **Umrechnung** über $g/cm^2$ hinterlegt werden. Diese wird genutzt, um Werte zwischen $Bq/g$ und $Bq/cm^2$ umrechnen zu können.
 
 Anschließend wählen Sie die RPT-Dateien aus. Die Dateiauswahl unterstützt **Mehrfachauswahl** – weitere Auswahlen werden **zur Liste hinzugefügt**, nicht ersetzt.

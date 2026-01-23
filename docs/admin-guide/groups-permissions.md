@@ -18,6 +18,13 @@ Gruppen können angelegt, umbenannt, deaktiviert/aktiviert und gelöscht werden.
 
 Die Rechte werden pro Gruppe in einer Matrix vergeben. Die UI blendet Funktionen entsprechend ein/aus; zusätzlich werden sensible Aktionen auch serverseitig geprüft.
 
+![Gruppen & Rechte](../screenshots/gruppen-rechte.annotated.png)
+
+- (1) Gruppenliste
+- (2) Neue Gruppe anlegen
+- (3) Rechte‑Matrix (Checkboxen)
+- (4) Gruppe aktiv / Speichern / Löschen
+
 ::: tip Hinweis: Änderungen greifen ohne Logout
 Rechte können sich während einer laufenden Sitzung ändern (z. B. durch Admin‑Änderungen). FMB Log prüft kritische Aktionen „Just‑in‑Time“ gegen den aktuellen DB‑Stand. Dadurch werden entziehene Rechte nicht zuverlässig „mitgenommen“, auch wenn die Seite noch geöffnet ist.
 :::

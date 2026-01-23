@@ -74,6 +74,13 @@ Auch mit CRDT/CR‑SQLite gibt es Grenzen und “Betriebsregeln”:
    Wenn zwei Nutzer *dieselbe* Entität gleichzeitig bearbeiten, greift eine deterministische Merge‑Regel. In der Praxis bedeutet das oft “Last‑Write‑Wins” auf Feld‑/Zellenebene.  
    Empfehlung: Kritische Stammdaten (FGW/NV/FMK) organisatorisch nur durch wenige Key‑User ändern lassen.
 
+![Konflikte](../screenshots/konflikte.annotated.png)
+
+- (1) Filter „Nur offene Konflikte“
+- (2) Konfliktliste (Tabelle)
+- (3) Details zum ausgewählten Eintrag
+- (4) Toolbar‑Aktionen (z. B. als geprüft markieren)
+
 2. **Schema‑Constraints für CRR‑Tabellen**  
    CR‑SQLite stellt Anforderungen an das Schema (u. a. nicht‑nullable Primary Keys; keine `NOT NULL`‑Spalten ohne Default‑Wert).  
    Daraus folgt: IDs sind in FMB Log als **stabile, eindeutige TEXT‑IDs** ausgelegt (statt Auto‑Increment), und Schema‑Änderungen erfolgen über App‑Migrations.

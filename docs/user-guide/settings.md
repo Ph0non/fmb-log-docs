@@ -35,6 +35,13 @@ Die Zeitangabe „letzter Sync" wird in der **lokalen Zeitzone** des Rechners an
 
 Damit Messprotokolle auch ohne Hub-Verbindung angezeigt werden können, nutzt FMB Log einen **lokalen Protokoll-Cache**. Beim Import werden Protokolle immer in diesen Cache geschrieben. Ist der Hub erreichbar, werden sie zusätzlich hochgeladen; ist der Hub nicht erreichbar, wird der Upload später automatisch nachgeholt.
 
+![Protokoll‑Cache](../screenshots/cache.annotated.png)
+
+- (1) Cache‑Pfad (lokal)
+- (2) Bereinigen (alte Einträge entfernen)
+- (3) Cache leeren
+- (4) Statistik (Dateien / Größe / Limit)
+
 Der Cache wird automatisch verwaltet: ältere, nicht mehr benötigte Einträge werden bei Bedarf entfernt. Unter **Administration → Cache leeren** können Sie den Cache-Pfad und die aktuelle Cache-Größe einsehen. Zusätzlich gibt es dort die Aktion **Bereinigen**.
 
 ::: warning Hinweis (Cache leeren)
@@ -45,6 +52,14 @@ Der Cache wird automatisch verwaltet: ältere, nicht mehr benötigte Einträge w
 ## Updates
 
 FMB Log kann Updates automatisch über den integrierten Updater beziehen. Die Einstellungen finden Sie im Benutzer-Menü oben rechts unter **Updates**.
+
+![Updates](../screenshots/updates.annotated.png)
+
+- (1) Automatisch beim Start nach Updates suchen
+- (2) „Jetzt prüfen“ (manuelle Prüfung)
+- (3) „Ignorieren zurücksetzen“
+- (4) Installierte Version
+- (5) Letzter Check
 
 - **Beim Programmstart automatisch nach Updates suchen**: Ist diese Option aktiv, prüft FMB Log beim Start, ob eine neue Version verfügbar ist.
 - Wenn ein Update gefunden wurde, erscheint ein Hinweis mit drei Optionen:

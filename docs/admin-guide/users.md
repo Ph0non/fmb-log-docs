@@ -12,6 +12,14 @@ Ein Benutzer kann:
 
 Inaktivieren statt Löschen ist oft sinnvoll, weil dadurch die Historie (wer hat wann welche Messungen importiert) nachvollziehbar bleibt.
 
+![Benutzerverwaltung](../screenshots/user.annotated.png)
+
+- (1) Benutzerliste
+- (2) Aktiv/Admin setzen
+- (3) Gruppen zuweisen
+- (4) Speichern / Löschen
+- (5) Neuen Benutzer anlegen
+
 ::: info Empfehlung
 - Nutzen Sie Gruppen als Rollen (z. B. „Messung“, „Auswertung“, „Key‑User“) und vergeben Sie Rechte ausschließlich über Gruppen.
 :::

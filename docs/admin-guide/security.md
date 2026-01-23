@@ -82,6 +82,14 @@ Der private Signierschlüssel der DB (Ed25519) wird **nicht in der DB** abgelegt
 - Datei: `vaults/<db>.integrity.vault`
 - Verschlüsselt in **Stronghold**, entsperrt über ein **Signier‑Passwort** (session‑basiert).
 
+![Integritätsschutz](../screenshots/integritaet.annotated.png)
+
+- (1) Public Key / DB‑Key‑Zertifikat (Pfade)
+- (2) Signier‑Passwort (zum Entsperren/Initialisieren)
+- (3) „Entsperren“ (Signierschlüssel freischalten)
+- (4) Schlüsselmanagement (Passwort ändern / Schlüssel rotieren)
+- (5) Delegationen (Stammdaten‑Signierdelegationen)
+
 ::: tip Hinweis
 - Das Signier‑Passwort wird beim Aktivieren des Integritätsschutzes festgelegt und gilt anschließend für alle Admins (shared secret), damit mehrere Admins signieren können.
 - Es muss nicht identisch mit dem Login‑Passwort eines Admin‑Kontos sein.
@@ -405,6 +413,13 @@ Die Signaturen sind normale Spalten/Datensätze und werden über CR‑SQLite rep
 
 FMB Log enthält eine Audit‑Ansicht, mit der ein Admin den aktuellen Integritätsstatus prüfen kann.
 
+![Audit](../screenshots/audit.annotated.png)
+
+- (1) Audit ausführen
+- (2) Optionen (z. B. „Alle Mess‑Revisionen“ / „Protokolle aus Hub‑Packfiles lesen…“)
+- (3) Integritätsstatus (Public Key / Zertifikat)
+- (4) Ergebnisübersicht (Kacheln)
+
 Der Audit umfasst (je nach Einstellung) u. a.:
 
 - **Security‑Tabellen** (DB‑Signatur/Integrität): Benutzer, Gruppen, Gruppenrechte, Delegations‑Zertifikate, Admin‑Einstellungen
@@ -417,6 +432,13 @@ Empfehlung: Audit nach Updates, nach Key‑Rotation und bei Verdacht auf Datenma
 ## Audit-Trail Export (Administration → Audit-Trail Export)
 
 Neben dem kryptografischen Audit gibt es einen **Audit‑Trail** als „Betriebsprotokoll“: Die Anwendung schreibt wichtige Aktionen (z. B. aus der Administration und aus den Stammdaten) als Ereignisse in die Tabelle `audit_trail`. Diese Einträge sind für externe Prüfungen gedacht und können als CSV exportiert werden.
+
+![Audit‑Trail Export](../screenshots/audit-trail.annotated.png)
+
+- (1) Zeitraum (Von/Bis)
+- (2) Suche
+- (3) CSV exportieren
+- (4) Tabelle der Audit‑Events
 
 Der Audit‑Trail ist **kein** Ersatz für den Audit‑Check (Signatur‑/Hash‑Verifikation), sondern ergänzt ihn:
 

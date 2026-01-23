@@ -21,6 +21,14 @@ Standardmäßig wird (falls vorhanden) das **aktuelle Jahr** ausgewählt.
 
 ![Ablauf (NV)](../diagrams/nv-flow.svg)
 
+![Nuklidvektor (NV)](../screenshots/nuklidvektor.annotated.png)
+
+- (1) NV‑Liste + Neu
+- (2) Jahr + zulässige Pfade
+- (3) Pfade je Messgerät
+- (4) Anteile (Summe = 100%)
+- (5) Freigabewerte/Speichern
+
 ## Anteile (in %)
 
 In der Tabelle der Anteile fügen Sie Nuklide hinzu oder entfernen sie. Die Werte werden mit **2 Nachkommastellen** angezeigt. Gespeichert werden kann nur, wenn die Summe der Anteile **100%** ergibt – so vermeiden Sie inkonsistente Berechnungen.

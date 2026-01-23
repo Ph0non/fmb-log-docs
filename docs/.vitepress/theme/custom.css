@@ -3,6 +3,9 @@
 	--vp-c-brand-2: #217ca3;
 	--vp-c-brand-3: #63a90f;
 	--vp-c-brand-soft: color-mix(in srgb, #006e78 12%, white);
+
+	/* Docs layout */
+	--vp-layout-max-width: 1680px;
 }
 
 .VPHomeHero .name {
@@ -25,6 +28,61 @@ pre.mermaid {
 	border-radius: 8px;
 	padding: 12px;
 	overflow: auto;
+}
+
+/* Use more horizontal space for the doc content on wide screens */
+@media (min-width: 1280px) {
+	.VPDoc.has-aside .content-container {
+		max-width: 980px;
+	}
+}
+
+/* Screenshots: clearer framing + hint zoomability */
+.vp-doc img {
+	border: 1px solid var(--vp-c-divider);
+	border-radius: 8px;
+	background: var(--vp-c-bg-soft);
+	cursor: zoom-in;
+}
+
+.vp-doc img.no-zoom,
+.vp-doc img[data-no-zoom="true"] {
+	cursor: default;
+}
+
+/* Click-to-zoom lightbox */
+.vp-image-lightbox {
+	border: none;
+	padding: 0;
+	background: transparent;
+	max-width: min(96vw, 1600px);
+	max-height: 96vh;
+}
+
+.vp-image-lightbox::backdrop {
+	background: rgba(0, 0, 0, 0.75);
+}
+
+.vp-image-lightbox figure {
+	margin: 0;
+}
+
+.vp-image-lightbox img {
+	display: block;
+	max-width: 96vw;
+	max-height: 96vh;
+	width: auto;
+	height: auto;
+	border-radius: 10px;
+	cursor: zoom-out;
+}
+
+.vp-image-lightbox figcaption {
+	margin-top: 8px;
+	padding: 0 4px;
+	font-size: 0.9rem;
+	color: rgba(255, 255, 255, 0.9);
+	text-align: center;
 }
 
 /* Custom blocks: improve contrast for Dark Mode (tip blocks) */

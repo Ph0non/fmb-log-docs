@@ -39,6 +39,13 @@ Die Kennzahlen beziehen sich auf **aktuelle und gültige Revisionen** (d. h. die
 - **Nicht vollständig**: Gebinde, die noch nicht als „vollständig" markiert sind
 :::
 
+![Übersicht (Shortcuts)](../screenshots/uebersicht.annotated.png)
+
+- (1) „Letzte Tagesabrechnungen“ (Liste)
+- (2) Shortcut zur Seite **Tagesabrechnung**
+- (3) „Letzte Imports“ (Liste)
+- (4) Liste der enthaltenen Gebinde/Messungen je Tagesabrechnung
+
 ## 5) Typischer Ablauf
 
 In der Praxis beginnt die Arbeit meist mit einem Gebinde und den zugehörigen Protokollen. Optional werden vorher Stammdaten geprüft (FMK/NV/FGW), typischerweise durch Admins oder Key-User. Anschließend importieren Sie RPT-Dateien, prüfen die Messungen, markieren das Gebinde als vollständig und erzeugen schließlich eine Tagesabrechnung als PDF.

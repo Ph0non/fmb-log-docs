@@ -15,6 +15,11 @@ FGW werden pro Nuklid und Freigabepfad gespeichert. Die Einheit hängt vom Pfad 
 - Oberflächenspezifische Pfade (z. B. OF/3a/4a/5b) in $Bq/cm^2$
 - Alle übrigen Pfade in $Bq/g$
 
+![Freigabewerte (FGW)](../screenshots/freigabewerte.annotated.png)
+
+- (1) Filter (Nuklid)
+- (2) FGW‑Tabelle
+
 ## Änderungen im Betrieb
 
 Änderungen an FGW wirken sofort auf Berechnungen und Anzeigen. Aus fachlicher Sicht empfiehlt sich daher ein klarer Freigabeprozess (z. B. Vier‑Augen‑Prinzip) und ein Backup, bevor größere Änderungen vorgenommen werden. So bleiben Tagesabrechnungen auch später nachvollziehbar.
