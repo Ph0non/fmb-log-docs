@@ -2,6 +2,8 @@
 import DefaultTheme from "vitepress/theme";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
+defineOptions({ name: "DocsLayout" });
+
 const dialogRef = ref<HTMLDialogElement | null>(null);
 const imgSrc = ref<string>("");
 const imgAlt = ref<string>("");

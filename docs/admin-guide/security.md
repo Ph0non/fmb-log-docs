@@ -328,11 +328,8 @@ Es gibt zwei praktikable Muster:
 **Ablauf: Admin delegiert Signierrechte an Key‑User**
 
 1. Integritätsschutz ist aktiviert und das DB‑Key‑Zertifikat liegt neben der DB (`<db>.integrity.dbkey.json`).
-2. Admin entsperrt den DB‑Signierschlüssel einmalig (Administration → Einstellungen → Integritätsschutz → „Entsperren“).
-3. Admin vergibt Delegationen (Administration → Einstellungen → Delegationen):
-   - Nutzer auswählen
-   - Scope(s) erteilen (FGW/NV/FMK)
-   - Optional: Ablaufdatum (Expiry) setzen
+2. Admin öffnet **Administration → Benutzer → Signatur-Delegationen**.
+3. Admin erteilt dem gewünschten Nutzer die Scopes FGW, NV und/oder FMK. Ist der DB‑Signierschlüssel gesperrt, fragt FMB Log dabei automatisch das Signier-Passwort ab.
 4. Die Delegation wird als Datensatz in `capability_certs` abgelegt und mit dem DB‑Signierschlüssel signiert.
 
 **Ablauf: Key‑User ändert Stammdaten**

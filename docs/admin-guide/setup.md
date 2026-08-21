@@ -213,8 +213,9 @@ Bei der Ersteinrichtung signiert FMB Log die vorhandenen Stammdaten automatisch.
 
 ### 3) Delegation (Capability‑Zertifikate) prüfen
 
-1. **Administration → Einstellungen → Stammdaten‑Delegation**:
+1. **Administration → Benutzer → Signatur-Delegationen**:
    - Für den Admin sollten Delegationen für `masterdata.fgw`, `masterdata.nv` und `masterdata.fmk` sichtbar sein.
+   - Beim Erteilen, Widerrufen oder Abgleichen wird bei gesperrtem Signierschlüssel das Signier-Passwort abgefragt.
 
 ### 4) Audit / Tagesabrechnung (kurzer Funktionscheck)
 
