@@ -45,6 +45,29 @@ SW (Schwellenwert) und KF (Korrekturfaktor) sind Faktoren, die in der Praxis fü
 
 Beide können global oder pfadspezifisch und zusätzlich gerätespezifisch gepflegt werden.
 
+### SW/KF-Konfiguration bedienen
+
+Die Jahresauswahl zeigt vorhandene Konfigurationen als Schaltflächen. Die Zahl am Jahr gibt an, wie viele pfad- oder gerätespezifische Abweichungen in diesem Jahr hinterlegt sind. Über **Jahre vergleichen** können die Jahresstandards und die Anzahl der Abweichungen gegenübergestellt werden.
+
+Für das ausgewählte Jahr werden die effektiven Werte in einer Matrix dargestellt:
+
+- die Zeile **Standard für alle Pfade** enthält den Jahresstandard und etwaige Gerätestandards,
+- die weiteren Zeilen enthalten die einzelnen Freigabepfade,
+- die Spalte **Alle Geräte** enthält Werte, die geräteunabhängig gelten,
+- die übrigen Spalten enthalten gerätespezifische Werte.
+
+Ein hervorgehobenes Feld besitzt mindestens einen ausdrücklich gesetzten Wert. Bei geerbten Werten wird neben dem effektiven Wert auch dessen Herkunft angezeigt. Dabei gilt folgende Priorität:
+
+Auf kleinen Bildschirmen wählen Sie das Gerät oberhalb der Tabelle aus; dadurch bleibt die Darstellung ohne horizontales Durchsuchen vieler Gerätespalten bedienbar.
+
+1. Wert für Gerät und Pfad,
+2. Wert für den Pfad bei allen Geräten,
+3. Wert für das Gerät bei allen Pfaden,
+4. Jahresstandard,
+5. Systemstandard `1,00`.
+
+Klicken Sie eine Matrixzelle an, um SW und KF für genau diesen Gültigkeitsbereich zu bearbeiten. Beide Faktoren können unabhängig voneinander als eigene Abweichung aktiviert oder wieder auf den geerbten Wert zurückgesetzt werden.
+
 ::: info Zusammenfassung (FMK)
 - FMK verbindet NV, Messgeräte und Pfad‑Reihenfolge zu einem einheitlichen Auswerte‑Set.
 - Pfade werden in Reihenfolge geprüft; der erste bestandene Pfad wird zugewiesen.
