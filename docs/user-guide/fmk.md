@@ -74,3 +74,15 @@ Klicken Sie eine Matrixzelle an, um SW und KF für genau diesen Gültigkeitsbere
 - Optionaler Sekundärpfad ermöglicht Kombinationen wie „1a (mit OF)“.
 - SW/KF werden pro Jahr (aus Messdatum) und optional je Gerät/Pfad angewandt.
 :::
+
+## Chargen und Stoffklassen
+
+Jede FMK benötigt mindestens eine Charge. Die Chargennummer besteht aus genau zwei Ziffern (00–99) und ist innerhalb der FMK eindeutig. Aus FMK-Kürzel und Chargennummer entsteht beispielsweise **F050.02**. Jede Charge hat genau eine Stoffart: CST, AUS, ELM, KAB, ISW, ELT, NEM, BET, SON oder KOM.
+
+Im FMK-Editor können Chargen hinzugefügt, geändert und entfernt werden. Die dort angezeigten erlaubten Stoffklassen ergeben sich aus allen Stoffarten der Chargen. Änderungen, durch die bereits verwendete Stoffklassen unzulässig würden, werden verhindert. Eine FMK mit zugeordneten Gebinden kann nicht gelöscht werden.
+
+Gebinde werden einer FMK zugeordnet, nicht einer einzelnen Charge. Beim Anlegen im Import und beim Bearbeiten der Gebinde-Stammdaten wird mindestens eine erlaubte Stoffklasse mit einer positiven Masse in kg benötigt. Klassen verschiedener Stoffarten dürfen kombiniert werden; jede Klasse darf einmal vorkommen. Die Summe dieser Aufteilung ist unabhängig von den separat erfassten Gebinde- und Messmassen.
+
+Bestehende Datensätze ohne diese Angaben werden als **Nachpflege erforderlich** angezeigt. Zuerst werden die Chargen der FMK, anschließend die Stoffklassen und Massen der Gebinde ergänzt. Bis dahin sind neue Freigaben und Tagesabrechnungen für diese Gebinde gesperrt, auch ohne den Filter „nur vollständige Gebinde“. Bestehende Berichte bleiben bei der Migration erhalten; spätere Änderungen an Gebinde-Stammdaten verwenden den üblichen Bestätigungsdialog für betroffene Berichte.
+
+Vor der Nutzung müssen alle synchronisierenden Arbeitsplätze auf die neue Programmversion aktualisiert werden.

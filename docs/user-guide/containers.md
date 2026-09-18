@@ -96,3 +96,74 @@ Dieses Vorgehen ist bewusst gewählt, weil Messungen und Auswertungen häufig na
 - Sie können Korrekturen vornehmen, ohne alte Werte zu zerstören.
 - Auswertungen (z. B. Tagesabrechnung) beziehen sich immer auf eine definierte, gültige Revision.
 :::
+
+
+## Optionale Raster für 7-m³-Mulden
+
+In den Gebindestammdaten steht **Gebindetyp / Raster** zur Auswahl: kein Raster,
+symmetrische oder asymmetrische 7-m³-Mulde. Grundlage sind die beiden
+Rasterflächen-PDFs aus `RPT`. Ohne gewählten Typ bleibt das bisherige Verhalten
+bestehen; fehlende Rasterzuordnungen blockieren keine Freigabe oder Tagesabrechnung.
+
+Die symmetrische Vorlage umfasst A/C mit 2 × 1, B/D mit 4 × 2, Boden E mit
+2 × 2 und Deckel F mit 5 × 2 Flächen. Die asymmetrische Vorlage hat A mit
+2 × 2 und keinen Deckel F; die übrigen Rastergrößen stimmen überein.
+Jede Fläche ist getrennt für innen und außen zuordenbar.
+
+### Orientierung
+
+Die Innenansicht ist die feste Referenz: beim Blick auf die Wand läuft die
+erste Koordinate an A von links 1→2, an B und D 4→1, an C 2→1. Die zweite
+Koordinate steigt von unten nach oben. Auf E und F läuft die erste Koordinate
+von A nach C, die zweite von D nach B. Die frei gewählte A-Wand einer
+symmetrischen Mulde muss am realen Gebinde eindeutig gekennzeichnet sein.
+
+**Außen ist die Projektion der Innenseite:** A innen 1/1 und A außen 1/1
+liegen sich gegenüber. Die 2D-Außenansicht zeigt diese Innenprojektion.
+Im drehbaren 3D-Modell bleiben die Kennungen fest am Bauteil; die Kameraposition
+ändert keine Nummerierung. Die Oberseite einer Ablage gehört zum oberen,
+ihre Unterseite zum unteren Raster. Übergreifende Anbauten werden der Fläche
+mit dem überwiegenden Strukturanteil zugeordnet.
+
+### Messungen und einzelne MC2-Punkte zuordnen
+
+Eine oder mehrere Messungen in der Messungstabelle auswählen und im Rasterbereich
+**Auswahl aus Messungstabelle übernehmen** verwenden. Bei MicroCont 2 werden dabei
+alle Punkte ausgewählt; einzelne Punkte lassen sich danach abwählen. Rasterflächen
+anklicken oder über die zugängliche Flächenliste wählen und **Rasterflächen hinzufügen**
+betätigen. Eine Messung beziehungsweise ein Punkt darf mehreren Flächen zugeordnet
+sein; jede Fläche darf mehrere Messungen enthalten. Hinzufügen ergänzt bestehende
+Zuordnungen, ohne sie zu ersetzen. Innen und außen sind unabhängig.
+
+**Zuordnung entfernen** entfernt die gewählten Verknüpfungen. Vor einem Typwechsel
+müssen alle Zuordnungen aktueller Revisionen ausdrücklich entfernt werden.
+Historische Revisionen behalten ihre ursprüngliche Vorlage und Zuordnungen;
+sie sind im Revisionsmenü des Rasterbereichs schreibgeschützt einsehbar.
+Neu importierte Messungsrevisionen beginnen ohne Rasterzuordnungen, damit
+geänderte MC2-Punkte keine alten Positionen übernehmen.
+
+### Raster- und Messwertansicht
+
+Die Rasteransicht zeigt Kennungen und Belegung. Die Messwertansicht zeigt je Fläche
+die höchste obere Grenze (OG) der Gesamtaktivität aus den aktuellen gültigen
+zugeordneten Messungen beziehungsweise MC2-Punkten. Umschaltbar sind Bq/g und
+Bq/cm². Bei MC2 fließen nur die dieser Fläche zugeordneten Punkte ein.
+Die bestehenden Nuklidvektoren und Umrechnungsfaktoren werden verwendet; es erfolgt
+keine Aufteilung oder Summierung über mehrfach zugeordnete Flächen und keine
+zusätzliche pfadabhängige Freigabekorrektur.
+
+Ein Klick auf eine Fläche zeigt die beitragenden Werte und die Quelle des Maximums.
+Fehlende Umrechnung oder Berechnungsgrundlagen erscheinen als nicht berechenbar,
+nicht als Nullwert. Die Farbskala gilt für das gesamte Gebinde einschließlich innen
+und außen; sie ist keine Freigabebewertung.
+
+2D-Raster und interaktives 3D-Modell verwenden dieselben Daten. Das Modell lässt
+sich drehen und zoomen; Wände sind einzeln darstellbar und der symmetrische Deckel
+kann ausgeblendet werden. Es ist schematisch und liefert keine Messflächen.
+Ohne WebGL bleibt die 2D-Ansicht vollständig bedienbar.
+
+Zuordnungsänderungen benötigen die Berechtigung zum Ändern von Messungen und
+werden atomar signiert und protokolliert. Betroffene Tagesabrechnungen werden
+nach Angabe eines Grundes ungültig. Rastertyp und Zuordnungen werden synchronisiert;
+alle beteiligten Clients müssen die Rastererweiterung unterstützen. Bestehende
+Signaturen ohne Rasterdaten bleiben gültig.
