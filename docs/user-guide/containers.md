@@ -127,15 +127,38 @@ mit dem überwiegenden Strukturanteil zugeordnet.
 
 ### Messungen und einzelne MC2-Punkte zuordnen
 
-Eine oder mehrere Messungen in der Messungstabelle auswählen und im Rasterbereich
-**Auswahl aus Messungstabelle übernehmen** verwenden. Bei MicroCont 2 werden dabei
-alle Punkte ausgewählt; einzelne Punkte lassen sich danach abwählen. Rasterflächen
-anklicken oder über die zugängliche Flächenliste wählen und **Rasterflächen hinzufügen**
-betätigen. Eine Messung beziehungsweise ein Punkt darf mehreren Flächen zugeordnet
-sein; jede Fläche darf mehrere Messungen enthalten. Hinzufügen ergänzt bestehende
-Zuordnungen, ohne sie zu ersetzen. Innen und außen sind unabhängig.
+Im Bereich **Oberflächen zuordnen** stehen Messungen und einzelne MC2-Punkte neben
+dem 2D-Raster. **Oberflächen zuordnen** in der Messungstabelle öffnet die dort
+gewählten Messreihen, ohne deren Punkte automatisch auszuwählen.
 
-**Zuordnung entfernen** entfernt die gewählten Verknüpfungen. Vor einem Typwechsel
+Wählen Sie die Arbeitsrichtung:
+
+- **Messpunkt → Fläche:** Einen Messpunkt auswählen, dann eine Fläche anklicken.
+- **Fläche → Messpunkt:** Eine Fläche auswählen, dann einen Messpunkt anklicken.
+
+Der zweite Klick speichert die einzelne Zuordnung sofort. Ein zusätzlicher
+Speicherschritt entfällt. Danach wird die aktive Auswahl aufgehoben; der nächste
+Punkt wird nicht automatisch ausgewählt. Eine neue Auswahl ersetzt die bisherige.
+Wand und Innen/Außen lassen sich unabhängig davon wechseln. Die Flächenliste
+bietet dieselben Aktionen per Tastatur. Das 3D-Modell dient der Orientierung;
+ein Modellklick öffnet die betreffende 2D-Wand und verändert keine Zuordnung.
+
+Im Normalfall gehört je Messreihe ein Punkt zu einer Fläche und ein Punkt nur zu
+einer Fläche. Ist eine dieser Positionen bereits belegt, zeigt ein Dialog die
+betroffenen Verknüpfungen. **Zuordnung ersetzen** entfernt diese und setzt die
+neue Verbindung in einem Vorgang. **Abbrechen** lässt alles unverändert.
+Unter **Mehrfachzuordnung … → Zusätzlich zuordnen** können Sie bewusst eine
+weitere Verbindung ergänzen. Diese Ausnahme gilt nur für die einzelne Aktion.
+Zuordnungen anderer Messreihen bleiben beim Ersetzen erhalten.
+
+**Rückgängig** kehrt die letzte erfolgreiche Zuordnungsaktion um. Bereits ungültig
+gewordene Tagesabrechnungen bleiben dabei ungültig. Änderungen anderer Benutzer
+werden nicht überschrieben; bei einem Konflikt laden Sie die Daten neu.
+
+Innen und außen sind unabhängig. Ein erneuter Klick auf eine bestehende
+Zuordnung entfernt sie nicht. **Zuordnung entfernen** in den Flächendetails
+entfernt die ausdrücklich gewählte Verbindung. **Weitere Aktionen** enthält das
+bestätigungsbedürftige Entfernen aller aktuellen Zuordnungen. Vor einem Typwechsel
 müssen alle Zuordnungen aktueller Revisionen ausdrücklich entfernt werden.
 Historische Revisionen behalten ihre ursprüngliche Vorlage und Zuordnungen;
 sie sind im Revisionsmenü des Rasterbereichs schreibgeschützt einsehbar.
