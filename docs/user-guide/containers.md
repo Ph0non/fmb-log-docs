@@ -47,6 +47,32 @@ Beim Import werden Stammdaten eines **bestehenden** Gebindes nicht geändert. We
 
 Für das Ändern dieser Werte ist die Berechtigung `measurements.update` erforderlich (oder Admin).
 
+### Messungen auswählen und gemeinsam bearbeiten
+
+Ein Klick auf eine Zeile oder ihr Kästchen wählt diese Messung und öffnet ihre
+Details. Ein erneuter Klick auf die allein ausgewählte Messung hebt die Auswahl
+auf; die zuletzt geöffneten Details bleiben sichtbar. **Strg/Cmd + Klick** ergänzt
+oder entfernt einzelne Messungen. **Umschalt + Klick** wählt einen Bereich in der
+aktuellen Sortierung und Filterung, **Strg/Cmd + Umschalt + Klick** ergänzt einen
+Bereich. Das Kästchen im Tabellenkopf wählt die gefilterten Messungen oder hebt
+deren Auswahl auf. Die Kästchen sind auch per Tabulator und Leertaste bedienbar.
+
+Bei mehreren ausgewählten Messungen erscheint **Messungen gemeinsam bearbeiten**.
+Messdatum, Gerät, Masse, Fläche, Umrechnung und Bemerkung stehen zunächst auf
+**Nicht ändern**. Wählen Sie pro Feld ausdrücklich **Wert setzen**, **Wert löschen**
+oder beim Datum **Protokolldatum verwenden**. Unterschiedliche bestehende Werte
+werden gekennzeichnet. Das Gerät lässt sich nicht löschen; die ursprüngliche
+Uhrzeit jeder Messung bleibt bei Datumskorrekturen erhalten.
+
+**Änderungen prüfen** zeigt vor jedem gemeinsamen Speichern die Anzahl, Mess-IDs,
+Revisionen und Feldaktionen sowie unveränderte Messungen. Betroffene gültige
+Tagesabrechnungen werden aufgelistet und nur mit einer Begründung ungültig gemacht.
+Erst **verbindlich speichern** übernimmt die Änderungen gemeinsam. Bei einem
+Fehler wird nichts teilweise gespeichert; zwischenzeitliche Änderungen erfordern
+eine neue Prüfung. Nach Erfolg bleibt die Auswahl erhalten, die Feldaktionen
+stehen wieder auf **Nicht ändern**. Ungespeicherte Eingaben sind auch bei einem
+Auswahlwechsel geschützt; **Weiter bearbeiten** behält Eingaben und Auswahl bei.
+
 ### Protokoll und ISO-Tabelle
 
 Wenn Sie eine Messung auswählen, lädt die Anwendung das gespeicherte Protokoll und zeigt die ISO-11929-Werte (sofern im Protokoll vorhanden). Das Originalprotokoll wird archiviert, damit es auch später (z. B. für Nachweise) wieder angezeigt werden kann.
@@ -180,7 +206,11 @@ Fehlende Umrechnung oder Berechnungsgrundlagen erscheinen als nicht berechenbar,
 nicht als Nullwert. Die Farbskala gilt für das gesamte Gebinde einschließlich innen
 und außen; sie ist keine Freigabebewertung.
 
-2D-Raster und interaktives 3D-Modell verwenden dieselben Daten. Das Modell lässt
+2D-Raster, interaktives 3D-Modell und Legende verwenden dieselbe Heatmap:
+Grün bei niedrigen Werten, über Gelb bis Rot beim höchsten Wert. Zum Einschalten
+**Ansicht → Messwerte · höchste OG** wählen; die Einstellung gilt auch unter
+**Darstellung → 3D-Orientierung**. Unbelegte Flächen sind grau, zugeordnete Flächen
+ohne berechenbaren Wert violett. Das Modell lässt
 sich drehen und zoomen; Wände sind einzeln darstellbar und der symmetrische Deckel
 kann ausgeblendet werden. Es ist schematisch und liefert keine Messflächen.
 Ohne WebGL bleibt die 2D-Ansicht vollständig bedienbar.
