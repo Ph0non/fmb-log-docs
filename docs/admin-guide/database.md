@@ -100,6 +100,64 @@ Auch mit CRDT/CR‑SQLite gibt es Grenzen und “Betriebsregeln”:
 
    **Offline‑Import:** Wenn der Hub nicht erreichbar ist, wird das Protokoll im **lokalen Cache** abgelegt und die DB enthält zunächst eine „ausstehende“ Referenz (`pack_file=''`, `pack_length=0`). Zusätzlich wird lokal eine Outbox geführt (`protocol_upload_outbox`), die Upload‑Versuche, Backoff und Fehlerstatus verwaltet (Status ist auf der Import‑Seite in „Ausstehende Uploads“ sichtbar). Nach dem nächsten erfolgreichen Sync lädt der importierende Client das Protokoll automatisch in das Hub‑Archiv hoch und aktualisiert die Referenz. Bis dahin können andere Clients die Messung sehen, das Protokoll aber noch nicht öffnen.
 
+### Konfliktbelege prüfen und archivieren
+
+Neue Replikate merken sich den unveränderten Stand der mitgelieferten Stub-DB lokal
+(`sync_bootstrap_state`, Schema 50). Diese Startwerte erzeugen beim ersten Abgleich
+keine Konfliktbelege. Spätere Offline-Änderungen werden weiterhin geprüft. Die
+Markierung unterdrückt ausschließlich Diagnoseeinträge, keine Datenübertragung;
+für bereits bearbeitete, unmarkierte Datenbanken wird kein Startstand nachträglich
+angenommen.
+
+Neue Konfliktbelege (`v2:`-IDs) enthalten beide konkurrierenden Werte vollständig
+und mit SQLite-Typ, Herkunft und Versionsdaten. BLOBs werden als Base64 gespeichert,
+große Ganzzahlen als Dezimaltext. Passwort-Hashes bleiben ausgeblendet; ein
+Prüfhash dokumentiert ihre Verschiedenheit. „Version A/B“ ist eine feste Sortierung
+der beteiligten Änderungen, keine Zuordnung zum gerade geöffneten Client. Der
+angezeigte Gewinner wird nach dem Zusammenführen aus CR-SQLite gelesen. Ein
+Fehler beim Schreiben des Belegs bricht den gesamten lokalen Pull ab.
+
+Die Konfliktansicht filtert vor der Seiteneinteilung und kann einzelne
+Erkennungsläufe anzeigen. „Als geprüft markieren“ bestätigt die Prüfung; es
+ändert keine fachlichen Werte. Die Entscheidung wird mit Nutzer, Zeitpunkt,
+betroffenen IDs und gegebenenfalls Notiz signiert im Audit-Trail gespeichert und
+zusammen mit dem Prüfstatus synchronisiert. Ohne verfügbare Nutzersignatur wird
+die Prüfentscheidung nicht gespeichert.
+
+Die Bereinigung erfolgt ausdrücklich über **„Geprüfte archivieren“** bzw.
+**„Archivieren + verdichten“**:
+
+1. Alle Clients vorab aktualisieren und den Hub synchronisieren. Alte Clients
+   können weiterhin dieselben Diagnosemassen erzeugen.
+2. Die betreffenden Konflikte fachlich prüfen und markieren. Nicht allein wegen
+   ihres Alters oder ihrer Anzahl pauschal als erledigt behandeln.
+3. Die App schreibt alle geprüften Belege vollständig in ein komprimiertes Archiv:
+   `conflict-archives/<Hub-Dateiname>/<BLAKE3>.json.zst`, neben der Hub-DB.
+4. Ein signierter Auditbeleg (`sync_conflicts.archive`) hält Dateiname, Prüfsumme
+   und Anzahl fest. Er bestätigt Archivierung und Freigabe, noch keine erfolgte
+   Löschung. Vor dem Löschen werden Archiv, Signatur und unveränderter Stand jeder
+   enthaltenen Zeile erneut geprüft. Fehlende/defekte Archive oder zwischenzeitlich
+   geänderte Prüfungen verhindern die Löschung.
+5. Die App löscht ausschließlich die archivierten IDs regulär in der lokalen DB
+   und synchronisiert die Löschung. Offene Konflikte bleiben erhalten. Scheitert
+   die anschließende Übertragung, zeigt die App den ausstehenden Sync an; sie wird
+   beim nächsten erfolgreichen Abgleich nachgeholt. Ein Fehler beim optionalen
+   Verdichten wird getrennt gemeldet.
+
+CR-SQLite-Löschmarkierungen bleiben für zurückkehrende Offline-Replikate nötig.
+`VACUUM` entfernt freie Seiten, aber keine benötigten Replikationsinformationen.
+Interne CR-SQLite-Tabellen dürfen nicht manuell bereinigt werden. Archiv und
+signierten Auditbeleg zusammen aufbewahren; nach dem Entpacken enthält das JSON
+alle ursprünglichen Spalten (Binärspalten als Byte-Arrays). Für eine Nachprüfung
+zuerst den BLAKE3-Hash der **komprimierten** Datei mit dem signierten Beleg
+vergleichen. Archive sind Beweissicherung, kein automatischer Wiederimport in
+die aktive Konflikttabelle.
+
+Ältere Belege behalten ihre ursprünglichen gekürzten Texte und geschätzten
+Gewinnerangaben. Bereits verlorene Werte lassen sich durch Archivierung nicht
+rekonstruieren. Die untersuchten Bestandsdateien in `RPT/DATABASEv2` werden durch
+das Update nicht automatisch bereinigt.
+
 ### Besonderheit: Vault‑Dateien sind nicht Teil der DB‑Synchronisation
 
 Passwörter und Signierschlüssel werden zusätzlich in **Stronghold‑Vaults** gespeichert:
@@ -120,6 +178,7 @@ Sichern Sie im Hub‑Ordner mindestens:
 
 - die DB‑Datei (`<db>.db` bzw. `fmblog.db`)
 - den Ordner `protocols/` (Protokoll‑Archive/Packfiles)
+- den Ordner `conflict-archives/` (archivierte Konfliktbelege; gehört zur Nachvollziehbarkeit)
 - den Ordner `vaults/` (Stronghold‑Vaults für Pepper/Integritätsschlüssel)
 
 ::: info Zusammenfassung (Datenbank)

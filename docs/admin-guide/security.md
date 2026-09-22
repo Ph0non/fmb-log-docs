@@ -123,7 +123,7 @@ Die folgende Übersicht ist bewusst praxisnah: **welches Risiko** ist realistisc
 | SQL‑Injection über Eingabefelder | Datenverlust / Rechteänderung | Parameter Binding | Schutz gilt nur, solange SQL nicht per String‑Konkatenation gebaut wird. |
 | Auslesen von Messdaten aus DB‑Datei | Vertraulichkeitsverlust | (keine, DB ist nicht verschlüsselt) | Schutz nur über Datei‑/Share‑Berechtigungen. Optional: separate Verschlüsselung wäre ein eigenes Projekt mit Trade‑offs. |
 | Malware/Administrator auf dem Client | Vollzugriff | (keine) | Nicht im Scope: Ein kompromittiertes System kann immer Daten auslesen/manipulieren. |
-| Manipulation von Fach‑/Messdaten (Gebinde, Messungen, FGW) | Falsche Freigabe / verfälschte Historie | Messdaten‑Signaturen (User‑Key), Stammdaten‑Signaturen (Delegation), Protokoll‑Integrität (BLAKE3) und Tagesabrechnungs‑Snapshot (BLAKE3 + optional TSA) | DoS bleibt möglich (Dateien löschen/überschreiben). Bei aktivem Integritätsschutz werden nicht verifizierbare Datensätze fail‑closed als ungültig behandelt. Tagesabrechnungen können nachträglich ungültig werden, wenn enthaltene Messungen später ungültig gesetzt werden. |
+| Manipulation von Fach‑/Messdaten (Gebinde, Messungen, FGW) | Falsche Freigabe / verfälschte Historie | Messdaten‑Signaturen (User‑Key), Stammdaten‑Signaturen (Delegation), Protokoll‑Integrität (BLAKE3) und Tagesabrechnungs‑Snapshot (BLAKE3 + verpflichtender TSA beim Desktop-Export) | DoS bleibt möglich (Dateien löschen/überschreiben). Bei aktivem Integritätsschutz werden nicht verifizierbare Datensätze fail‑closed als ungültig behandelt. Tagesabrechnungen können nachträglich ungültig werden, wenn enthaltene Messungen später ungültig gesetzt werden. |
 | Stammdaten vor Report ändern, danach zurücksetzen | Bericht basiert auf manipulierten Daten ohne Nachweis | Audit‑Trail Hash‑Kette + TSA‑Pinning | Änderungen werden im Audit‑Trail protokolliert und nach Tagesabrechnung mit TSA‑Pin versehen. Nachträgliche Manipulation der Historie ist erkennbar. |
 
 ## Betriebsempfehlungen (Admin)
@@ -367,13 +367,15 @@ Zusätzlich zur laufenden Daten‑Integrität wird beim PDF‑Export ein **Snaps
 - Zusätzlich wird der **PDF‑Hash** (BLAKE3 der finalen PDF‑Bytes; Spaltenname historisch `daily_reports.pdf_sha256`) in der Historie gespeichert. In der Historie kann das Original‑PDF über **PDF prüfen…** gegen diesen Hash geprüft werden.
 - Wird eine enthaltene Mess‑Revision später **ungültig gesetzt** oder wird eine Tagesabrechnung manuell ungültig gemacht (`reports.invalidate`), wird eine **signierte Invalidierung** angelegt (`daily_report_invalidations`, User‑Key) und die Tagesabrechnung als **ungültig** markiert (`daily_reports.is_valid = 0`). Dabei werden Export‑Markierungen der enthaltenen Messungen zurückgesetzt, sodass eine erneute Abrechnung möglich bleibt.
 
-##### Optional: RFC3161‑Zeitstempel (FreeTSA)
+##### Verpflichtender RFC3161‑Zeitstempel (FreeTSA oder Open TSA)
 
-Gerade bei Tagesabrechnungen kann zusätzlich ein RFC3161‑Zeitstempel hinterlegt werden (TSA‑Signatur über den Snapshot‑Hash). Das ist besonders hilfreich, wenn eine Tagesabrechnung **nachweisbar zu einem Zeitpunkt** existiert haben soll.
+Beim PDF‑Export einer Tagesabrechnung in der Desktop-App wird immer ein RFC3161‑Zeitstempel angefordert (TSA‑Signatur über den Snapshot‑Hash). Er belegt, dass der Hash spätestens zum signierten Zeitpunkt vorlag. Die Browser-Vorschau ist davon ausgenommen und markiert keine Messungen als abgerechnet.
 
-- Aktivierung durch Admin: `Administration → Einstellungen → Tagesabrechnung → RFC3161‑Zeitstempel verpflichtend`
+- Unter `Administration → Einstellungen → Zeitstempeldienst` ist **FreeTSA** voreingestellt. **Open TSA (open-tsa.eu)** ist als Alternative auswählbar. Zum Speichern muss der Signierschlüssel entsperrt sein; die Zeitstempelpflicht ist nicht abschaltbar.
+- Die signierte Einstellung `tsa.provider` wird mit der Datenbank synchronisiert und gilt für neue Tagesabrechnungen und Audit-Zeitstempel. Ohne Einstellung wird FreeTSA verwendet. Ungültige Einstellungen verhindern den Abruf; es erfolgt kein stiller Rückfall auf einen anderen Anbieter.
 - Verhalten:
-  - Ist die Option aktiv, wird beim PDF‑Export ein RFC3161‑Timestamp bei `https://freetsa.org/tsr` angefordert.
+  - Beim PDF‑Export wird der gewählte Dienst verwendet: `https://freetsa.org/tsr` oder `https://tsr.open-tsa.eu`.
+  - Hash, CMS-Signatur, Zertifikatskette und Anbieterzugehörigkeit werden vor der Übernahme des Tokens geprüft. Bei einem Ausfall erfolgt kein automatischer Anbieterwechsel.
   - Ohne Internetverbindung schlägt der Export fehl (Fail‑Closed), damit keine „ungetimestampte“ Abrechnung entsteht.
 - Speicherung in der Historie (`daily_reports`):
   - `tsa_provider`
@@ -383,16 +385,22 @@ Gerade bei Tagesabrechnungen kann zusätzlich ein RFC3161‑Zeitstempel hinterle
   - `tsa_token_base64` (DER‑Token als Base64)
 - QR‑Code in der PDF:
   - Enthält immer `snapshot_hash`
-  - Wenn TSA aktiv: zusätzlich `tsa_token_sha256` (das Token selbst ist zu groß für QR und liegt in der DB‑Historie)
+  - Beim Desktop-Export zusätzlich `tsa_token_sha256` (das Token selbst ist zu groß für QR und liegt in der DB‑Historie)
 
 In der **Historie** prüft FMB Log den TSA‑Token kryptografisch:
 
 - Token lässt sich parsen (CMS/SignedData + TSTInfo)
 - Imprint im Token passt zu `tsa_snapshot_sha256` (FreeTSA nutzt SHA‑256 als Message‑Imprint)
 - CMS‑Signatur ist gültig (SignedAttributes inkl. `messageDigest`)
-- Zertifikatskette ist gültig bis zur in der App **gepinnten FreeTSA Root CA** (inkl. EKU `timeStamping` und Gültigkeit zum `gen_time`)
+- Zertifikatskette ist gültig bis zur in der App **gepinnten Root CA des ausstellenden Dienstes** (inkl. EKU `timeStamping` und Gültigkeit zum `gen_time`). Open TSA liefert nur das Signierzertifikat im Token; seine veröffentlichten Zwischenzertifikate liegen deshalb zusätzlich in der App für die Offline-Prüfung vor.
 
-Hinweis: Trust erfolgt via **Root‑Pinning** (nicht über die OS‑Zertifikatsspeicher). Wenn FreeTSA die CA austauscht, ist ein App‑Update erforderlich.
+Vertrauen wird über **fest hinterlegte Root- und Signierzertifikate** hergestellt, nicht über die OS‑Zertifikatsspeicher. FreeTSA und Open TSA besitzen getrennte Vertrauensprofile mit Zertifikatskette, erlaubten Signaturalgorithmen und Tests anhand echter Tokens. Eine frei eingegebene URL reicht dafür nicht aus.
+
+Die Anbieterauswahl bestimmt ausschließlich den Dienst für **neue** Zeitstempel. Historische Tokens müssen weiter anhand ihres eigenen Signierzertifikats geprüft werden; alte Vertrauensprofile und Tokens bleiben erhalten. Änderungen an den hinterlegten Zertifikaten erfordern ein App‑Update. Details: [Historische TSA‑Vertrauensprofile](/architecture/adr-004-historical-tsa-validation).
+
+Open TSA beschreibt den Dienst unter [Service-Informationen](https://open-tsa.eu/info) als frei nutzbar und nicht eIDAS-qualifiziert. Es bleibt ein externer Dienst; ein Ausfall der Internetverbindung betrifft beide Anbieter.
+
+Die ältere signierte Datenbankeinstellung `daily_report.require_rfc3161` bleibt für die Prüfung bestehender Daten erhalten. Sie steuert den heutigen Desktop-Export nicht mehr.
 
 ::: tip Hinweis (warum TSA weiterhin SHA‑256 nutzt)
 FreeTSA/RFC3161 erwartet einen Standard‑Hash (hier SHA‑256) als „Message Imprint“.  

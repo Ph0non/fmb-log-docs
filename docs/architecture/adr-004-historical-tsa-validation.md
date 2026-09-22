@@ -57,6 +57,20 @@ das ausgewählte Profil zusätzlich auf die Zertifikatsgültigkeit, darf aber ni
 allein ein Profil auswählen. Das abgelaufene RSA-Zertifikat wird dadurch nicht zum
 Trust Anchor und eine Signatur nach seinem Ablauf bleibt ungültig.
 
+Seit der Integration von Open TSA ist zusätzlich das Profil `open-tsa-rsa-2026-2028`
+hinterlegt. Es pinnt das veröffentlichte Signierzertifikat
+`CDA5253F30385CE0F7067D2FB51A1726C3DB5F73A02A0EEDE24CE868CD9497D4`
+und die Kette zur open-ca.eu Root CA
+`E45A75CB526087638107D4A3E9535B51145EFDDF88C5CABEA9B09E0AB439AF95`.
+Die zwei Zwischenzertifikate werden mitgeliefert und ebenfalls über ihre
+Fingerprints geprüft, da Open TSA sie nicht im Token mitsendet. Quellen und
+Fingerprints stehen in `src-tauri/src/tsa/README.md`.
+
+Die Auswahl `tsa.provider` legt nur das Ziel neuer Anfragen fest. Historische
+Tokens wählen ihr Profil weiterhin über das Signierzertifikat. Beide Anbieter
+werden vor dem Speichern kryptografisch geprüft. Die Verifier-Kennung enthält
+alle Zertifikatspins und invalidiert dadurch vorhandene Audit-Cache-Einträge.
+
 Wenn ein Token auch mit einem nachweislich damals freigegebenen Profil nicht
 kryptografisch validiert werden kann, bleibt es fehlerhaft. Optional kann ein
 **Erneuerungsnachweis** erzeugt werden. Dieser enthält in kanonischer Form mindestens:

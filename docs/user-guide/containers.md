@@ -177,8 +177,7 @@ Unter **Mehrfachzuordnung … → Zusätzlich zuordnen** können Sie bewusst ein
 weitere Verbindung ergänzen. Diese Ausnahme gilt nur für die einzelne Aktion.
 Zuordnungen anderer Messreihen bleiben beim Ersetzen erhalten.
 
-**Rückgängig** kehrt die letzte erfolgreiche Zuordnungsaktion um. Bereits ungültig
-gewordene Tagesabrechnungen bleiben dabei ungültig. Änderungen anderer Benutzer
+**Rückgängig** kehrt die letzte erfolgreiche Zuordnungsaktion um. Änderungen anderer Benutzer
 werden nicht überschrieben; bei einem Konflikt laden Sie die Daten neu.
 
 Innen und außen sind unabhängig. Ein erneuter Klick auf eine bestehende
@@ -216,7 +215,10 @@ kann ausgeblendet werden. Es ist schematisch und liefert keine Messflächen.
 Ohne WebGL bleibt die 2D-Ansicht vollständig bedienbar.
 
 Zuordnungsänderungen benötigen die Berechtigung zum Ändern von Messungen und
-werden atomar signiert und protokolliert. Betroffene Tagesabrechnungen werden
-nach Angabe eines Grundes ungültig. Rastertyp und Zuordnungen werden synchronisiert;
+werden atomar gespeichert und signiert. Die Oberflächenzuordnung ist eine ergänzende
+Information; für die Tagesabrechnung ist die Zuordnung der Messung zum Gebinde maßgeblich.
+Das Ändern, Entfernen oder Rückgängigmachen einer Oberflächenzuordnung erzeugt keinen
+Audit-Eintrag und verändert weder die Gültigkeit noch den Exportstatus einer Tagesabrechnung.
+Rastertyp und Zuordnungen werden synchronisiert;
 alle beteiligten Clients müssen die Rastererweiterung unterstützen. Bestehende
 Signaturen ohne Rasterdaten bleiben gültig.

@@ -224,9 +224,9 @@ Bei der Ersteinrichtung signiert FMB Log die vorhandenen Stammdaten automatisch.
 2. **Tagesabrechnung**
    - Vorschau erstellen (mit Testdaten).
    - Optional: **PDF exportieren**.
-3. **Administration → Einstellungen → Tagesabrechnung**
-   - „RFC3161‑Zeitstempel verpflichtend“ sollte **aktiviert** sein (Default nach Ersteinrichtung).
+3. **Administration → Einstellungen → Zeitstempeldienst**
+   - **FreeTSA** ist der Standard. Bei Bedarf kann **Open TSA (open-tsa.eu)** gewählt und mit entsperrtem Signierschlüssel gespeichert werden. Einen Ein-/Ausschalter für die Zeitstempelpflicht gibt es nicht.
 
 ::: warning Hinweis
-Wenn RFC3161 verpflichtend ist, benötigt der PDF‑Export eine Internetverbindung (FreeTSA). Ohne Verbindung schlägt der Export fehl – die Vorschau funktioniert weiterhin.
+Der PDF‑Export in der Desktop-App benötigt eine Verbindung zum gewählten Dienst für den verpflichtenden RFC3161‑Zeitstempel. Ohne Verbindung schlägt der Export fehl – die Vorschau funktioniert weiterhin.
 :::

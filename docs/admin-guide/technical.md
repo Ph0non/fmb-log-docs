@@ -237,15 +237,15 @@ Beim PDF‑Export wird ein **Snapshot** der exportierten Inhalte gebildet und ge
 - `daily_reports.snapshot_hash`: BLAKE3 des Snapshots (DATA‑Hash)
 - `daily_reports.pdf_sha256`: BLAKE3 der finalen PDF‑Bytes (PDF‑Hash; Spaltenname historisch)
 - `daily_report_invalidations`: signierte Invalidierungs‑Events (wer/wann/warum; referenziert Report + Snapshot/PDF‑Hash zum Zeitpunkt der Invalidierung)
-- Optional (TSA):
+- Verpflichtend bei neuen Desktop-Exporten (TSA):
   - `tsa_provider`, `tsa_gen_time`, `tsa_snapshot_sha256`, `tsa_token_sha256`, `tsa_token_base64`
 
 Hinweis: Hashes (32 Byte) und Signaturen (Ed25519, 64 Byte) werden in SQLite als **BLOB** gespeichert (I/O‑sparend). Im Frontend werden BLOBs als **Base64‑Strings** transportiert (keine JSON‑Byte‑Arrays), in der UI werden Hashes aber als **Hex/Fingerprint** angezeigt.
 
 Die PDF enthält in der Fußzeile:
 
-- einen QR‑Code mit kompakter Payload (u. a. Snapshot‑Hash, optional TSA‑Token‑Hash)
-- daneben kurze Fingerprints (`DATA: …` und optional `TSA: …`) für manuelle Gegenprüfung
+- einen QR‑Code mit kompakter Payload (u. a. Snapshot‑Hash und beim Desktop-Export TSA‑Token‑Hash)
+- daneben kurze Fingerprints (`DATA: …` und beim Desktop-Export `TSA: …`) für manuelle Gegenprüfung
 
 ::: info Zusammenfassung (Tagesabrechnung)
 - Snapshot‑Hash ist BLAKE3 (schnell, in QR/Fingerprint als DATA).
