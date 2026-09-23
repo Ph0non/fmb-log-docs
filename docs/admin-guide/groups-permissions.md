@@ -32,7 +32,7 @@ Rechte können sich während einer laufenden Sitzung ändern (z. B. durch Admi
 Typische Beispiele für Rechte sind:
 
 - Messungen importieren/ändern/löschen sowie **Messdatum ändern**
-- Tagesabrechnungen ungültig machen (`reports.invalidate`)
+- Gebindeabrechnungen ungültig machen (`reports.invalidate`)
 - FMK und NV anlegen/ändern/löschen
 - Freigabewerte ändern (`fgw.update`)
 - Passwörter anderer Nutzer zurücksetzen (`users.reset_passwords`)
@@ -42,5 +42,5 @@ Die vollständige Liste der Permission Keys befindet sich in der Referenz: [Rech
 ::: info Zusammenfassung (Gruppen & Rechte)
 - Rechte werden über Gruppen vergeben; Admins haben immer alles.
 - „Deaktivieren“ ist oft sinnvoller als „Löschen“ (Historie, Wiederverwendbarkeit).
-- Kritische Rechte (FGW ändern, Passwörter zurücksetzen, Messdatum ändern, Tagesabrechnungen ungültig machen) nur gezielt vergeben.
+- Kritische Rechte (FGW ändern, Passwörter zurücksetzen, Messdatum ändern, Gebindeabrechnungen ungültig machen) nur gezielt vergeben.
 :::

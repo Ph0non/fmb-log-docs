@@ -4,7 +4,7 @@ title: FMB Log – Benutzeranleitung
 hero:
   name: FMB Log
   text: Benutzer- & Admin-Handbuch
-  tagline: Dokumentation für Erfassung, Auswertung und Tagesabrechnung von Freimessungen (Tauri + SQLite).
+  tagline: Dokumentation für Erfassung, Auswertung und Gebindeabrechnung von Freimessungen (Tauri + SQLite).
   actions:
     - theme: brand
       text: User Guide
@@ -26,7 +26,7 @@ features:
 
 ## Zielgruppe
 
-- **User Guide**: Endanwender (Messungen importieren, Gebinde prüfen, Tagesabrechnung exportieren).
+- **User Guide**: Endanwender (Messungen importieren, Gebinde prüfen, Gebindeabrechnung exportieren).
 - **Admin Guide**: Admins/Key-User (Ersteinrichtung, Nutzer & Rechte, FGW-Pflege, Betrieb/Backup).
 
 ## Versionshinweis

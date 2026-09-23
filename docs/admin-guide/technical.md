@@ -22,7 +22,7 @@ Typische Struktur (vereinfacht):
     - `extensions/crsqlite.dll` (CR‑SQLite Extension)
     - `zstd-dicts/rpt-v2.dict` (optional, aktuelles Zstd‑Dictionary für RPT‑Kompression)
     - `zstd-dicts/rpt-v1.dict` (optional, Legacy‑Dictionary für ältere Protokolle)
-    - `Logo_EWN_RGB.png` (Logo für Tagesabrechnung)
+    - `Logo_EWN_RGB.png` (Logo für Gebindeabrechnung)
     - `fmblog.stub.db` (Stub‑DB als „Baseline“; wird nur kopiert, wenn noch keine DB existiert)
 - **Hub‑Datenordner** (gemeinsam)
   - `<db>.db` (Hub‑DB; Name frei wählbar)
@@ -230,7 +230,7 @@ In FMB Log werden zwei Hash‑Algorithmen bewusst parallel genutzt:
 - SHA‑256: extern kompatibel (TSA).
 :::
 
-## 7) Tagesabrechnung: Snapshot, QR‑Code, TSA (technisch)
+## 7) Gebindeabrechnung: Snapshot, QR‑Code, TSA (technisch)
 
 Beim PDF‑Export wird ein **Snapshot** der exportierten Inhalte gebildet und gehasht:
 
@@ -247,7 +247,7 @@ Die PDF enthält in der Fußzeile:
 - einen QR‑Code mit kompakter Payload (u. a. Snapshot‑Hash und beim Desktop-Export TSA‑Token‑Hash)
 - daneben kurze Fingerprints (`DATA: …` und beim Desktop-Export `TSA: …`) für manuelle Gegenprüfung
 
-::: info Zusammenfassung (Tagesabrechnung)
+::: info Zusammenfassung (Gebindeabrechnung)
 - Snapshot‑Hash ist BLAKE3 (schnell, in QR/Fingerprint als DATA).
 - PDF‑Hash ist BLAKE3 (schnell, als Referenz in der Historie).
 - Für TSA wird zusätzlich `tsa_snapshot_sha256` gespeichert (RFC3161‑kompatibler Imprint).
@@ -278,7 +278,7 @@ Betroffene Aktionen:
 - **Administration → Audit** (prüft Security/Stammdaten/Messdaten/Protokolle)
 - **Administration → Einstellungen → Stammdaten neu signieren**
 - **Administration → Einstellungen → Fehlende Signaturen nachholen**
-- **Tagesabrechnung → PDF exportieren**
+- **Gebindeabrechnung → PDF exportieren**
 
 Die Logzeilen enthalten JSON mit `action`, `ok`, `total_ms` und `phases` (je Phase: `name`, `ms`). So können Sie bei Performance‑Problemen nachvollziehen, ob z. B. **I/O (Hub/Protokolle)**, **Hashing** oder **DB‑Zugriffe** dominieren.
 
@@ -387,3 +387,31 @@ Wenn die Images existieren, kann `.gitlab-ci.yml` deutlich schlanker bleiben, we
 ::: tip Hinweis
 Für spätere Playwright‑Tests (B1) ist meist ein separates Image sinnvoll (Browser + deps). Das kann als eigener Job‑Image‑Override umgesetzt werden, ohne das Build‑Image unnötig aufzublähen.
 :::
+
+
+## 12) Git LFS beim Release-Push
+
+PNG-Dateien und die über `.gitattributes` erfassten DLLs liegen in Git LFS. GitLab
+akzeptiert einen Release-Tag nur, wenn auch dessen LFS-Objekte hochgeladen sind.
+Git LFS muss daher auf dem Rechner installiert sein, der den Push ausführt.
+
+**Entscheidung:** Der aktive Husky-Hook `.husky/pre-push` ruft zuerst
+`git lfs pre-push "$@"` auf. Ein LFS-Hook unter `.git/hooks` reicht nicht aus,
+weil `core.hooksPath` auf `.husky/_` zeigt. Bei einem fehlgeschlagenen Upload
+bricht der Push ab.
+
+Der automatische Release-Tag-Push in `scripts/release_push_tag_pre_push.mjs`
+verwendet weiterhin `--no-verify`, um eine rekursive Hook-Ausführung zu vermeiden.
+Deshalb lädt er zuvor mit `git lfs push --all <Remote> <Tag>` ausdrücklich alle
+vom Tag erreichbaren LFS-Objekte hoch. Die Einschränkung auf diesen Tag vermeidet
+den Upload von Objekten aus anderen lokalen Zweigen.
+
+Wurde ein Tag bereits mit „LFS objects are missing“ abgelehnt, lassen sich die
+Objekte vor dem erneuten Push manuell nachladen, beispielsweise für `v1.10.0`:
+
+```bash
+git lfs push --all origin v1.10.0
+git push origin refs/tags/v1.10.0
+```
+
+Ein Verschieben des Tags oder Umschreiben der Git-Historie ist dafür nicht nötig.

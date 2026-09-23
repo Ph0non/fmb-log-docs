@@ -4,7 +4,7 @@ In FMB Log ist ein **Gebinde** die zentrale Einheit. Messungen (aus Protokollen)
 
 - alle Messungen eines Gebindes gesammelt sehen,
 - deren Historie nachvollziehen können (Revisionen),
-- und daraus Tagesabrechnungen erzeugen.
+- und daraus Gebindeabrechnungen erzeugen.
 
 ## Gebindeübersicht
 
@@ -66,7 +66,7 @@ Uhrzeit jeder Messung bleibt bei Datumskorrekturen erhalten.
 
 **Änderungen prüfen** zeigt vor jedem gemeinsamen Speichern die Anzahl, Mess-IDs,
 Revisionen und Feldaktionen sowie unveränderte Messungen. Betroffene gültige
-Tagesabrechnungen werden aufgelistet und nur mit einer Begründung ungültig gemacht.
+Gebindeabrechnungen werden aufgelistet und nur mit einer Begründung ungültig gemacht.
 Erst **verbindlich speichern** übernimmt die Änderungen gemeinsam. Bei einem
 Fehler wird nichts teilweise gespeichert; zwischenzeitliche Änderungen erfordern
 eine neue Prüfung. Nach Erfolg bleibt die Auswahl erhalten, die Feldaktionen
@@ -105,7 +105,7 @@ In Tabellen wird eine manuell gesetzte Angabe durch ein Stift-Symbol kenntlich g
 Wenn eine Messung fachlich nicht verwertbar ist (z. B. falsches Gebinde, falsche Parameter, Messfehler), kann sie als **ungültig** markiert werden. Eine Begründung ist Pflicht. Ungültige Messungen bleiben erhalten, werden aber bei „aktuellen/gültigen" Auswertungen nicht mehr berücksichtigt.
 
 ::: info Zusammenfassung (Detailansicht)
-- Vollständig-Status steuert, ob Gebinde standardmäßig in Tagesabrechnungen erscheinen.
+- Vollständig-Status steuert, ob Gebinde standardmäßig in Gebindeabrechnungen erscheinen.
 - Protokoll und ISO-Tabelle werden aus dem Archiv geladen.
 - Manuelles Messdatum bleibt nachvollziehbar (Original + Override).
 - Ungültige Messungen bleiben dokumentiert, werden aber nicht mehr als gültig ausgewertet.
@@ -120,7 +120,7 @@ Dieses Vorgehen ist bewusst gewählt, weil Messungen und Auswertungen häufig na
 ::: info Warum Revisionen?
 - Keine Daten gehen verloren (Audit-Trail statt „Überschreiben").
 - Sie können Korrekturen vornehmen, ohne alte Werte zu zerstören.
-- Auswertungen (z. B. Tagesabrechnung) beziehen sich immer auf eine definierte, gültige Revision.
+- Auswertungen (z. B. Gebindeabrechnung) beziehen sich immer auf eine definierte, gültige Revision.
 :::
 
 
@@ -129,7 +129,7 @@ Dieses Vorgehen ist bewusst gewählt, weil Messungen und Auswertungen häufig na
 In den Gebindestammdaten steht **Gebindetyp / Raster** zur Auswahl: kein Raster,
 symmetrische oder asymmetrische 7-m³-Mulde. Grundlage sind die beiden
 Rasterflächen-PDFs aus `RPT`. Ohne gewählten Typ bleibt das bisherige Verhalten
-bestehen; fehlende Rasterzuordnungen blockieren keine Freigabe oder Tagesabrechnung.
+bestehen; fehlende Rasterzuordnungen blockieren keine Freigabe oder Gebindeabrechnung.
 
 Die symmetrische Vorlage umfasst A/C mit 2 × 1, B/D mit 4 × 2, Boden E mit
 2 × 2 und Deckel F mit 5 × 2 Flächen. Die asymmetrische Vorlage hat A mit
@@ -216,9 +216,13 @@ Ohne WebGL bleibt die 2D-Ansicht vollständig bedienbar.
 
 Zuordnungsänderungen benötigen die Berechtigung zum Ändern von Messungen und
 werden atomar gespeichert und signiert. Die Oberflächenzuordnung ist eine ergänzende
-Information; für die Tagesabrechnung ist die Zuordnung der Messung zum Gebinde maßgeblich.
+Information; für die Gebindeabrechnung ist die Zuordnung der Messung zum Gebinde maßgeblich.
 Das Ändern, Entfernen oder Rückgängigmachen einer Oberflächenzuordnung erzeugt keinen
-Audit-Eintrag und verändert weder die Gültigkeit noch den Exportstatus einer Tagesabrechnung.
+Audit-Eintrag und verändert weder die Gültigkeit noch den Exportstatus einer Gebindeabrechnung.
 Rastertyp und Zuordnungen werden synchronisiert;
 alle beteiligten Clients müssen die Rastererweiterung unterstützen. Bestehende
 Signaturen ohne Rasterdaten bleiben gültig.
+
+### Reststoffmassen in der Gebindeabrechnung
+
+Die positiven Massen der Stoffklassen sind die Reststoffmassen nach Abzug einer vorhandenen Innentara. Für Mischgebinde werden sie nach Charge und bei SON/NEM zusätzlich nach Stoffklasse aufgeteilt. Messmasse und Messfläche bleiben separate Angaben an der jeweiligen Messung. Siehe [Gebindeabrechnung](reports.md).

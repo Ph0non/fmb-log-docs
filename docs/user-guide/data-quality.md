@@ -1,6 +1,6 @@
 # Datenqualität
 
-Die Seite **Datenqualität** hilft dabei, typische Konfigurations- oder Importprobleme schnell zu finden und gezielt zu beheben. Sie ist vor allem dann hilfreich, wenn Berechnungen „ungültig“ erscheinen oder Werte in der Tagesabrechnung fehlen.
+Die Seite **Datenqualität** hilft dabei, typische Konfigurations- oder Importprobleme schnell zu finden und gezielt zu beheben. Sie ist vor allem dann hilfreich, wenn Berechnungen „ungültig“ erscheinen oder Werte in der Gebindeabrechnung fehlen.
 
 ## Welche Prüfungen gibt es?
 
@@ -8,7 +8,7 @@ Aktuell werden drei Klassen von Auffälligkeiten angezeigt:
 
 1. **Gebinde ohne FMK**
    - Ein Gebinde hat Messungen, aber keine Freimesskampagne (FMK) zugeordnet.
-   - Folge: Freigabeprüfung und Tagesabrechnung können nicht korrekt nach FMK/NV bewertet werden.
+   - Folge: Freigabeprüfung und Gebindeabrechnung können nicht korrekt nach FMK/NV bewertet werden.
 2. **Messungen mit unklarer Einheit**
    - Für eine Messung ist die Einheit nicht eindeutig ableitbar (z. B. kein klares $Bq/g$ oder $Bq/cm^2$).
    - Folge: Umrechnung und Vergleich gegen Freigabewerte sind nicht belastbar.

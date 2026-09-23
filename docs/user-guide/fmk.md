@@ -34,7 +34,7 @@ In der UI ändern Sie die Reihenfolge über Pfeil‑Buttons. Zusätzlich können
 
 ### Pfad‑Kombinationen (z. B. „1a (mit OF)“)
 
-Einige Freigabepfade erfordern zusätzlich die Einhaltung eines zweiten Pfades (oft **OF** als oberflächenspezifischer Pfad). In der FMK können Sie pro Pfad optional einen **Sekundärpfad** hinterlegen. In der Tagesabrechnung wird dies als „Pfad (mit Sekundärpfad)“ dargestellt.
+Einige Freigabepfade erfordern zusätzlich die Einhaltung eines zweiten Pfades (oft **OF** als oberflächenspezifischer Pfad). In der FMK können Sie pro Pfad optional einen **Sekundärpfad** hinterlegen. In der Gebindeabrechnung wird dies als „Pfad (mit Sekundärpfad)“ dargestellt.
 
 ## SW und KF
 
@@ -79,10 +79,10 @@ Klicken Sie eine Matrixzelle an, um SW und KF für genau diesen Gültigkeitsbere
 
 Jede FMK benötigt mindestens eine Charge. Die Chargennummer besteht aus genau zwei Ziffern (00–99) und ist innerhalb der FMK eindeutig. Aus FMK-Kürzel und Chargennummer entsteht beispielsweise **F050.02**. Jede Charge hat genau eine Stoffart: CST, AUS, ELM, KAB, ISW, ELT, NEM, BET, SON oder KOM.
 
-Im FMK-Editor können Chargen hinzugefügt, geändert und entfernt werden. Die dort angezeigten erlaubten Stoffklassen ergeben sich aus allen Stoffarten der Chargen. Änderungen, durch die bereits verwendete Stoffklassen unzulässig würden, werden verhindert. Eine FMK mit zugeordneten Gebinden kann nicht gelöscht werden.
+Im FMK-Editor können Chargen hinzugefügt, geändert und entfernt werden. Pro FMK darf jede Stoffart genau einer Charge zugeordnet sein. Mehrdeutige Altbestände bleiben bearbeitbar, müssen aber vor einer neuen Abrechnung korrigiert werden. Die dort angezeigten erlaubten Stoffklassen ergeben sich aus allen Stoffarten der Chargen. Änderungen, durch die bereits verwendete Stoffklassen unzulässig würden, werden verhindert. Eine FMK mit zugeordneten Gebinden kann nicht gelöscht werden.
 
-Gebinde werden einer FMK zugeordnet, nicht einer einzelnen Charge. Beim Anlegen im Import und beim Bearbeiten der Gebinde-Stammdaten wird mindestens eine erlaubte Stoffklasse mit einer positiven Masse in kg benötigt. Klassen verschiedener Stoffarten dürfen kombiniert werden; jede Klasse darf einmal vorkommen. Die Summe dieser Aufteilung ist unabhängig von den separat erfassten Gebinde- und Messmassen.
+Gebinde werden einer FMK zugeordnet, nicht einer einzelnen Charge. Beim Anlegen im Import und beim Bearbeiten der Gebinde-Stammdaten wird mindestens eine erlaubte Stoffklasse mit einer positiven Masse in kg benötigt. Klassen verschiedener Stoffarten dürfen kombiniert werden; jede Klasse darf einmal vorkommen. Diese Stoffklassenmassen sind Reststoffmassen nach Abzug einer vorhandenen Innentara und werden für die Gebindeabrechnung anteilig verwendet. Sie sind von Masse und Fläche der einzelnen Messungen zu unterscheiden.
 
-Bestehende Datensätze ohne diese Angaben werden als **Nachpflege erforderlich** angezeigt. Zuerst werden die Chargen der FMK, anschließend die Stoffklassen und Massen der Gebinde ergänzt. Bis dahin sind neue Freigaben und Tagesabrechnungen für diese Gebinde gesperrt, auch ohne den Filter „nur vollständige Gebinde“. Bestehende Berichte bleiben bei der Migration erhalten; spätere Änderungen an Gebinde-Stammdaten verwenden den üblichen Bestätigungsdialog für betroffene Berichte.
+Bestehende Datensätze ohne diese Angaben werden als **Nachpflege erforderlich** angezeigt. Zuerst werden die Chargen der FMK, anschließend die Stoffklassen und Massen der Gebinde ergänzt. Bis dahin sind neue Freigaben und Gebindeabrechnungen für diese Gebinde gesperrt, auch ohne den Filter „nur vollständige Gebinde“. Bestehende Berichte bleiben bei der Migration erhalten; spätere Änderungen an Gebinde-Stammdaten verwenden den üblichen Bestätigungsdialog für betroffene Berichte.
 
 Vor der Nutzung müssen alle synchronisierenden Arbeitsplätze auf die neue Programmversion aktualisiert werden.

@@ -17,3 +17,7 @@ Zusätzlich ist das SQL-Schema als Entity-Relationship-Diagramm (D2 `sql_table`)
 ![SQL-Schema (ER)](../diagrams/sql-schema.svg)
 
 Hinweis: Die tatsächlichen Tabellen-/Spaltennamen können abweichen; diese Seite dient als Orientierung.
+
+## Gebindeabrechnung
+
+`daily_reports` speichert weiterhin die Exporte. Neue Snapshots (Version 4) ergänzen die eindeutigen Messrevisionen um Chargen-/Stoffklassenblätter und Maximalwertzeilen; `daily_report_measurements` enthält jede verwendete Revision nur einmal. Die vorhandenen `material_masses_json` und `batches_json` liefern Reststoffanteile und eindeutige Chargenzuordnungen. Version-3-Snapshots bleiben unverändert lesbar. Siehe [ADR-005](../architecture/adr-005-gebindeabrechnung.md).

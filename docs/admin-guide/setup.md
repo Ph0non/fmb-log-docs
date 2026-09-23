@@ -6,7 +6,7 @@ Beim ersten Start ist die Anwendung im Setup‑Modus. In diesem Schritt wird der
 
 Nach dem Anlegen des Administrators führt FMB Log zusätzlich eine einmalige Initialisierung durch (kann einige Sekunden dauern):
 
-- RFC3161‑Zeitstempel für Tagesabrechnungen wird als **verpflichtend** aktiviert.
+- RFC3161‑Zeitstempel für Gebindeabrechnungen wird als **verpflichtend** aktiviert.
 - Delegations‑Zertifikate für den Admin werden erstellt (Scopes: `masterdata.fgw`, `masterdata.nv`, `masterdata.fmk`).
 - Die bereits vorhandenen Stammdaten aus der Stub‑DB werden mit dem Admin‑Signierschlüssel signiert (FGW/NV/FMK/SW/KF).
 - Die Sicherheitsdaten in der DB (Benutzer/Gruppen/Rechte/Delegationen/Admin‑Einstellungen) werden mit dem DB‑Signierschlüssel signiert.
@@ -217,11 +217,11 @@ Bei der Ersteinrichtung signiert FMB Log die vorhandenen Stammdaten automatisch.
    - Für den Admin sollten Delegationen für `masterdata.fgw`, `masterdata.nv` und `masterdata.fmk` sichtbar sein.
    - Beim Erteilen, Widerrufen oder Abgleichen wird bei gesperrtem Signierschlüssel das Signier-Passwort abgefragt.
 
-### 4) Audit / Tagesabrechnung (kurzer Funktionscheck)
+### 4) Audit / Gebindeabrechnung (kurzer Funktionscheck)
 
 1. **Administration → Audit → Audit ausführen**
    - Erwartung: Audit läuft durch und meldet keine kritischen Fehler.
-2. **Tagesabrechnung**
+2. **Gebindeabrechnung**
    - Vorschau erstellen (mit Testdaten).
    - Optional: **PDF exportieren**.
 3. **Administration → Einstellungen → Zeitstempeldienst**

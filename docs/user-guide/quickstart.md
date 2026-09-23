@@ -1,6 +1,6 @@
 # Schnellstart
 
-Der Schnellstart führt Sie einmal durch den typischen Ablauf – von der ersten Anmeldung bis zum Export einer Tagesabrechnung. Die Detailseiten beschreiben anschließend einzelne Arbeitsschritte genauer.
+Der Schnellstart führt Sie einmal durch den typischen Ablauf – von der ersten Anmeldung bis zum Export einer Gebindeabrechnung. Die Detailseiten beschreiben anschließend einzelne Arbeitsschritte genauer.
 
 ## 1) Anwendung starten
 
@@ -35,20 +35,20 @@ Nach der Anmeldung öffnet sich die **Übersicht**. Diese Seite zeigt aktuelle K
 Die Kennzahlen beziehen sich auf **aktuelle und gültige Revisionen** (d. h. die derzeit gültige Version einer Messung).
 
 ::: info Was bedeutet „offen"?
-- **Nicht exportiert**: Messungen, die noch in keiner Tagesabrechnung enthalten sind
+- **Nicht exportiert**: Messungen, die noch in keiner Gebindeabrechnung enthalten sind
 - **Nicht vollständig**: Gebinde, die noch nicht als „vollständig" markiert sind
 :::
 
 ![Übersicht (Shortcuts)](../screenshots/uebersicht.annotated.png)
 
-- (1) „Letzte Tagesabrechnungen“ (Liste)
-- (2) Shortcut zur Seite **Tagesabrechnung**
+- (1) „Letzte Gebindeabrechnungen“ (Liste)
+- (2) Shortcut zur Seite **Gebindeabrechnung**
 - (3) „Letzte Imports“ (Liste)
-- (4) Liste der enthaltenen Gebinde/Messungen je Tagesabrechnung
+- (4) Liste der enthaltenen Gebinde/Messungen je Gebindeabrechnung
 
 ## 5) Typischer Ablauf
 
-In der Praxis beginnt die Arbeit meist mit einem Gebinde und den zugehörigen Protokollen. Optional werden vorher Stammdaten geprüft (FMK/NV/FGW), typischerweise durch Admins oder Key-User. Anschließend importieren Sie RPT-Dateien, prüfen die Messungen, markieren das Gebinde als vollständig und erzeugen schließlich eine Tagesabrechnung als PDF.
+In der Praxis beginnt die Arbeit meist mit einem Gebinde und den zugehörigen Protokollen. Optional werden vorher Stammdaten geprüft (FMK/NV/FGW), typischerweise durch Admins oder Key-User. Anschließend importieren Sie RPT-Dateien, prüfen die Messungen, markieren das Gebinde als vollständig und erzeugen schließlich eine Gebindeabrechnung als PDF.
 
 ::: info Kurzfassung (Ablauf)
 1. Optional: Stammdaten prüfen (FMK/NV/FGW)
@@ -56,8 +56,8 @@ In der Praxis beginnt die Arbeit meist mit einem Gebinde und den zugehörigen Pr
 3. RPT-Dateien importieren (Gammaspektrometrie)
 4. Messungen prüfen, ggf. Messdatum korrigieren
 5. Gebinde als vollständig markieren
-6. Tagesabrechnung als Vorschau erzeugen und PDF exportieren
-7. Exportierte Tagesabrechnungen in der Historie nachschlagen
+6. Gebindeabrechnung als Vorschau erzeugen und PDF exportieren
+7. Exportierte Gebindeabrechnungen in der Historie nachschlagen
 :::
 
 ## Ablaufdiagramm

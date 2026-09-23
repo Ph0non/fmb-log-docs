@@ -27,7 +27,7 @@ In der Praxis werden Gruppen als Rollen genutzt (z. B. „Messung“, „Auswe
 Die folgenden Rechte sind besonders häufig relevant:
 
 - Messungen importieren/ändern/löschen sowie **Messdatum ändern**
-- Tagesabrechnungen ungültig machen (`reports.invalidate`)
+- Gebindeabrechnungen ungültig machen (`reports.invalidate`)
 - FMK und NV anlegen/ändern/löschen
 - Freigabewerte ändern (`fgw.update`)
 - Passwörter anderer Nutzer zurücksetzen (`users.reset_passwords`)

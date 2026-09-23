@@ -1,138 +1,102 @@
-# Tagesabrechnung
+# Gebindeabrechnung
 
-Die Tagesabrechnung ist der zentrale Export in FMB Log. Sie fasst Messungen zusammen und erzeugt daraus ein PDF im Querformat. Die Anwendung unterstützt zwei Arbeitsweisen: **nach Tag** (operativ am Messtag) und **nach Gebinde** (gezielt für einzelne Gebinde, auch über mehrere Tage verteilt).
+Die Gebindeabrechnung erzeugt ein PDF im A4-Querformat mit **Teil 1 – Details** und **Teil 2 – Maximalwerte**. Vorschau und PDF verwenden denselben eingefrorenen Datenstand.
 
-## Ablaufdiagramm
+## Auswahl und Ablauf
 
-![Ablauf (Tagesabrechnung)](../diagrams/reports-flow.svg)
+1. Optional eine FMK filtern; ohne Filter stehen die Gebinde aller FMKs zur Auswahl.
+2. Gebinde und Abrechnungsdatum wählen. Der Filter **Nur vollständig gemessene Gebinde** ist standardmäßig aktiv.
+3. **Vorschau erstellen** und beide Teile einschließlich der Hinweise prüfen.
+4. **PDF exportieren**. Der Export erscheint anschließend in der Historie.
 
-## Modi
+Einbezogen werden **alle aktuellen gültigen Messrevisionen** der ausgewählten Gebinde, auch bereits exportierte Messungen. Ungültige und ersetzte Revisionen sind ausgeschlossen. Messtagsauswahl und Exportfilter entfallen: Ein früherer Export darf die Ermittlung des Gebindemaximums nicht einschränken.
 
-Im Modus **Tag** werden alle Gebinde berücksichtigt, die am ausgewählten Messtag Messungen haben. Im Modus **Gebinde** wählen Sie gezielt Gebindenummern aus; die Abrechnung umfasst dann alle Messungen dieser Gebinde, unabhängig vom Messtag.
+![Ablauf der Gebindeabrechnung](../diagrams/reports-flow.svg)
 
-::: info Kurzfassung (Modi)
-- **Tag**: operativ – „Was wurde an diesem Tag gemessen?"
-- **Gebinde**: gezielt – „Welche Messungen gehören zu diesem Gebinde?"
-:::
+![Vorschau einer Gebindeabrechnung](../screenshots/gebindeabrechnung-vorschau.png)
 
-## Filter
+## Blattaufteilung und Kopfzeilen
 
-Die Filter dienen dazu, den Export kontrolliert zu halten:
+Die Hauptüberschrift lautet **Gebindeabrechnung**, ohne Datum im Titel. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“ und der durchgängigen Seitennummerierung.
 
-- **Nur vollständig**: Standardmäßig werden nur Gebinde exportiert, die als vollständig markiert sind (damit keine „halben" Gebinde in der Abrechnung landen).
-- **Bereits exportierte Messungen einschließen**: Standardmäßig **aus**, um doppelte Exporte zu vermeiden.
+Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM werden zusätzlich nach Stoffklasse getrennt.** Beispiele:
 
-::: tip Empfehlung
-Markieren Sie ein Gebinde erst dann als vollständig, wenn keine weiteren Messungen mehr erwartet werden.
-:::
+| Blattüberschrift | Umfang |
+| --- | --- |
+| `F050.01 \| CST` | Alle CST-Stoffklassen dieser Charge |
+| `F152.01 \| SON \| SON13` | Nur SON13 |
+| `F152.02 \| NEM \| NEM02` | Nur NEM02 |
 
-## Vorschau & Export
+Pro FMK ist eine Charge je Stoffart erforderlich. Mehrere Chargen derselben Stoffart müssen vor der Abrechnung korrigiert werden. Bestandsdaten bleiben hierfür bearbeitbar.
 
-Der Workflow ist zweistufig: Zuerst erzeugen Sie eine **Vorschau**, dann exportieren Sie das PDF. So können Sie die Inhalte vor dem finalen Export prüfen.
+„Nicht freigabefähig“ bleibt ein eigener Abschnitt; danach folgen die Freigabepfade in FMK-Reihenfolge. Jeder Abschnitt beginnt auf einer neuen Seite. Das PDF enthält zuerst alle Detailabschnitte, dann alle Maximalwertabschnitte in derselben Reihenfolge.
 
-![Tagesabrechnung (Vorschau)](../screenshots/tagesabrechnung-vorschau.annotated.png)
+**Mischgebinde** erscheinen auf jedem betroffenen Blatt. Die Messwerte bleiben gleich, Reststoffmasse und Gesamtaktivität beziehen sich jeweils ausschließlich auf die zugehörigen Stoffanteile. Die Gebindeanzahlen unterschiedlicher Materialblätter dürfen deshalb nicht zu einer eindeutigen Gesamtgebindeanzahl addiert werden.
 
-- (1) FMK als Filter (optional)
-- (2) Abrechnungsdatum
-- (3) Modus (Tag/Gebinde)
-- (4) Vorschau erstellen
-- (5) PDF exportieren
-- (6) Filter „Nur vollständig“
-- (7) Vorschau‑Tabelle
+## Teil 1 – Details
 
-Wenn **keine FMK** gewählt ist, erstellt die Anwendung die Tagesabrechnung automatisch für **alle passenden FMKs** (z. B. mit Messungen am gewählten Tag). Die FMK-Auswahl dient dann nur als optionaler Filter.
+Dieser Teil enthält jede ausgewertete Messung. **Masse und Fläche gehören zur Messung**, nicht zum gesamten Gebinde. Die gemeinsame Fußnote lautet:
 
-Nach erfolgreichem Export setzt FMB Log pro Messung ein Export-Flag. Dadurch werden Messungen nicht versehentlich mehrfach exportiert (außer Sie aktivieren explizit den Filter „Bereits exportierte Messungen einschließen").
+> gemessene/beprobte Größe, ggf. umgerechnet.
 
-::: info Kurzfassung (Vorgehen)
-1. Optional: FMK als Filter auswählen (oder leer lassen für „alle passenden")
-2. Modus/Datum/Gebinde wählen
-3. Vorschau erzeugen und prüfen
-4. PDF exportieren
-5. Export in der Historie nachvollziehen
-:::
+Am Abschnittsende steht eine Summenzeile mit der **Anzahl der Messungen**. Bei mehreren Seiten erscheint die Summe nur einmal am Ende, nicht als wiederholte Seitensumme.
 
-## QR-Code & optionaler Zeitstempel
+## Teil 2 – Maximalwerte
 
-Jede exportierte Tagesabrechnung enthält unten rechts in der Fußzeile einen **QR-Code**. Dieser enthält eine eindeutige Kennung der exportierten Datenbasis und dient als Referenz in der Historie.
+Pro Gebinde und Blattabschnitt erscheint **eine maßgebliche Messung**. Ausschlaggebend ist die größere massen- oder flächenspezifische Ausschöpfung:
 
-![Tagesabrechnung (PDF)](../screenshots/tagesabrechnung-pdf.annotated.png)
+$$
+q = \max\left(\frac{OG_M}{FGW_M},\frac{OG_A}{FGW_A}\right)
+$$
 
-- (1) Kopfzeile (Datum/FM K/Freigabepfad)
-- (2) Tabelle der enthaltenen Messungen
-- (3) QR‑Code + Fingerprints (z. B. `DATA: ...`)
+Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten Werte. Alle Messwerte und Faktoren der Zeile stammen aus derselben Messung. Die Mess-ID und das Messdatum machen die Quelle nachvollziehbar. Bei Gleichstand entscheiden aufsteigend Messzeitpunkt, Mess-ID und Revisionskennung.
 
-Optional kann der Admin den Export so konfigurieren, dass zusätzlich ein **Zeitstempel** (RFC 3161) erzeugt wird. In diesem Fall ist für den PDF-Export eine Internetverbindung erforderlich.
+Der Untertitel nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren mit Jahresversion. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen.
 
-## Historie & Verifikation
+### Reststoffmasse und Gesamtaktivität
 
-Alle exportierten Tagesabrechnungen werden unter **Historie** gespeichert. Dort können Sie:
+Die gespeicherten Stoffklassenmassen sind bereits Reststoffmassen nach Abzug der Innentara. Pro Blatt werden nur die zugehörigen Stoffklassenmassen summiert. Es erfolgt kein weiterer Taraabzug und es werden keine zusätzlichen ReVK-Felder benötigt.
 
-- eine Tagesabrechnung auswählen und die enthaltenen Messungen ansehen,
-- das zugehörige PDF öffnen (falls der Pfad gespeichert ist),
-- optional eine vorhandene PDF-Datei gegen die Datenbank prüfen.
+Die Fußnote zur Reststoffmasse lautet:
 
-![Historie (Tagesabrechnungen)](../screenshots/historie.annotated.png)
+> Reststoffmasse = Nettomasse (Nettomasse ReVK) - Innentara (= Innentara ReVK, wenn vorhanden)
 
-- (1) Suche (Datum, FMK oder Fingerprint)
-- (2) Liste der Tagesabrechnungen (links)
-- (3) Details: enthaltene Messungen (rechts)
-- (4) PDF öffnen / ungültig markieren (Icons)
-- (5) Verifizierung (Snapshot/TSA)
+Die zusätzliche Gesamtaktivität wird aus der **angezeigten OG_M einschließlich KF-Anpassung** berechnet. Die Berechnung verwendet den Wert vor Anzeigerundung:
 
-### Status in der Historie
+$$
+A_{\mathrm{Gebindeanteil}}[\mathrm{Bq}] = OG_M[\mathrm{Bq/g}] \cdot m_{\mathrm{Reststoffanteil}}[\mathrm{kg}] \cdot 1000
+$$
 
-In der Historie wird der Status einer Tagesabrechnung klar angezeigt:
+Die Zeile am Abschnittsende summiert **Gebindeanzahl und Gesamtaktivität**. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Masse und Fläche der ausgewählten Messung bleiben zusätzlich sichtbar und sind von der Reststoffmasse zu unterscheiden.
 
-- **gültig**: Die Tagesabrechnung ist weiterhin konsistent mit den enthaltenen Messdaten.
-- **ungültig**: Entweder wurde eine enthaltene Messung nachträglich ungültig gesetzt **oder** die Tagesabrechnung wurde manuell ungültig gemacht.
+### Beispiel einer Mischgebindeabrechnung
 
-Mit der Berechtigung `reports.invalidate` kann eine Tagesabrechnung in der Historie manuell ungültig gemacht werden. Dabei werden die Export-Markierungen der enthaltenen Messungen zurückgesetzt, sodass diese bei Bedarf erneut exportiert werden können.
+Ein Gebinde enthält 10 kg CST und 20 kg SON13. Messung A schöpft massenspezifisch 80 % und flächenspezifisch 20 % aus. Messung B erreicht 50 % beziehungsweise 90 %. **Messung B ist maßgeblich**, weil 90 % die höchste Ausschöpfung ist.
 
-### Suche nach Fingerprints
+Bei einer angezeigten OG_M von 0,5 Bq/g ergeben sich auf dem CST-Blatt 5.000 Bq und auf dem SON13-Blatt 10.000 Bq. Die beiden Anteile ergeben zusammen 15.000 Bq; die volle Gebindemasse wird nicht auf jedem Blatt erneut angesetzt.
 
-Das Suchfeld in der Historie akzeptiert neben Datum und FMK auch **Fingerprints** (Kurzform wie `ABC-DEF-GHI`). Damit können Sie schnell von einem Wert aus der PDF zum passenden Datenbank-Eintrag springen.
+![Maximalwerte im PDF](../screenshots/gebindeabrechnung-pdf.png)
 
-### PDF prüfen…
+### Fehlende Grundlagen
 
-Mit **PDF prüfen…** können Sie eine Datei auswählen; FMB Log berechnet die Prüfsumme der PDF und sucht nach dem passenden Tagesabrechnungs-Eintrag in der Datenbank.
+Nicht berechenbare Werte bleiben als solche gekennzeichnet und werden nicht durch Null ersetzt. Fehlen erforderliche Vergleichswerte einer Messung, wird das ermittelte Maximum als **unvollständig** markiert. Fehlende massenspezifische OG oder eine nicht verfügbare Umrechnung können die Gesamtaktivitätsberechnung verhindern. Betroffene Aktivitätssummen sind als unvollständig gekennzeichnet; ein angezeigter Zahlenwert ist dann nur die Summe der berechenbaren Anteile. Fehlende Messdaten machen auch den Zeitraum unvollständig.
 
-Typischer Anwendungsfall: Sie haben die Original-PDF aus einem Export vorliegen und wollen verifizieren, ob sie genau zu einer gespeicherten Tagesabrechnung gehört und ob diese noch gültig ist.
+## Indizes und Fußnoten
 
-![PDF prüfen (Verifizierung)](../screenshots/verify-tagesabrechnung.annotated.png)
+- **M**: massenspezifisch; **A**: flächenspezifisch. OG, FGW, SW und KF tragen diese Indizes.
+- **OG**: „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 25457-1“.
+- **\***: unter Berücksichtigung des Korrekturfaktors (KF).
+- **\*\***: unter Berücksichtigung des Schwellenwertes (SW).
+- Die Maximalwertauswahl, Aktivitätsformel und anteilige Behandlung von Mischgebinden werden unmittelbar auf der Abrechnung erläutert.
 
-- (1) Status (gültig / TSA)
-- (2) geprüfte Datei (Pfad)
-- (3) Match in der Datenbank
-- (4) Fingerprints (Kurzform)
+## Historie und Verifikation
 
-::: warning Hinweis
-Die Prüfung funktioniert nur für die **unveränderte Original-PDF**. Sobald eine PDF neu gespeichert, gedruckt/gescannt oder anderweitig verändert wurde, stimmt die Prüfsumme nicht mehr überein.
-:::
+Der Desktop-Export speichert die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen und Maximalwerte in einem unveränderlichen Datenstand (Snapshot-Version 4). Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. QR-Code, Fingerprints und RFC-3161-Zeitstempel beziehen sich auf dieses gespeicherte Paket.
 
-## Abschnitte
+Unter **Historie** lassen sich das PDF und die verwendeten Daten öffnen, Fingerprints suchen und Original-PDFs gegen die gespeicherten Prüfsummen prüfen. Alte Tagesabrechnungen einschließlich Version-3-Snapshots bleiben lesbar; ihre PDFs und ursprünglichen Daten werden nicht umgeschrieben.
 
-Eine Tagesabrechnung ist in Abschnitte unterteilt:
+Änderungen an enthaltenen Messungen oder Gebinde-Stammdaten verwenden weiterhin das bestehende Invalidierungsverfahren. Mit `reports.invalidate` kann eine Abrechnung manuell ungültig gemacht werden. Der Exportstatus dokumentiert weiterhin den Export, begrenzt aber nicht mehr den Messumfang einer neuen Gebindeabrechnung.
 
-- **Nicht freigabefähig**: Messungen/Gebinde, die keinen der geprüften Pfade bestehen.
-- Danach je Freigabepfad ein eigener Abschnitt. Jeder Pfad beginnt auf einer neuen Seite.
+Die PDF-Prüfung gilt für die unveränderte Originaldatei. Neu gespeicherte oder eingescannte PDFs besitzen eine andere Prüfsumme.
 
-## Tabellenspalten (Vorschau/PDF)
-
-Die Vorschau und die PDF verwenden dieselbe fachliche Logik und zeigen die wichtigsten Werte pro Messung an (z. B. OG/FGW in $Bq/g$ bzw. $Bq/cm^2$).
-
-### SW/KF getrennt nach Masse/Fläche
-
-Da für viele Freigabepfade eine **Kombination aus massenspezifischem und oberflächenspezifischem Pfad** erforderlich sein kann (z. B. `1a (mit OF)`), werden Schwellenwert und Korrekturfaktor separat ausgewiesen:
-
-- **SW_M / KF_M**: Faktoren für die **massenbezogene** Prüfung (Einheit $Bq/g$).
-- **SW_A / KF_A**: Faktoren für die **flächenbezogene** Prüfung (Einheit $Bq/cm^2$).
-
-Wenn ein Faktor nicht hinterlegt ist, bleibt die Zelle leer (fachlich gilt dann $SW = 1$ bzw. $KF = 1$).
-
-### Fußnoten für angepasste Werte
-
-Wenn OG/FGW unter Berücksichtigung von SW/KF angepasst wurden, wird dies direkt am Wert markiert:
-
-- `*` unter Berücksichtigung des Korrekturfaktors (KF)
-- `**` unter Berücksichtigung des Schwellenwertes (SW)
+Die fachlichen Entscheidungen sind in [ADR-005: Gebindeabrechnung](../architecture/adr-005-gebindeabrechnung.md) dokumentiert.

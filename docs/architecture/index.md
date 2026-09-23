@@ -15,3 +15,5 @@ Die ADRs sind primär für Admins/Key‑User und technische Betreiber gedacht, u
 - [ADR‑002: Integrität & Signaturen (Ed25519 + Delegation)](/architecture/adr-002-integrity-signing)
 - [ADR‑003: Messprotokolle als Packfiles](/architecture/adr-003-protocol-packs)
 - [ADR‑004: Historische TSA‑Vertrauensprofile und Erneuerungsnachweise](/architecture/adr-004-historical-tsa-validation)
+
+- [ADR-005: Gebindeabrechnung mit Details und Maximalwerten](/architecture/adr-005-gebindeabrechnung)

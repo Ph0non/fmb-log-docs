@@ -172,7 +172,7 @@ Diese Dateien liegen **neben der Hub‑DB** im gemeinsamen Datenordner und werde
 
 ## Backup
 
-Die sicherste Backup‑Strategie ist, die relevanten Dateien zu kopieren, wenn die Anwendung geschlossen ist. Für den Betrieb empfiehlt sich eine regelmäßige Sicherung (z. B. täglich) und eine Aufbewahrung mehrerer Generationen (Rotation), damit auch ältere Tagesabrechnungen nachvollziehbar bleiben.
+Die sicherste Backup‑Strategie ist, die relevanten Dateien zu kopieren, wenn die Anwendung geschlossen ist. Für den Betrieb empfiehlt sich eine regelmäßige Sicherung (z. B. täglich) und eine Aufbewahrung mehrerer Generationen (Rotation), damit auch ältere Gebindeabrechnungen nachvollziehbar bleiben.
 
 Sichern Sie im Hub‑Ordner mindestens:
 

@@ -10,7 +10,7 @@ Die reinen Leserechte `fmk.read` und `nv.read` erlauben den Zugriff auf die jewe
 | `measurements.update` | Messungen ändern |
 | `measurements.delete` | Messungen löschen |
 | `measurements.update_date` | Messdatum ändern |
-| `reports.invalidate` | Tagesabrechnungen ungültig machen |
+| `reports.invalidate` | Gebindeabrechnungen ungültig machen |
 | `fmk.read` | FMK ansehen |
 | `fmk.create` | FMK anlegen |
 | `fmk.update` | FMK ändern |

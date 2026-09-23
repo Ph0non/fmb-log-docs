@@ -19,6 +19,6 @@ Dieser Teil richtet sich an Administratoren und Key‑User. Er erklärt die Aufg
 
 ::: info Zusammenfassung
 - Admins legen die Grundstruktur fest: Gruppen, Rechte, Nutzer, Stammdaten.
-- Danach können Endanwender im Tagesgeschäft (Import/Gebinde/Tagesabrechnung) arbeiten.
+- Danach können Endanwender im Tagesgeschäft (Import/Gebinde/Gebindeabrechnung) arbeiten.
 - Änderungen an FGW und NV sind fachlich kritisch und sollten nur nach Freigabeprozess erfolgen.
 :::

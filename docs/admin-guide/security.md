@@ -123,8 +123,8 @@ Die folgende Übersicht ist bewusst praxisnah: **welches Risiko** ist realistisc
 | SQL‑Injection über Eingabefelder | Datenverlust / Rechteänderung | Parameter Binding | Schutz gilt nur, solange SQL nicht per String‑Konkatenation gebaut wird. |
 | Auslesen von Messdaten aus DB‑Datei | Vertraulichkeitsverlust | (keine, DB ist nicht verschlüsselt) | Schutz nur über Datei‑/Share‑Berechtigungen. Optional: separate Verschlüsselung wäre ein eigenes Projekt mit Trade‑offs. |
 | Malware/Administrator auf dem Client | Vollzugriff | (keine) | Nicht im Scope: Ein kompromittiertes System kann immer Daten auslesen/manipulieren. |
-| Manipulation von Fach‑/Messdaten (Gebinde, Messungen, FGW) | Falsche Freigabe / verfälschte Historie | Messdaten‑Signaturen (User‑Key), Stammdaten‑Signaturen (Delegation), Protokoll‑Integrität (BLAKE3) und Tagesabrechnungs‑Snapshot (BLAKE3 + verpflichtender TSA beim Desktop-Export) | DoS bleibt möglich (Dateien löschen/überschreiben). Bei aktivem Integritätsschutz werden nicht verifizierbare Datensätze fail‑closed als ungültig behandelt. Tagesabrechnungen können nachträglich ungültig werden, wenn enthaltene Messungen später ungültig gesetzt werden. |
-| Stammdaten vor Report ändern, danach zurücksetzen | Bericht basiert auf manipulierten Daten ohne Nachweis | Audit‑Trail Hash‑Kette + TSA‑Pinning | Änderungen werden im Audit‑Trail protokolliert und nach Tagesabrechnung mit TSA‑Pin versehen. Nachträgliche Manipulation der Historie ist erkennbar. |
+| Manipulation von Fach‑/Messdaten (Gebinde, Messungen, FGW) | Falsche Freigabe / verfälschte Historie | Messdaten‑Signaturen (User‑Key), Stammdaten‑Signaturen (Delegation), Protokoll‑Integrität (BLAKE3) und Gebindeabrechnungs‑Snapshot (BLAKE3 + verpflichtender TSA beim Desktop-Export) | DoS bleibt möglich (Dateien löschen/überschreiben). Bei aktivem Integritätsschutz werden nicht verifizierbare Datensätze fail‑closed als ungültig behandelt. Gebindeabrechnungen können nachträglich ungültig werden, wenn enthaltene Messungen später ungültig gesetzt werden. |
+| Stammdaten vor Report ändern, danach zurücksetzen | Bericht basiert auf manipulierten Daten ohne Nachweis | Audit‑Trail Hash‑Kette + TSA‑Pinning | Änderungen werden im Audit‑Trail protokolliert und nach Gebindeabrechnung mit TSA‑Pin versehen. Nachträgliche Manipulation der Historie ist erkennbar. |
 
 ## Betriebsempfehlungen (Admin)
 
@@ -238,9 +238,9 @@ Alles andere ist lokales Admin‑Material und bleibt bewusst **außerhalb von Gi
 
 ![Sicherheitsarchitektur](../diagrams/security-architecture.svg)
 
-## Integrität für Messdaten & Tagesabrechnung (Stand)
+## Integrität für Messdaten & Gebindeabrechnung (Stand)
 
-Neben Benutzer/Gruppen/Rechten werden in FMB Log inzwischen auch **fachliche Daten** (Stammdaten, Mess‑Revisionen, Protokolle) sowie die **Tagesabrechnung** selbst so abgesichert, dass Manipulationen an der SQLite‑Datei **auffallen** (tamper‑evident).
+Neben Benutzer/Gruppen/Rechten werden in FMB Log inzwischen auch **fachliche Daten** (Stammdaten, Mess‑Revisionen, Protokolle) sowie die **Gebindeabrechnung** selbst so abgesichert, dass Manipulationen an der SQLite‑Datei **auffallen** (tamper‑evident).
 
 ### Bedrohungsszenarien (Beispiele)
 
@@ -251,11 +251,11 @@ Neben Benutzer/Gruppen/Rechten werden in FMB Log inzwischen auch **fachliche Dat
 
 ### Zielbild
 
-Für alle Daten, die in die Tagesabrechnung einfließen, gilt:
+Für alle Daten, die in die Gebindeabrechnung einfließen, gilt:
 
 - **Jede Änderung ist kryptografisch nachweisbar** (Signatur/HMAC) und kann nicht durch reine DB‑Manipulation „unsichtbar“ gemacht werden.
 - **Offline‑Import bleibt möglich** (lokale DB), Manipulationen fallen aber beim nächsten Sync/bei der Anzeige auf.
-- Die Tagesabrechnung kann optional als **signierter Snapshot** erzeugt werden (Nachweis, welche Datenbasis verwendet wurde).
+- Die Gebindeabrechnung kann optional als **signierter Snapshot** erzeugt werden (Nachweis, welche Datenbasis verwendet wurde).
 
 ### Umsetzung (phasenweise)
 
@@ -276,7 +276,7 @@ Messungen werden typischerweise von „normalen“ Nutzern importiert. Dafür is
   - Public Key: in der DB, **zertifiziert** durch den DB‑Integritätsschlüssel (damit Public‑Key‑Swap erkennbar ist).
 - Beim Import/Ändern einer Mess‑Revision wird eine kanonische Darstellung der fachlichen Felder gehasht (BLAKE3) und mit dem User‑Key signiert.
 - Die Signatur wird als `user_signature` gespeichert; die Signatur‑Metadaten (`signed_by_user_id`, `signed_by_key_id`, `signed_at`) werden über `signing_meta_id` referenziert (`signing_metas`).
-- Bei der Anzeige und bei Tagesabrechnungs‑Berechnungen wird diese Signatur geprüft. Ungültige/fehlende Signatur führt zu „ungültig“ (kein Freigabe‑Nachweis).
+- Bei der Anzeige und bei Gebindeabrechnungs‑Berechnungen wird diese Signatur geprüft. Ungültige/fehlende Signatur führt zu „ungültig“ (kein Freigabe‑Nachweis).
 
 Damit bleibt Offline‑Import möglich (User‑Key ist lokal verfügbar, weil im User‑Vault).
 
@@ -336,7 +336,7 @@ Es gibt zwei praktikable Muster:
 
 1. Key‑User meldet sich an.
 2. Beim Speichern von FGW/NV/FMK wird der Datensatz mit dem **User‑Key** signiert und die zugehörige Delegation (`capability_id`) über `signing_meta_id` referenziert (`signing_metas`).
-3. Die Anwendung nutzt für Berechnungen (insb. Tagesabrechnung/Preview/Dashboard) nur **verifizierte** Stammdaten:
+3. Die Anwendung nutzt für Berechnungen (insb. Gebindeabrechnung/Preview/Dashboard) nur **verifizierte** Stammdaten:
    - User‑Signatur gültig
    - User‑Public‑Key ist DB‑signiert (Public‑Key‑Swap erkennbar)
    - Delegation gültig zum Signaturzeitpunkt (`issued_at`/`expires_at`/`revoked_at`)
@@ -354,7 +354,7 @@ Die Aktion schreibt zusätzlich einen Audit‑Trail‑Eintrag (`signatures.attes
 - Admin kann Delegationen widerrufen. Signaturen, die **nach** `revoked_at` erstellt wurden, gelten als ungültig.
 - Signaturen, die **vor** `revoked_at` erstellt wurden, bleiben verifizierbar (Audit‑Trail).
 
-#### Phase 4: Tagesabrechnung als signierter Snapshot
+#### Phase 4: Gebindeabrechnung als signierter Snapshot
 
 Zusätzlich zur laufenden Daten‑Integrität wird beim PDF‑Export ein **Snapshot‑Hash** erzeugt und in der PDF als **QR‑Code** ausgegeben.
 
@@ -365,14 +365,14 @@ Zusätzlich zur laufenden Daten‑Integrität wird beim PDF‑Export ein **Snaps
 - Die PDF enthält unten rechts in der Fußzeile einen QR‑Code mit diesem Snapshot‑Hash (und optional weiteren Metadaten, siehe unten).
 - Zusätzlich werden neben dem QR‑Code kurze **Fingerprints** angezeigt (z. B. `DATA: ABC-DEF-GHI`), damit Werte auch ohne Abtippen langer Hashes manuell gegengeprüft werden können.
 - Zusätzlich wird der **PDF‑Hash** (BLAKE3 der finalen PDF‑Bytes; Spaltenname historisch `daily_reports.pdf_sha256`) in der Historie gespeichert. In der Historie kann das Original‑PDF über **PDF prüfen…** gegen diesen Hash geprüft werden.
-- Wird eine enthaltene Mess‑Revision später **ungültig gesetzt** oder wird eine Tagesabrechnung manuell ungültig gemacht (`reports.invalidate`), wird eine **signierte Invalidierung** angelegt (`daily_report_invalidations`, User‑Key) und die Tagesabrechnung als **ungültig** markiert (`daily_reports.is_valid = 0`). Dabei werden Export‑Markierungen der enthaltenen Messungen zurückgesetzt, sodass eine erneute Abrechnung möglich bleibt.
+- Wird eine enthaltene Mess‑Revision später **ungültig gesetzt** oder wird eine Gebindeabrechnung manuell ungültig gemacht (`reports.invalidate`), wird eine **signierte Invalidierung** angelegt (`daily_report_invalidations`, User‑Key) und die Gebindeabrechnung als **ungültig** markiert (`daily_reports.is_valid = 0`). Dabei werden Export‑Markierungen der enthaltenen Messungen zurückgesetzt, sodass eine erneute Abrechnung möglich bleibt.
 
 ##### Verpflichtender RFC3161‑Zeitstempel (FreeTSA oder Open TSA)
 
-Beim PDF‑Export einer Tagesabrechnung in der Desktop-App wird immer ein RFC3161‑Zeitstempel angefordert (TSA‑Signatur über den Snapshot‑Hash). Er belegt, dass der Hash spätestens zum signierten Zeitpunkt vorlag. Die Browser-Vorschau ist davon ausgenommen und markiert keine Messungen als abgerechnet.
+Beim PDF‑Export einer Gebindeabrechnung in der Desktop-App wird immer ein RFC3161‑Zeitstempel angefordert (TSA‑Signatur über den Snapshot‑Hash). Er belegt, dass der Hash spätestens zum signierten Zeitpunkt vorlag. Die Browser-Vorschau ist davon ausgenommen und markiert keine Messungen als abgerechnet.
 
 - Unter `Administration → Einstellungen → Zeitstempeldienst` ist **FreeTSA** voreingestellt. **Open TSA (open-tsa.eu)** ist als Alternative auswählbar. Zum Speichern muss der Signierschlüssel entsperrt sein; die Zeitstempelpflicht ist nicht abschaltbar.
-- Die signierte Einstellung `tsa.provider` wird mit der Datenbank synchronisiert und gilt für neue Tagesabrechnungen und Audit-Zeitstempel. Ohne Einstellung wird FreeTSA verwendet. Ungültige Einstellungen verhindern den Abruf; es erfolgt kein stiller Rückfall auf einen anderen Anbieter.
+- Die signierte Einstellung `tsa.provider` wird mit der Datenbank synchronisiert und gilt für neue Gebindeabrechnungen und Audit-Zeitstempel. Ohne Einstellung wird FreeTSA verwendet. Ungültige Einstellungen verhindern den Abruf; es erfolgt kein stiller Rückfall auf einen anderen Anbieter.
 - Verhalten:
   - Beim PDF‑Export wird der gewählte Dienst verwendet: `https://freetsa.org/tsr` oder `https://tsr.open-tsa.eu`.
   - Hash, CMS-Signatur, Zertifikatskette und Anbieterzugehörigkeit werden vor der Übernahme des Tokens geprüft. Bei einem Ausfall erfolgt kein automatischer Anbieterwechsel.
@@ -463,7 +463,7 @@ Die CSV enthält u. a. `event_at`, `user_id`, `username`, `action`, `entity_ta
 - Benutzerverwaltung: `users.create`, `users.update`, `users.delete`, `users.reset_password`
 - Gruppen/Rechte: `groups.create`, `groups.update`, `groups.delete`, `group_permissions.update`, `user_groups.update`
 - Stammdaten: `fgw.update`, `fmks.create/update/delete`, `nuclide_vectors.create/update/delete`
-- Tagesabrechnung: `daily_reports.create`, `daily_reports.invalidate`
+- Gebindeabrechnung: `daily_reports.create`, `daily_reports.invalidate`
 
 ::: tip Hinweis
 Sensible Geheimnisse (z. B. temporäre Passwörter) werden **nicht** im Audit‑Trail gespeichert. Es werden nur die fachlich relevanten Metadaten und Vorher/Nachher‑Snapshots protokolliert.
@@ -474,7 +474,7 @@ Sensible Geheimnisse (z. B. temporäre Passwörter) werden **nicht** im Audit�
 Der Audit‑Trail ist zusätzlich durch eine **kryptografische Hash‑Kette** abgesichert. Dies schützt vor dem Bedrohungsszenario, dass ein böswilliger Nutzer:
 
 1. Stammdaten ändert (z. B. FMK‑Zuordnung, Freigabewerte)
-2. Eine Tagesabrechnung signiert erstellt
+2. Eine Gebindeabrechnung signiert erstellt
 3. Die Stammdaten wieder zurückändert
 
 Ohne Hash‑Kette wäre eine solche Manipulation im Nachhinein schwer nachvollziehbar.
@@ -487,7 +487,7 @@ Ohne Hash‑Kette wäre eine solche Manipulation im Nachhinein schwer nachvollzi
 
 **TSA‑Pinning:**
 
-- Nach jeder **Tagesabrechnung** wird automatisch ein TSA‑Pin erstellt.
+- Nach jeder **Gebindeabrechnung** wird automatisch ein TSA‑Pin erstellt.
 - Ein Pin speichert:
   - `chain_hash`: Hash‑Ketten‑Zustand zum Pin‑Zeitpunkt
   - `entries_count`: Anzahl der Einträge zum Pin‑Zeitpunkt

@@ -55,7 +55,7 @@ export default defineConfig({
 							link: "/user-guide/nuclide-vectors",
 						},
 						{ text: "FMK", link: "/user-guide/fmk" },
-						{ text: "Tagesabrechnung", link: "/user-guide/reports" },
+						{ text: "Gebindeabrechnung", link: "/user-guide/reports" },
 						{ text: "Einstellungen", link: "/user-guide/settings" },
 						{ text: "Konto & Passwort", link: "/user-guide/account" },
 						{ text: "Glossar", link: "/user-guide/glossary" },
@@ -111,6 +111,10 @@ export default defineConfig({
 						{
 							text: "ADR‑003: Protokoll‑Packfiles",
 							link: "/architecture/adr-003-protocol-packs",
+						},
+						{
+							text: "ADR-005: Gebindeabrechnung",
+							link: "/architecture/adr-005-gebindeabrechnung",
 						},
 					],
 				},

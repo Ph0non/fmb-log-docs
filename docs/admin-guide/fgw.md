@@ -1,6 +1,6 @@
 # Freigabewerte (FGW)
 
-Freigabewerte (FGW) sind die nuklidspezifischen Grenzwerte, gegen die FMB Log gemessene Aktivitäten prüft. Sie sind zentral für die Berechnung von Freigabewerten eines Nuklidvektors und für die Freigabeprüfung in Vorschau und PDF der Tagesabrechnung.
+Freigabewerte (FGW) sind die nuklidspezifischen Grenzwerte, gegen die FMB Log gemessene Aktivitäten prüft. Sie sind zentral für die Berechnung von Freigabewerten eines Nuklidvektors und für die Freigabeprüfung in Vorschau und PDF der Gebindeabrechnung.
 
 Die FGW werden bewusst **lokal in der SQLite‑Datenbank** gespeichert. Dadurch ist die Anwendung nicht von externen Dateien oder Datenbankservern abhängig, und Änderungen können in denselben Prozess (Berechtigungen, Backup, Freigabe) eingebettet werden wie alle anderen Stammdaten.
 
@@ -22,7 +22,7 @@ FGW werden pro Nuklid und Freigabepfad gespeichert. Die Einheit hängt vom Pfad 
 
 ## Änderungen im Betrieb
 
-Änderungen an FGW wirken sofort auf Berechnungen und Anzeigen. Aus fachlicher Sicht empfiehlt sich daher ein klarer Freigabeprozess (z. B. Vier‑Augen‑Prinzip) und ein Backup, bevor größere Änderungen vorgenommen werden. So bleiben Tagesabrechnungen auch später nachvollziehbar.
+Änderungen an FGW wirken sofort auf Berechnungen und Anzeigen. Aus fachlicher Sicht empfiehlt sich daher ein klarer Freigabeprozess (z. B. Vier‑Augen‑Prinzip) und ein Backup, bevor größere Änderungen vorgenommen werden. So bleiben Gebindeabrechnungen auch später nachvollziehbar.
 
 ::: info Zusammenfassung (FGW)
 - Zugriff nur als Admin oder mit `fgw.update`.
