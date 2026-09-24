@@ -29,7 +29,9 @@ Bestehende Freigabepfade und deren Reihenfolge bleiben erhalten. Die neue Auswah
 - Die bestehende Messauswertung liefert eindeutige Ergebnisse je Messrevision. Eine gemeinsame reine Berechnung erzeugt daraus Materialblätter, Maximalwerte, Zeitraum und NV-Angaben für Vorschau und PDF.
 - Bei gleicher Ausschöpfung entscheiden aufsteigend vollständiger Messzeitpunkt, Mess-ID und Revisionskennung. Fehlende Zeitpunkte stehen hinten.
 - Ein Quotient ist nur mit endlichen Werten und positivem FGW berechenbar. Fehlende erforderliche Vergleichswerte machen das Maximum unvollständig; nicht berechenbare Aktivitäten werden nicht als Null ausgegeben. Betroffene Summen und unvollständige Zeiträume erhalten einen Hinweis.
-- Die Summenzeile zählt Messungen beziehungsweise Gebinde pro fachlichem Blattabschnitt und erscheint einmal an dessen Ende, auch bei mehreren PDF-Seiten.
+- Teil 1 enthält keine Summenzeile. Nur Teil 2 summiert Gebindeanzahl und Gesamtaktivität pro fachlichem Blattabschnitt, einmal an dessen Ende auch bei mehreren PDF-Seiten.
+- Die Teilnummer steht in der Hauptüberschrift „Gebindeabrechnung - Teil 1“ beziehungsweise „Gebindeabrechnung - Teil 2“. „Details“ und „Maximalwerte“ bleiben als Untertitel erhalten.
+- Masse/Fläche erhält als erster Tabellenhinweis Fußnote 1, OG Fußnote 2, Reststoffmasse Fußnote 3 und Gesamtaktivität Fußnote 4. Die bisherige Fußnote zur Maximalwertauswahl entfällt: Ihre Regel steht unnummeriert als „Auswahl je Gebinde“ oberhalb der Tabelle in Teil 2. Damit wird sie unmittelbar vor dem Lesen der Werte erklärt, ohne einen Fußnotenverweis am Untertitel. Vorschau und PDF verwenden dieselbe Formulierung.
 - Neue Snapshots verwenden Version 4. Die Messliste bleibt eindeutig; Blattzuordnungen referenzieren die Messrevisionen. Maximalwerte und zugehörige Reststoffmassen werden zusammen mit ihren Grundlagen eingefroren und beim Einlesen gegen die gespeicherte Projektion geprüft.
 - Version 3 und ältere historische Ergebnisse bleiben lesbar. Original-Snapshots, PDFs, Hashes und TSA-Nachweise werden nicht migriert oder nachträglich verändert. Das SQL-Schema und technische `daily_reports`-Bezeichner bleiben bestehen.
 

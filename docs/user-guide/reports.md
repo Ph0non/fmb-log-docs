@@ -17,7 +17,7 @@ Einbezogen werden **alle aktuellen gültigen Messrevisionen** der ausgewählten 
 
 ## Blattaufteilung und Kopfzeilen
 
-Die Hauptüberschrift lautet **Gebindeabrechnung**, ohne Datum im Titel. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“ und der durchgängigen Seitennummerierung.
+Die Hauptüberschriften lauten **Gebindeabrechnung - Teil 1** und **Gebindeabrechnung - Teil 2**, ohne Datum im Titel. Darunter steht jeweils **Details** beziehungsweise **Maximalwerte**. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“ und der durchgängigen Seitennummerierung.
 
 Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM werden zusätzlich nach Stoffklasse getrennt.** Beispiele:
 
@@ -35,11 +35,11 @@ Pro FMK ist eine Charge je Stoffart erforderlich. Mehrere Chargen derselben Stof
 
 ## Teil 1 – Details
 
-Dieser Teil enthält jede ausgewertete Messung. **Masse und Fläche gehören zur Messung**, nicht zum gesamten Gebinde. Die gemeinsame Fußnote lautet:
+Dieser Teil enthält jede ausgewertete Messung. **Masse und Fläche gehören zur Messung**, nicht zum gesamten Gebinde. Die gemeinsame Fußnote steht an erster Stelle (Fußnote **1**):
 
 > gemessene/beprobte Größe, ggf. umgerechnet.
 
-Am Abschnittsende steht eine Summenzeile mit der **Anzahl der Messungen**. Bei mehreren Seiten erscheint die Summe nur einmal am Ende, nicht als wiederholte Seitensumme.
+Teil 1 enthält keine Summenzeile.
 
 ## Teil 2 – Maximalwerte
 
@@ -49,7 +49,7 @@ $$
 q = \max\left(\frac{OG_M}{FGW_M},\frac{OG_A}{FGW_A}\right)
 $$
 
-Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten Werte. Alle Messwerte und Faktoren der Zeile stammen aus derselben Messung. Die Mess-ID und das Messdatum machen die Quelle nachvollziehbar. Bei Gleichstand entscheiden aufsteigend Messzeitpunkt, Mess-ID und Revisionskennung.
+Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten Werte. Alle Messwerte und Faktoren der Zeile stammen aus derselben Messung. Die Mess-ID und das Messdatum machen die Quelle nachvollziehbar. Die Auswahlregel steht als unnummerierter Hinweis **„Auswahl je Gebinde“** direkt unter Zeitraum und NV oberhalb der Tabelle; sie ist keine Fußnote am Untertitel. Bei Gleichstand entscheiden aufsteigend Messzeitpunkt, Mess-ID und Revisionskennung.
 
 Der Untertitel nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren mit Jahresversion. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen.
 
@@ -84,7 +84,7 @@ Nicht berechenbare Werte bleiben als solche gekennzeichnet und werden nicht durc
 ## Indizes und Fußnoten
 
 - **M**: massenspezifisch; **A**: flächenspezifisch. OG, FGW, SW und KF tragen diese Indizes.
-- **OG**: „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 25457-1“.
+- **Fußnote 2 – OG**: „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 25457-1“.
 - **\***: unter Berücksichtigung des Korrekturfaktors (KF).
 - **\*\***: unter Berücksichtigung des Schwellenwertes (SW).
 - Die Maximalwertauswahl, Aktivitätsformel und anteilige Behandlung von Mischgebinden werden unmittelbar auf der Abrechnung erläutert.
