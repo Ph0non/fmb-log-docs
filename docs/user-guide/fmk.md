@@ -32,6 +32,27 @@ Die Prüfung erfolgt in der FMK in einer festgelegten Reihenfolge. Die Anwendung
 
 In der UI ändern Sie die Reihenfolge über Pfeil‑Buttons. Zusätzlich können Pfade manuell ergänzt werden. Bei Auswahl eines Nuklidvektors werden die geprüften/zulässigen Pfade automatisch übernommen und sinnvoll sortiert; manuell hinzugefügte Pfade bleiben erhalten.
 
+### Pfadprüfung je Messjahr
+
+Unter **Pfadprüfung je Messjahr** wählen Sie das Messjahr. Angeboten werden vorhandene Messjahre, Jahre gespeicherter Bestätigungen und das aktuelle Jahr; weitere Jahre können eingegeben werden. Die Anzeige nennt den **tatsächlich verwendeten NV**. Gibt es keine passende Jahresversion, gilt wie bei der Abrechnung zuerst die nächstältere Version, andernfalls die früheste verfügbare Version. Ein abweichendes NV-Jahr wird ausdrücklich angezeigt.
+
+Jede Geräte-/Pfadkombination einschließlich Zusatzpfad hat einen eigenen Status:
+
+| Status | Bedeutung |
+| --- | --- |
+| Im NV geprüft | Haupt- und Zusatzpfad sind für das Gerät geprüft. Keine Ausnahme nötig. |
+| Bestätigung fehlt | Die Kombination wird für dieses Messjahr mit Warnung übersprungen. |
+| Ausnahme bestätigt | Die Ausnahme gilt für dieses Messjahr und den angezeigten NV-Stand. |
+| Erneute Bestätigung erforderlich | NV-Zuordnung, Zusammensetzung oder relevante Pfadprüfungen haben sich seit der Bestätigung geändert. |
+
+Nach fachlicher Prüfung **Ausnahme bestätigen** wählen und die FMK **speichern**. Benutzerkennung und Zeitpunkt werden angezeigt. Über **Bestätigung zurücknehmen** und anschließendes Speichern lässt sich die Ausnahme widerrufen. Offene Kombinationen sperren das Speichern der FMK nicht.
+
+Eine Ausnahme gilt nur für **FMK, Messjahr, verwendeten NV, Messgerät und Haupt-/Zusatzpfad**. Eine Bestätigung für 2023 gilt auch dann nicht für 2024, wenn beide Messjahre dieselbe NV-Version verwenden. Reine Beschreibungsänderungen, die Reihenfolge von NV-Einträgen oder erneutes Signieren erfordern keine neue Bestätigung. Dashboard und Abrechnung verwenden dieselbe Prüfung; die Abrechnung nennt verwendete Ausnahmen weiterhin als Warnung.
+
+**Altbestätigung ohne Jahresbezug** kennzeichnet bisherige pauschale Bestätigungen. Diese erteilen keine Ausnahme für neue Auswertungen. Die benötigten Messjahre müssen aktiv bestätigt werden; bestehende Berichte bleiben unverändert.
+
+Beispiel F050: Für Gammaspektrometrie kann `1a + OF` in A01/2030 geprüft sein, während A01/2023 eine Ausnahme benötigt. In diesem Fall **Messjahr 2023** wählen und ausschließlich diese Kombination bestätigen.
+
 ### Pfad‑Kombinationen (z. B. „1a (mit OF)“)
 
 Einige Freigabepfade erfordern zusätzlich die Einhaltung eines zweiten Pfades (oft **OF** als oberflächenspezifischer Pfad). In der FMK können Sie pro Pfad optional einen **Sekundärpfad** hinterlegen. In der Gebindeabrechnung wird dies als „Pfad (mit Sekundärpfad)“ dargestellt.

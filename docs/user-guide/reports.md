@@ -91,12 +91,14 @@ Nicht berechenbare Werte bleiben als solche gekennzeichnet und werden nicht durc
 
 ## Historie und Verifikation
 
-Der Desktop-Export speichert die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen und Maximalwerte in einem unveränderlichen Datenstand (Snapshot-Version 4). Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. QR-Code, Fingerprints und RFC-3161-Zeitstempel beziehen sich auf dieses gespeicherte Paket.
+Der Desktop-Export speichert die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen und Maximalwerte in einem unveränderlichen Datenstand (Snapshot-Version 5, einschließlich der jahresbezogenen Pfadprüfungen und verwendeten Ausnahmebestätigungen). Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. QR-Code, Fingerprints und RFC-3161-Zeitstempel beziehen sich auf dieses gespeicherte Paket.
 
-Unter **Historie** lassen sich das PDF und die verwendeten Daten öffnen, Fingerprints suchen und Original-PDFs gegen die gespeicherten Prüfsummen prüfen. Alte Tagesabrechnungen einschließlich Version-3-Snapshots bleiben lesbar; ihre PDFs und ursprünglichen Daten werden nicht umgeschrieben.
+Unter **Historie** lassen sich das PDF und die verwendeten Daten öffnen, Fingerprints suchen und Original-PDFs gegen die gespeicherten Prüfsummen prüfen. Alte Tagesabrechnungen einschließlich Version-3- und Version-4-Snapshots bleiben lesbar; ihre PDFs und ursprünglichen Daten werden nicht umgeschrieben.
 
 Änderungen an enthaltenen Messungen oder Gebinde-Stammdaten verwenden weiterhin das bestehende Invalidierungsverfahren. Mit `reports.invalidate` kann eine Abrechnung manuell ungültig gemacht werden. Der Exportstatus dokumentiert weiterhin den Export, begrenzt aber nicht mehr den Messumfang einer neuen Gebindeabrechnung.
 
 Die PDF-Prüfung gilt für die unveränderte Originaldatei. Neu gespeicherte oder eingescannte PDFs besitzen eine andere Prüfsumme.
 
 Die fachlichen Entscheidungen sind in [ADR-005: Gebindeabrechnung](../architecture/adr-005-gebindeabrechnung.md) dokumentiert.
+
+Jahresbezogene Ausnahmen und Altbestätigungen werden unter [FMK – Pfadprüfung je Messjahr](fmk.md#pfadprufung-je-messjahr) erläutert.
