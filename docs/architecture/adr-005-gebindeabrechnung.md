@@ -42,3 +42,12 @@ Neue Berichte können mehr Seiten enthalten, weil dieselbe Messung für verschie
 Regressionstests prüfen Auswahl nach beiden Einheiten, deterministische Gleichstände, anteilige Massen/Aktivitäten, SON-/NEM-Aufteilung, fehlende Werte, eindeutige Exportverknüpfungen und Snapshot-Kompatibilität. PDF-Prüfungen lesen tatsächlich gerenderte Textströme; mehrseitige Layouts werden zusätzlich visuell kontrolliert.
 
 Die Bedienung und ein Zahlenbeispiel stehen in der [Benutzeranleitung](../user-guide/reports.md).
+
+## Layoutpräzisierung
+
+- Der PDF-Kopf verwendet drei Bereiche mit gemeinsamem oberen Abstand: Logo links, Titel mittig auf dem Blatt, Datum/Prüfung/Seite rechts. Die Logogröße ist proportional begrenzt; Tabellenbeginn und Seitenumbruch berücksichtigen die tatsächlichen Kopf- und Fußhöhen.
+- Der Auswahlhinweis in Teil 2 steht über die gesamte Tabellenbreite unter dem Kopfblock. Das hält die Überschriften kompakt und den Hinweis lesbar.
+- NV-Namen erscheinen in Teil 2 ohne Jahreszusatz und ohne Wiederholung desselben Namens. Jahresversionen bleiben in den gespeicherten Grundlagen erhalten; die jahresbezogene Prüfung und der Messzeitraum ändern sich nicht.
+- Die Summenzeile ordnet „Summe“, Gebindeanzahl und Aktivität der ersten, der Gebinde- und der Gesamtaktivitätsspalte zu. Die Vorschau nutzt dieselben Abschnittssummen, auch bei aktiven Tabellenfiltern; Teil 1 enthält weiterhin keine Summenzeile.
+- Fingerprints stehen untereinander rechtsbündig unmittelbar links vom QR-Code. Fußnoten bleiben links in einem eigenen Bereich. Ohne QR-Code bleiben die Fingerprints am rechten Seitenrand.
+- Diese Änderungen betreffen die Darstellung neuer Exporte, benötigen weder Migration noch neue Snapshot-Version und ändern keine gespeicherten Original-PDFs.

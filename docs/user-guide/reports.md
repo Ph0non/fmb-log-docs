@@ -17,6 +17,8 @@ Einbezogen werden **alle aktuellen gültigen Messrevisionen** der ausgewählten 
 
 ## Blattaufteilung und Kopfzeilen
 
+Im PDF stehen Logo, mittiger Titelblock und Angaben zu Datum/Prüfung/Seite nebeneinander mit gemeinsamem oberen Abstand. Die Fingerprints stehen im rechten Fußbereich untereinander unmittelbar links vom QR-Code; die Fußnoten stehen links.
+
 Die Hauptüberschriften lauten **Gebindeabrechnung - Teil 1** und **Gebindeabrechnung - Teil 2**, ohne Datum im Titel. Darunter steht jeweils **Details** beziehungsweise **Maximalwerte**. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“ und der durchgängigen Seitennummerierung.
 
 Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM werden zusätzlich nach Stoffklasse getrennt.** Beispiele:
@@ -53,6 +55,8 @@ Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten 
 
 Der Untertitel nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren mit Jahresversion. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen.
 
+Die NV-Angabe im Untertitel von Teil 2 nennt nur die Namen (zum Beispiel `NV: A01`), ohne Jahreszusatz. Mehrere Jahresversionen desselben NV werden einmal aufgeführt. Der Messzeitraum enthält weiterhin vollständige Datumsangaben; die tatsächlichen NV-Jahresversionen bleiben in den gespeicherten Daten nachvollziehbar.
+
 ### Reststoffmasse und Gesamtaktivität
 
 Die gespeicherten Stoffklassenmassen sind bereits Reststoffmassen nach Abzug der Innentara. Pro Blatt werden nur die zugehörigen Stoffklassenmassen summiert. Es erfolgt kein weiterer Taraabzug und es werden keine zusätzlichen ReVK-Felder benötigt.
@@ -67,7 +71,7 @@ $$
 A_{\mathrm{Gebindeanteil}}[\mathrm{Bq}] = OG_M[\mathrm{Bq/g}] \cdot m_{\mathrm{Reststoffanteil}}[\mathrm{kg}] \cdot 1000
 $$
 
-Die Zeile am Abschnittsende summiert **Gebindeanzahl und Gesamtaktivität**. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Masse und Fläche der ausgewählten Messung bleiben zusätzlich sichtbar und sind von der Reststoffmasse zu unterscheiden.
+Die Zeile am Abschnittsende zeigt **Summe** links, die **Gebindeanzahl** in der Gebindespalte und die **Gesamtaktivität** in ihrer eigenen Spalte. In der Vorschau bleiben diese Abschnittssummen auch bei aktiven Tabellenfiltern erhalten. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Masse und Fläche der ausgewählten Messung bleiben zusätzlich sichtbar und sind von der Reststoffmasse zu unterscheiden.
 
 ### Beispiel einer Mischgebindeabrechnung
 
