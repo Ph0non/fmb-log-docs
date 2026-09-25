@@ -51,3 +51,7 @@ Die Bedienung und ein Zahlenbeispiel stehen in der [Benutzeranleitung](../user-g
 - Die Summenzeile ordnet „Summe“, Gebindeanzahl und Aktivität der ersten, der Gebinde- und der Gesamtaktivitätsspalte zu. Die Vorschau nutzt dieselben Abschnittssummen, auch bei aktiven Tabellenfiltern; Teil 1 enthält weiterhin keine Summenzeile.
 - Fingerprints stehen untereinander rechtsbündig unmittelbar links vom QR-Code. Fußnoten bleiben links in einem eigenen Bereich. Ohne QR-Code bleiben die Fingerprints am rechten Seitenrand.
 - Diese Änderungen betreffen die Darstellung neuer Exporte, benötigen weder Migration noch neue Snapshot-Version und ändern keine gespeicherten Original-PDFs.
+
+## Automatische Chargennummern im FMK-Editor
+
+Neue Chargen erhalten die höchste aktuell vorhandene Nummer plus eins, beginnend mit `01` und mit zwei Ziffern. Die Nummer ist nicht mehr editierbar. Bestehende Nummern einschließlich `00` und Lücken bleiben erhalten; Entfernen einer Charge verschiebt keine anderen Nummern. Damit bleiben die Bezeichnungen bereits zugeordneter Stoffarten stabil. Bei `99` ist kein weiteres Hinzufügen möglich. Die Vergabe bezieht sich auf die aktuelle Chargenliste, ohne zusätzlichen historischen Nummernzähler. Speicherformat und bestehende Abrechnungen ändern sich nicht.

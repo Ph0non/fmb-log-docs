@@ -18,13 +18,13 @@ Die Jahreszuordnung ergibt sich dabei aus dem Messdatum der jeweiligen Messung: 
 
 ![Ablauf (FMK)](../diagrams/fmk-flow.svg)
 
-![FMK](../screenshots/freimesskampagne.annotated.png)
+## FMK bearbeiten
 
-- (1) FMK‑Liste + Neu
-- (2) Details (Kürzel, NV, Messgeräte)
-- (3) Freigabepfade (Reihenfolge)
-- (4) SW/KF je Jahr
-- (5) Speichern/Löschen
+Oben stehen Kürzel, Beschreibung und Nuklidvektor. Danach folgen die Chargen. Die kompakten Felder für Standard-Umrechnung, maximale Bezugsmasse und maximale Messfläche stehen zusammen mit der Messgeräteauswahl darunter. Bei wenig Platz brechen die Felder in weitere Zeilen um.
+
+Die vier Messgeräte werden über direkt sichtbare Checkboxen ausgewählt; mehrere Geräte können gleichzeitig aktiv sein. Mindestens ein Gerät ist erforderlich. Die Auswahl hat keinen eigenen Scrollbalken.
+
+![FMK-Stammdaten mit Chargen und Messgeräteauswahl](../screenshots/fmk-stammdaten.png)
 
 ## Freigabepfade (Reihenfolge)
 
@@ -45,7 +45,7 @@ Jede Geräte-/Pfadkombination einschließlich Zusatzpfad hat einen eigenen Statu
 | Ausnahme bestätigt | Die Ausnahme gilt für dieses Messjahr und den angezeigten NV-Stand. |
 | Erneute Bestätigung erforderlich | NV-Zuordnung, Zusammensetzung oder relevante Pfadprüfungen haben sich seit der Bestätigung geändert. |
 
-Nach fachlicher Prüfung **Ausnahme bestätigen** wählen und die FMK **speichern**. Benutzerkennung und Zeitpunkt werden angezeigt. Über **Bestätigung zurücknehmen** und anschließendes Speichern lässt sich die Ausnahme widerrufen. Offene Kombinationen sperren das Speichern der FMK nicht.
+Nach fachlicher Prüfung **Ausnahme bestätigen** wählen und die FMK **speichern**. Anzeigename des bestätigenden Benutzers und Zeitpunkt werden angezeigt. Fehlt der Anzeigename, erscheint der Benutzername; bei einem nicht mehr vorhandenen Benutzer „Unbekannter Benutzer“. Auch inaktive Benutzer bleiben zuordenbar. Die interne Benutzerkennung wird nicht angezeigt, bleibt aber unverändert für Signatur und Audit gespeichert. Über **Bestätigung zurücknehmen** und anschließendes Speichern lässt sich die Ausnahme widerrufen. Offene Kombinationen sperren das Speichern der FMK nicht.
 
 Eine Ausnahme gilt nur für **FMK, Messjahr, verwendeten NV, Messgerät und Haupt-/Zusatzpfad**. Eine Bestätigung für 2023 gilt auch dann nicht für 2024, wenn beide Messjahre dieselbe NV-Version verwenden. Reine Beschreibungsänderungen, die Reihenfolge von NV-Einträgen oder erneutes Signieren erfordern keine neue Bestätigung. Dashboard und Abrechnung verwenden dieselbe Prüfung; die Abrechnung nennt verwendete Ausnahmen weiterhin als Warnung.
 
@@ -100,7 +100,7 @@ Klicken Sie eine Matrixzelle an, um SW und KF für genau diesen Gültigkeitsbere
 
 Jede FMK benötigt mindestens eine Charge. Die Chargennummer besteht aus genau zwei Ziffern (00–99) und ist innerhalb der FMK eindeutig. Aus FMK-Kürzel und Chargennummer entsteht beispielsweise **F050.02**. Jede Charge hat genau eine Stoffart: CST, AUS, ELM, KAB, ISW, ELT, NEM, BET, SON oder KOM.
 
-Im FMK-Editor können Chargen hinzugefügt, geändert und entfernt werden. Pro FMK darf jede Stoffart genau einer Charge zugeordnet sein. Mehrdeutige Altbestände bleiben bearbeitbar, müssen aber vor einer neuen Abrechnung korrigiert werden. Die dort angezeigten erlaubten Stoffklassen ergeben sich aus allen Stoffarten der Chargen. Änderungen, durch die bereits verwendete Stoffklassen unzulässig würden, werden verhindert. Eine FMK mit zugeordneten Gebinden kann nicht gelöscht werden.
+Im FMK-Editor können Chargen hinzugefügt und entfernt sowie ihre Stoffarten geändert werden. Die Chargennummer ist nicht editierbar: Neue Chargen erhalten die höchste aktuell vorhandene Nummer plus eins, zweistellig mit führender Null; eine leere Liste beginnt mit `01`. Vorhandene Nummern einschließlich `00` bleiben unverändert. Beim Entfernen bleiben die übrigen Nummern und vorhandene Lücken erhalten. Nach `99` ist keine weitere automatische Nummer möglich; das Hinzufügen wird mit Hinweis deaktiviert. Pro FMK darf jede Stoffart genau einer Charge zugeordnet sein. Mehrdeutige Altbestände bleiben bearbeitbar, müssen aber vor einer neuen Abrechnung korrigiert werden. Die dort angezeigten erlaubten Stoffklassen ergeben sich aus allen Stoffarten der Chargen. Änderungen, durch die bereits verwendete Stoffklassen unzulässig würden, werden verhindert. Eine FMK mit zugeordneten Gebinden kann nicht gelöscht werden.
 
 Gebinde werden einer FMK zugeordnet, nicht einer einzelnen Charge. Beim Anlegen im Import und beim Bearbeiten der Gebinde-Stammdaten wird mindestens eine erlaubte Stoffklasse mit einer positiven Masse in kg benötigt. Klassen verschiedener Stoffarten dürfen kombiniert werden; jede Klasse darf einmal vorkommen. Diese Stoffklassenmassen sind Reststoffmassen nach Abzug einer vorhandenen Innentara und werden für die Gebindeabrechnung anteilig verwendet. Sie sind von Masse und Fläche der einzelnen Messungen zu unterscheiden.
 

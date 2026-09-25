@@ -33,3 +33,7 @@ Die Bestätigungen dürfen erst nach Aktualisierung aller gemeinsam bearbeitende
 ## Prüfung
 
 Tests decken Jahres- und NV-Bindung, Ersatzversionen, Haupt-/Zusatzpfade, Fingerabdruckänderungen, Altbestände, Speichern offener Jahre, Widerruf, Neusignierung und Snapshot-Kompatibilität ab. Browserprüfungen vergleichen außerdem Dashboard und Abrechnung vor und nach einer Bestätigung sowie nach fachlicher NV-Änderung.
+
+## Anzeige der Bestätigenden
+
+Die Pfadprüfung zeigt den Anzeigenamen des bestätigenden Benutzers und den Bestätigungszeitpunkt. Der Name wird über die unverändert gespeicherte Benutzerkennung aufgelöst; inaktive Benutzer werden einbezogen. Ohne Anzeigenamen wird der Benutzername, bei fehlendem Benutzer „Unbekannter Benutzer“ angezeigt. Es handelt sich um den aktuellen Namen aus den Benutzerstammdaten, nicht um einen zusätzlich eingefrorenen Namen. Signaturformat, gespeicherte Bestätigungen und Snapshot-Version bleiben unverändert.
