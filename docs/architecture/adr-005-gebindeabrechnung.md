@@ -13,7 +13,7 @@ Die folgenden fachlichen Entscheidungen wurden mit dem Auftraggeber bestätigt:
 
 | Entscheidung | Begründung und Konsequenz |
 | --- | --- |
-| Gebindeauswahl ersetzt Messtagsauswahl. | Ein PDF enthält zuerst Details und danach Maximalwerte. Der Zeitraum ergibt sich aus den enthaltenen Messungen. |
+| Gebindeauswahl ersetzt Messtagsauswahl. | Ein PDF enthält zuerst die Tagesabrechnung mit Maximalwerten und danach die Gebindeabrechnung mit Details. Der Zeitraum ergibt sich aus den enthaltenen Messungen. |
 | Alle aktuellen gültigen Messungen einschließlich früher exportierter Messungen einbeziehen. | Ein früherer Export darf das Gebindemaximum nicht verändern. Der Exportfilter entfällt; der Vollständigkeitsfilter bleibt bestehen. |
 | Eine maßgebliche Messung nach `max(OG_M/FGW_M, OG_A/FGW_A)`. | Alle Werte einer Maximalwertzeile haben eine gemeinsame Quelle; unabhängige Spaltenmaxima werden nicht kombiniert. Verglichen werden ungerundete, KF-/SW-angepasste Werte. |
 | Gesamtaktivität aus angezeigter OG_M einschließlich KF. | `A [Bq] = OG_M [Bq/g] × Reststoffmasse [kg] × 1000`. Weder die OG vor KF noch der beste Schätzwert ersetzen diese Basis. |
@@ -29,9 +29,9 @@ Bestehende Freigabepfade und deren Reihenfolge bleiben erhalten. Die neue Auswah
 - Die bestehende Messauswertung liefert eindeutige Ergebnisse je Messrevision. Eine gemeinsame reine Berechnung erzeugt daraus Materialblätter, Maximalwerte, Zeitraum und NV-Angaben für Vorschau und PDF.
 - Bei gleicher Ausschöpfung entscheiden aufsteigend vollständiger Messzeitpunkt, Mess-ID und Revisionskennung. Fehlende Zeitpunkte stehen hinten.
 - Ein Quotient ist nur mit endlichen Werten und positivem FGW berechenbar. Fehlende erforderliche Vergleichswerte machen das Maximum unvollständig; nicht berechenbare Aktivitäten werden nicht als Null ausgegeben. Betroffene Summen und unvollständige Zeiträume erhalten einen Hinweis.
-- Teil 1 enthält keine Summenzeile. Nur Teil 2 summiert Gebindeanzahl und Gesamtaktivität pro fachlichem Blattabschnitt, einmal an dessen Ende auch bei mehreren PDF-Seiten.
-- Die Teilnummer steht in der Hauptüberschrift „Gebindeabrechnung - Teil 1“ beziehungsweise „Gebindeabrechnung - Teil 2“. „Details“ und „Maximalwerte“ bleiben als Untertitel erhalten.
-- Masse/Fläche erhält als erster Tabellenhinweis Fußnote 1, OG Fußnote 2, Reststoffmasse Fußnote 3 und Gesamtaktivität Fußnote 4. Die bisherige Fußnote zur Maximalwertauswahl entfällt: Ihre Regel steht unnummeriert als „Auswahl je Gebinde“ oberhalb der Tabelle in Teil 2. Damit wird sie unmittelbar vor dem Lesen der Werte erklärt, ohne einen Fußnotenverweis am Untertitel. Vorschau und PDF verwenden dieselbe Formulierung.
+- Die Gebindeabrechnung enthält keine Summenzeile. Nur die Tagesabrechnung summiert Gebindeanzahl und Gesamtaktivität pro fachlichem Blattabschnitt, einmal an dessen Ende auch bei mehreren PDF-Seiten.
+- Die Hauptüberschriften lauten „Tagesabrechnung“ und „Gebindeabrechnung“ ohne Teilnummer. „Maximalwerte“ und „Details“ bleiben als Untertitel erhalten. Beide Abrechnungen zählen ihre Seiten jeweils ab 1 über alle zugehörigen Blätter.
+- Die Gebindeabrechnung verwendet Fußnote 1 für Masse/Fläche und Fußnote 2 für OG. Die Tagesabrechnung verwendet Fußnote 1 für Reststoffmasse, Fußnote 2 für Gesamtaktivität und Fußnote 3 für OG; ihre Tabelle enthält keine Spalten für Masse und Fläche. Kopfmarkierungen sind kleiner und hochgestellt. KF-/SW-Hinweise behalten die Sternchen. Die bisherige Fußnote zur Maximalwertauswahl entfällt: Ihre Regel steht unnummeriert als „Auswahl je Gebinde“ oberhalb der Tabelle in der Tagesabrechnung. Damit wird sie unmittelbar vor dem Lesen der Werte erklärt, ohne einen Fußnotenverweis am Untertitel. Vorschau und PDF verwenden dieselbe Formulierung.
 - Die Gebindeabrechnung führte Snapshot-Version 4 ein; neue Exporte verwenden inzwischen Version 5 mit jahresbezogenen Pfadentscheidungen (siehe [ADR-006](adr-006-jahresbezogene-fmk-bestaetigungen.md)). Die Messliste bleibt eindeutig; Blattzuordnungen referenzieren die Messrevisionen. Maximalwerte und zugehörige Reststoffmassen werden zusammen mit ihren Grundlagen eingefroren und beim Einlesen gegen die gespeicherte Projektion geprüft.
 - Version 3 und ältere historische Ergebnisse bleiben lesbar. Original-Snapshots, PDFs, Hashes und TSA-Nachweise werden nicht migriert oder nachträglich verändert. Das SQL-Schema und technische `daily_reports`-Bezeichner bleiben bestehen.
 
@@ -46,9 +46,10 @@ Die Bedienung und ein Zahlenbeispiel stehen in der [Benutzeranleitung](../user-g
 ## Layoutpräzisierung
 
 - Der PDF-Kopf verwendet drei Bereiche mit gemeinsamem oberen Abstand: Logo links, Titel mittig auf dem Blatt, Datum/Prüfung/Seite rechts. Die Logogröße ist proportional begrenzt; Tabellenbeginn und Seitenumbruch berücksichtigen die tatsächlichen Kopf- und Fußhöhen.
-- Der Auswahlhinweis in Teil 2 steht über die gesamte Tabellenbreite unter dem Kopfblock. Das hält die Überschriften kompakt und den Hinweis lesbar.
-- NV-Namen erscheinen in Teil 2 ohne Jahreszusatz und ohne Wiederholung desselben Namens. Jahresversionen bleiben in den gespeicherten Grundlagen erhalten; die jahresbezogene Prüfung und der Messzeitraum ändern sich nicht.
-- Die Summenzeile ordnet „Summe“, Gebindeanzahl und Aktivität der ersten, der Gebinde- und der Gesamtaktivitätsspalte zu. Die Vorschau nutzt dieselben Abschnittssummen, auch bei aktiven Tabellenfiltern; Teil 1 enthält weiterhin keine Summenzeile.
+- Der Auswahlhinweis in der Tagesabrechnung steht über die gesamte Tabellenbreite unter dem Kopfblock. Das hält die Überschriften kompakt und den Hinweis lesbar.
+- NV-Namen erscheinen in der Tagesabrechnung ohne Jahreszusatz und ohne Wiederholung desselben Namens. Jahresversionen bleiben in den gespeicherten Grundlagen erhalten; die jahresbezogene Prüfung und der Messzeitraum ändern sich nicht.
+- Die Summenzeile ordnet „Summe“, Gebindeanzahl und Aktivität der ersten, der Gebinde- und der Gesamtaktivitätsspalte zu. Die Vorschau nutzt dieselben Abschnittssummen, auch bei aktiven Tabellenfiltern; Die Gebindeabrechnung enthält weiterhin keine Summenzeile.
+- Beide Abrechnungen gehören zu einem gemeinsamen Snapshot und TSA-Nachweis; alle Seiten tragen dieselben DATA- und TSA-Fingerprints.
 - Fingerprints stehen untereinander rechtsbündig unmittelbar links vom QR-Code. Fußnoten bleiben links in einem eigenen Bereich. Ohne QR-Code bleiben die Fingerprints am rechten Seitenrand.
 - Diese Änderungen betreffen die Darstellung neuer Exporte, benötigen weder Migration noch neue Snapshot-Version und ändern keine gespeicherten Original-PDFs.
 

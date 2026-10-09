@@ -1,6 +1,6 @@
 # Gebindeabrechnung
 
-Die Gebindeabrechnung erzeugt ein PDF im A4-Querformat mit **Teil 1 – Details** und **Teil 2 – Maximalwerte**. Vorschau und PDF verwenden denselben eingefrorenen Datenstand.
+Die Gebindeabrechnung erzeugt ein PDF im A4-Querformat mit **Tagesabrechnung – Maximalwerte** und anschließend **Gebindeabrechnung – Details**. Vorschau und PDF verwenden denselben eingefrorenen Datenstand.
 
 ## Auswahl und Ablauf
 
@@ -19,7 +19,7 @@ Einbezogen werden **alle aktuellen gültigen Messrevisionen** der ausgewählten 
 
 Im PDF stehen Logo, mittiger Titelblock und Angaben zu Datum/Prüfung/Seite nebeneinander mit gemeinsamem oberen Abstand. Die Fingerprints stehen im rechten Fußbereich untereinander unmittelbar links vom QR-Code; die Fußnoten stehen links.
 
-Die Hauptüberschriften lauten **Gebindeabrechnung - Teil 1** und **Gebindeabrechnung - Teil 2**, ohne Datum im Titel. Darunter steht jeweils **Details** beziehungsweise **Maximalwerte**. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“ und der durchgängigen Seitennummerierung.
+Die Hauptüberschriften lauten **Tagesabrechnung** und **Gebindeabrechnung**, ohne Teilnummer oder Datum im Titel. Darunter steht **Maximalwerte** beziehungsweise **Details**. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“. Beide Abrechnungen haben eine eigene Seitennummerierung `1/N`, die jeweils über alle zugehörigen Blätter läuft.
 
 Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM werden zusätzlich nach Stoffklasse getrennt.** Beispiele:
 
@@ -31,19 +31,19 @@ Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM 
 
 Pro FMK ist eine Charge je Stoffart erforderlich. Mehrere Chargen derselben Stoffart müssen vor der Abrechnung korrigiert werden. Bestandsdaten bleiben hierfür bearbeitbar.
 
-„Nicht freigabefähig“ bleibt ein eigener Abschnitt; danach folgen die Freigabepfade in FMK-Reihenfolge. Jeder Abschnitt beginnt auf einer neuen Seite. Das PDF enthält zuerst alle Detailabschnitte, dann alle Maximalwertabschnitte in derselben Reihenfolge.
+„Nicht freigabefähig“ bleibt ein eigener Abschnitt; danach folgen die Freigabepfade in FMK-Reihenfolge. Jeder Abschnitt beginnt auf einer neuen Seite. PDF und Vorschau enthalten zuerst alle Tagesabrechnungsabschnitte mit Maximalwerten, danach alle Gebindeabrechnungsabschnitte mit Details in derselben Blattreihenfolge.
 
 **Mischgebinde** erscheinen auf jedem betroffenen Blatt. Die Messwerte bleiben gleich, Reststoffmasse und Gesamtaktivität beziehen sich jeweils ausschließlich auf die zugehörigen Stoffanteile. Die Gebindeanzahlen unterschiedlicher Materialblätter dürfen deshalb nicht zu einer eindeutigen Gesamtgebindeanzahl addiert werden.
 
-## Teil 1 – Details
+## Gebindeabrechnung – Details
 
 Dieser Teil enthält jede ausgewertete Messung. **Masse und Fläche gehören zur Messung**, nicht zum gesamten Gebinde. Die gemeinsame Fußnote steht an erster Stelle (Fußnote **1**):
 
 > gemessene/beprobte Größe, ggf. umgerechnet.
 
-Teil 1 enthält keine Summenzeile.
+Die Gebindeabrechnung enthält keine Summenzeile.
 
-## Teil 2 – Maximalwerte
+## Tagesabrechnung – Maximalwerte
 
 Pro Gebinde und Blattabschnitt erscheint **eine maßgebliche Messung**. Ausschlaggebend ist die größere massen- oder flächenspezifische Ausschöpfung:
 
@@ -53,9 +53,9 @@ $$
 
 Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten Werte. Alle Messwerte und Faktoren der Zeile stammen aus derselben Messung. Die Mess-ID und das Messdatum machen die Quelle nachvollziehbar. Die Auswahlregel steht als unnummerierter Hinweis **„Auswahl je Gebinde“** direkt unter Zeitraum und NV oberhalb der Tabelle; sie ist keine Fußnote am Untertitel. Bei Gleichstand entscheiden aufsteigend Messzeitpunkt, Mess-ID und Revisionskennung.
 
-Der Untertitel nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren mit Jahresversion. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen.
+Der Untertitel nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen.
 
-Die NV-Angabe im Untertitel von Teil 2 nennt nur die Namen (zum Beispiel `NV: A01`), ohne Jahreszusatz. Mehrere Jahresversionen desselben NV werden einmal aufgeführt. Der Messzeitraum enthält weiterhin vollständige Datumsangaben; die tatsächlichen NV-Jahresversionen bleiben in den gespeicherten Daten nachvollziehbar.
+Die NV-Angabe im Untertitel der Tagesabrechnung nennt nur die Namen (zum Beispiel `NV: A01`), ohne Jahreszusatz. Mehrere Jahresversionen desselben NV werden einmal aufgeführt. Der Messzeitraum enthält weiterhin vollständige Datumsangaben; die tatsächlichen NV-Jahresversionen bleiben in den gespeicherten Daten nachvollziehbar.
 
 ### Reststoffmasse und Gesamtaktivität
 
@@ -71,7 +71,7 @@ $$
 A_{\mathrm{Gebindeanteil}}[\mathrm{Bq}] = OG_M[\mathrm{Bq/g}] \cdot m_{\mathrm{Reststoffanteil}}[\mathrm{kg}] \cdot 1000
 $$
 
-Die Zeile am Abschnittsende zeigt **Summe** links, die **Gebindeanzahl** in der Gebindespalte und die **Gesamtaktivität** in ihrer eigenen Spalte. In der Vorschau bleiben diese Abschnittssummen auch bei aktiven Tabellenfiltern erhalten. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Masse und Fläche der ausgewählten Messung bleiben zusätzlich sichtbar und sind von der Reststoffmasse zu unterscheiden.
+Die Zeile am Abschnittsende zeigt **Summe** links, die **Gebindeanzahl** in der Gebindespalte und die **Gesamtaktivität** in ihrer eigenen Spalte. In der Vorschau bleiben diese Abschnittssummen auch bei aktiven Tabellenfiltern erhalten. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Die Tagesabrechnung zeigt die Reststoffmasse. Masse und Fläche der ausgewählten Messung stehen ausschließlich in den Details der Gebindeabrechnung.
 
 ### Beispiel einer Mischgebindeabrechnung
 
@@ -87,15 +87,22 @@ Nicht berechenbare Werte bleiben als solche gekennzeichnet und werden nicht durc
 
 ## Indizes und Fußnoten
 
+Die nummerierten Fußnoten beginnen je Abrechnung bei 1 und werden auf Folgeseiten mit derselben Zuordnung wiederholt. Die Markierungen im Tabellenkopf sind kleiner und hochgestellt.
+
+| Abrechnung | Fußnote 1 | Fußnote 2 | Fußnote 3 |
+| --- | --- | --- | --- |
+| Gebindeabrechnung | Masse und Fläche | OG | — |
+| Tagesabrechnung | Reststoffmasse | Gesamtaktivität | OG |
+
 - **M**: massenspezifisch; **A**: flächenspezifisch. OG, FGW, SW und KF tragen diese Indizes.
-- **Fußnote 2 – OG**: „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 25457-1“.
+- **OG** (Fußnote 2 in der Gebindeabrechnung, Fußnote 3 in der Tagesabrechnung): „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 25457-1“.
 - **\***: unter Berücksichtigung des Korrekturfaktors (KF).
 - **\*\***: unter Berücksichtigung des Schwellenwertes (SW).
 - Die Maximalwertauswahl, Aktivitätsformel und anteilige Behandlung von Mischgebinden werden unmittelbar auf der Abrechnung erläutert.
 
 ## Historie und Verifikation
 
-Der Desktop-Export speichert die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen und Maximalwerte in einem unveränderlichen Datenstand (Snapshot-Version 5, einschließlich der jahresbezogenen Pfadprüfungen und verwendeten Ausnahmebestätigungen). Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. QR-Code, Fingerprints und RFC-3161-Zeitstempel beziehen sich auf dieses gespeicherte Paket.
+Der Desktop-Export speichert die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen und Maximalwerte in einem unveränderlichen Datenstand (Snapshot-Version 5, einschließlich der jahresbezogenen Pfadprüfungen und verwendeten Ausnahmebestätigungen). Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. QR-Code, Fingerprints und RFC-3161-Zeitstempel beziehen sich auf dieses gespeicherte Paket. Tagesabrechnung und Gebindeabrechnung bleiben eine gemeinsame PDF-Datei mit identischen DATA- und TSA-Fingerprints auf allen Seiten.
 
 Unter **Historie** lassen sich das PDF und die verwendeten Daten öffnen, Fingerprints suchen und Original-PDFs gegen die gespeicherten Prüfsummen prüfen. Alte Tagesabrechnungen einschließlich Version-3- und Version-4-Snapshots bleiben lesbar; ihre PDFs und ursprünglichen Daten werden nicht umgeschrieben.
 

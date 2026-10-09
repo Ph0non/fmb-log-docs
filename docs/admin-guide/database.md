@@ -102,12 +102,21 @@ Auch mit CRDT/CR‑SQLite gibt es Grenzen und “Betriebsregeln”:
 
 ### Konfliktbelege prüfen und archivieren
 
-Neue Replikate merken sich den unveränderten Stand der mitgelieferten Stub-DB lokal
-(`sync_bootstrap_state`, Schema 50). Diese Startwerte erzeugen beim ersten Abgleich
-keine Konfliktbelege. Spätere Offline-Änderungen werden weiterhin geprüft. Die
+Neue Hubs und Replikate merken sich den unveränderten Stand der mitgelieferten
+Stub-DB (`sync_bootstrap_state`, Schema 50). Der Sync gibt diese unveränderlichen
+Herkunftsmarkierungen mit den Daten weiter, auch über einen Hub an weitere Clients.
+Diese Startwerte erzeugen weder beim Senden noch beim Empfangen Konfliktbelege.
+Spätere Offline-Änderungen werden weiterhin geprüft, auch ein bewusstes Zurücksetzen
+auf den ursprünglichen Startwert. Die
 Markierung unterdrückt ausschließlich Diagnoseeinträge, keine Datenübertragung;
 für bereits bearbeitete, unmarkierte Datenbanken wird kein Startstand nachträglich
 angenommen.
+
+Bei einer Wiederherstellung muss die vollständige Hub-DB einschließlich dieser
+Markierungen erhalten bleiben. Alte Hubs ohne Herkunftsmarkierung können bei
+einem erneuten Erstabgleich weiterhin Initialisierungskonflikte erzeugen. Diese
+müssen geprüft und archiviert werden; Signaturen, `NULL` oder Spaltenversion 1
+werden nicht pauschal von der Konfliktprüfung ausgenommen.
 
 Neue Konfliktbelege (`v2:`-IDs) enthalten beide konkurrierenden Werte vollständig
 und mit SQLite-Typ, Herkunft und Versionsdaten. BLOBs werden als Base64 gespeichert,
