@@ -20,6 +20,12 @@ Diese Ansicht enthält eigene lokale Änderungen früherer Generationen. Öffnen
 
 ## Integritätsprüfungen
 
-Der Bereich **Veröffentlichungskette prüfen** bietet die Prüfung des zentralen Log-Nachweises. Ergänzend können der zentrale Fachbestand und **Eigene gespeicherte Arbeit** geprüft werden. Letzteres umfasst auch lokale, konkurrierende, abgelehnte und archivierte Operationen.
+Unter **Administration → Audit** startet **Audit ausführen** einen gemeinsamen Prüflauf für Veröffentlichungskette, zentralen Fachbestand, eigene Arbeit und Abrechnungsnachweise. Beim Öffnen der Seite wird noch keine Prüfung gestartet. Eigene Arbeit umfasst auch lokale, konkurrierende, abgelehnte und archivierte Operationen.
 
-Fehlende Originaldateien oder Schlüssel ergeben einen unvollständigen Nachweis. Ungültige Signaturen oder veränderte Originalbytes werden als Befunde gemeldet; betroffene Versionen lassen sich öffnen. Ein gespeicherter Prüfstand kann durch spätere Änderungen veralten. Abrechnungs-/TSA-Nachweise prüfen Sie gesondert in der **Historie**, Sicherheitsänderungen im **Sicherheits-Audit**.
+Die Veröffentlichungskette wird standardmäßig lokal geprüft. Bei Online-Anmeldung können Sie **Veröffentlichungskette vom Server nachladen** auswählen. Die übrigen Prüfbereiche verwenden die vorhandenen Originaldaten; fehlende Dateien werden dadurch nicht nachgeladen.
+
+Vier Ergebniskarten zeigen Prüfstatus und Zähler. Unter **Details** stehen Prüfstand, Befunde und weiterführende Angaben. Ein Fehler in einem Bereich verhindert die übrigen Prüfungen nicht. Fehlende Originaldateien, Schlüssel oder TSA-Nachweise ergeben einen unvollständigen Nachweis; ungültige Signaturen oder veränderte Originalbytes werden als Befunde gemeldet.
+
+**Versionen und Nachweise** öffnet bei Bedarf die Versionssuche. Ein Befundlink öffnet direkt die betroffene Version im passenden Suchbereich. Die gemeinsame Erfolgsmeldung erscheint nur, wenn alle vier Bereiche ohne Befunde zum gleichen Stand geprüft wurden und sich die Datenrevision nicht geändert hat. Ein später veränderter Stand wird gekennzeichnet; mit **Audit ausführen** prüfen Sie erneut.
+
+Unter **Administration → Audit-Trail** finden online angemeldete Administratoren Sicherheitsänderungen und Zugriffsereignisse. Bereich und Suche grenzen die Ereignisse ein. **Öffnen** zeigt den Nachweis und seinen Prüfstatus; Originalnachrichten und das vollständige Audit-Ereignis lassen sich in den Details aufklappen. Suchregeln und Hinweise zur historischen Reihenfolge stehen unter **Suchhinweise**. Zeitraumfilter und CSV-Export stehen hier derzeit nicht zur Verfügung.
