@@ -16,7 +16,7 @@ Ein gültiger SSH-Fingerabdruck ersetzt keine Nutzeranmeldung. Eine gültige Nut
 
 Die Anmeldung überträgt Benutzername und Passwort im direkten verschlüsselten SSH-Kanal. Der Dienst prüft einen gesalzenen Argon2id-Prüfwert. Die zunächst eingeschränkte Sitzung erlaubt ausschließlich den Abruf des eigenen verschlüsselten Vaults. Erst nach lokaler Entschlüsselung und Antwort auf eine einmalige Signatur-Challenge entsteht die vollständige Sitzung.
 
-Der private Nutzerschlüssel wird nicht im Klartext an den Server gesendet. Anmeldung und sensible Endpunkte sind begrenzt; Passwörter, private Schlüssel und Sitzungstoken gehören nicht in Logs. Neue und geänderte Passwörter benötigen mindestens zwölf Zeichen. Die Aktivierung zuvor registrierter Altzugänge erlaubt das bisherige Passwort und verlangt den Nachweis mit dem bisherigen Vault.
+Der private Nutzerschlüssel wird nicht im Klartext an den Server gesendet. Anmeldung und sensible Endpunkte sind begrenzt; Passwörter, private Schlüssel und Sitzungstoken gehören nicht in Logs. Neue und geänderte Passwörter benötigen mindestens acht Zeichen. Die Aktivierung zuvor registrierter Altzugänge erlaubt das bisherige Passwort und verlangt den Nachweis mit dem bisherigen Vault.
 
 Ein Passwortwechsel aktualisiert Server-Prüfwert und neu verschlüsselten Vault atomar. Gleichzeitige Sicherheitsänderungen werden über eine Sicherheitsversion erkannt. Bei unklarer Abschlussantwort wird der Zustand online geklärt; lokale Zugangsdaten dürfen dafür nicht gelöscht werden.
 

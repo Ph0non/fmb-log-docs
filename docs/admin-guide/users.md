@@ -6,7 +6,7 @@ Die Benutzerverwaltung befindet sich in der App unter **Administration → Benut
 
 Bei eingerichteter Serververbindung verwenden Administratoren den Bereich **Benutzer und Rechte**.
 Für **Nutzer anlegen** sind eine Online-Anmeldung, ein Benutzername und ein zweimal eingegebenes
-Passwort mit mindestens zwölf Zeichen erforderlich. Wählen Sie die Gruppen und gegebenenfalls
+Passwort mit mindestens acht Zeichen erforderlich. Wählen Sie die Gruppen und gegebenenfalls
 den Administratorstatus. **Zentral speichern** erzeugt den Nutzerschlüssel und den verschlüsselten
 Vault auf diesem Arbeitsplatz und registriert den Zugang auf dem Server.
 

@@ -29,7 +29,7 @@ Danach erfolgt die Anmeldung mit Benutzername und Passwort. Ein neuer Arbeitspla
 
 ## Gruppen, Rechte und Nutzer
 
-Melden Sie sich als Administrator online an und öffnen Sie **Administration → Benutzer und Rechte**. Legen Sie zuerst die benötigten Gruppen mit ihren Berechtigungen an, dann die Nutzer und Gruppenzuordnungen. Für neu gesetzte Passwörter gelten mindestens zwölf Zeichen.
+Melden Sie sich als Administrator online an und öffnen Sie **Administration → Benutzer und Rechte**. Legen Sie zuerst die benötigten Gruppen mit ihren Berechtigungen an, dann die Nutzer und Gruppenzuordnungen. Für neu gesetzte Passwörter gelten mindestens acht Zeichen.
 
 Bei der Nutzeranlage erzeugt der Client den Schlüssel und den verschlüsselten Vault lokal. Der Server speichert den verschlüsselten Vault und den Passwort-Prüfwert. Einzelheiten stehen unter [Benutzer](./users.md) und [Gruppen & Rechte](./groups-permissions.md).
 

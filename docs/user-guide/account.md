@@ -6,7 +6,7 @@ Die erste Anmeldung auf einem Arbeitsplatz erfolgt mit Benutzername und Passwort
 
 1. Online anmelden und das Benutzermenü oben rechts öffnen.
 2. **Passwort ändern** wählen.
-3. Aktuelles Passwort sowie das neue Passwort zweimal eingeben. Das neue Passwort muss mindestens zwölf Zeichen haben.
+3. Aktuelles Passwort sowie das neue Passwort zweimal eingeben. Das neue Passwort muss mindestens acht Zeichen haben.
 4. **Passwort speichern** wählen und den Abschluss abwarten.
 
 Der Client verschlüsselt den Vault mit dem neuen Passwort. Der Server übernimmt Passwort-Prüfwert und verschlüsselten Vault gemeinsam. Der private Signierschlüssel wird dabei nicht im Klartext an den Dienst übertragen.

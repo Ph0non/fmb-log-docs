@@ -18,7 +18,7 @@ Mit **Prüfen und verwenden** wird die Verbindung geprüft und die Anwendung neu
 
 Geben Sie Benutzername und Passwort ein und wählen Sie **Am Server anmelden**. Auf einem neuen Arbeitsplatz ist dafür eine Verbindung zum Dienst erforderlich. Der eigene verschlüsselte Schlüsselspeicher wird abgerufen und lokal entsperrt.
 
-Nach der ersten erfolgreichen Anmeldung können Sie denselben Arbeitsplatz mit **Offline entsperren** verwenden. Bereits geladene Daten und lokal verfügbare Originalprotokolle stehen dann ohne Serververbindung bereit. Neue Passwörter müssen mindestens zwölf Zeichen haben.
+Nach der ersten erfolgreichen Anmeldung können Sie denselben Arbeitsplatz mit **Offline entsperren** verwenden. Bereits geladene Daten und lokal verfügbare Originalprotokolle stehen dann ohne Serververbindung bereit. Neue Passwörter müssen mindestens acht Zeichen haben.
 
 **Bestehenden Zugang aktivieren** ist ausschließlich für zuvor registrierte Altzugänge bestimmt. Dafür werden das bisherige Passwort und die unverändert benannte Nutzer-Vault-Datei benötigt. Ein neu angelegter Zugang verwendet die normale Anmeldung.
 
