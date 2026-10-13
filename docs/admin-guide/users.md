@@ -1,61 +1,47 @@
 # Benutzer
 
-Die Benutzerverwaltung befindet sich in der App unter **Administration → Benutzer**. Hier verwalten Sie Accounts und steuern, wer sich anmelden darf. Rechte werden nicht direkt am Nutzer vergeben (außer „Admin“), sondern über Gruppen.
+Die Benutzerverwaltung befindet sich in der App unter **Administration → Benutzer und Rechte**. Änderungen benötigen eine Online-Anmeldung und Administratorrechte. Rechte kommen über Gruppen; der Administratorstatus ist eine gesonderte Eigenschaft des Nutzers.
 
-## Überblick
+## Benutzer im Serverbetrieb
 
-Ein Benutzer kann:
+Bei eingerichteter Serververbindung verwenden Administratoren den Bereich **Benutzer und Rechte**.
+Für **Nutzer anlegen** sind eine Online-Anmeldung, ein Benutzername und ein zweimal eingegebenes
+Passwort mit mindestens zwölf Zeichen erforderlich. Wählen Sie die Gruppen und gegebenenfalls
+den Administratorstatus. **Zentral speichern** erzeugt den Nutzerschlüssel und den verschlüsselten
+Vault auf diesem Arbeitsplatz und registriert den Zugang auf dem Server.
 
-- **aktiv** oder **inaktiv** sein (nur aktive Benutzer können sich anmelden),
-- **Administrator** sein (volle Rechte) oder
-- Rechte über **Gruppen** erhalten (empfohlenes Rollenmodell).
+Danach kann sich der Nutzer auf einem Arbeitsplatz mit eingerichteter Serververbindung allein
+mit Benutzername und Passwort anmelden. Nach der ersten erfolgreichen Anmeldung ist dort auch
+das Offline-Entsperren möglich.
 
-Inaktivieren statt Löschen ist oft sinnvoll, weil dadurch die Historie (wer hat wann welche Messungen importiert) nachvollziehbar bleibt.
+Bei einem Verbindungsabbruch können Sie die bereits signierte Anlage über **Zentral speichern**
+erneut senden. Die Eingaben sind währenddessen gesperrt. Für eine geänderte Anfrage laden Sie
+den Sicherheitsstand neu und verwerfen den Entwurf. Nach einem Programmneustart prüfen Sie
+zuerst die Nutzerliste: Eine vor dem Abbruch zentral gespeicherte Anlage bleibt erhalten.
 
-![Benutzerverwaltung](../screenshots/user.annotated.png)
+Für einen verlorenen Zugang wählen Sie als Administrator einen anderen aktiven Nutzer
+und **Zugang wiederherstellen**. Geben Sie eine Begründung und ein vorläufiges Passwort
+zweimal ein. Die Bestätigung widerruft alle bisherigen aktiven Nutzerschlüssel und beendet
+die betroffenen Sitzungen. Ein neuer Schlüssel und ein neuer verschlüsselter Vault ersetzen
+den Zugang; Gruppen, Rechte und historische Signaturnachweise bleiben erhalten.
+Nicht übertragene Offline-Arbeit mit alten Schlüsseln kann danach nicht mehr übernommen werden.
 
-- (1) Benutzerliste
-- (2) Aktiv/Admin setzen
-- (3) Gruppen zuweisen
-- (4) Speichern / Löschen
-- (5) Neuen Benutzer anlegen
+Übergeben Sie das vorläufige Passwort an den Nutzer. Er muss es nach der Online-Anmeldung
+ändern und sich erneut anmelden, bevor Fachdaten und Offline-Zugriff freigegeben werden.
+Bei einem Verbindungsabbruch können Sie die unveränderte, bereits bestätigte Wiederherstellung
+erneut übertragen. Ein bestätigter Vorgang wird dadurch nicht doppelt ausgeführt.
 
-::: info Empfehlung
-- Nutzen Sie Gruppen als Rollen (z. B. „Messung“, „Auswertung“, „Key‑User“) und vergeben Sie Rechte ausschließlich über Gruppen.
-:::
+Nutzer mit der Gruppenberechtigung **Passwörter zurücksetzen (andere Nutzer)**
+(`users.reset_passwords`) finden denselben Ablauf unter **Zugänge wiederherstellen**.
+Diese Berechtigung umfasst auch andere aktive Administratorkonten. Die Auswahl zeigt
+die betroffenen Nutzer und Schlüsselkennungen; allgemeine Nutzer-, Gruppen- und
+Rechteänderungen bleiben Administratoren vorbehalten. Die Wiederherstellung des eigenen
+Zugangs führt ein anderer berechtigter Nutzer durch.
 
-## Benutzer anlegen
+## Vorhandenen Nutzer bearbeiten
 
-Zum Anlegen eines neuen Nutzers geben Sie Benutzername, Anzeigename und ein initiales Passwort ein. Optional können Sie den Nutzer direkt als Admin markieren (nur in Ausnahmefällen; üblich ist die Rechtevergabe über Gruppen).
+Wählen Sie den Nutzer und ändern Sie Benutzername, **Zugang aktiv**, Administratorstatus oder Gruppenzugehörigkeit. **Zentral speichern** übernimmt die signierte Änderung. Betroffene Sitzungen werden beendet; Änderungen am eigenen Konto können die eigene Sitzung ebenfalls schließen. Mindestens ein aktiver Administrator mit aktivem Schlüssel muss erhalten bleiben.
 
-Nach dem Anlegen kann sich der Nutzer (sofern aktiv) sofort anmelden und sein eigenes Passwort ändern.
+Die Serveroberfläche löscht keine Nutzer. Sperren Sie einen Zugang über **Zugang aktiv**, damit seine historischen Belege erhalten bleiben. Unter **Schlüssel** können einzelne aktive Schlüssel mit Begründung widerrufen werden. Ein Widerruf verhindert neue Übernahmen mit diesem Schlüssel, ohne historische Signaturen zu entfernen.
 
-## Benutzer bearbeiten
-
-Wählen Sie in der Tabelle einen Benutzer aus. In der Detailansicht können Sie:
-
-- Anzeigename ändern
-- Benutzer aktivieren/deaktivieren
-- Admin-Status setzen/entfernen
-
-Hinweis: Mindestens ein **aktiver Admin** muss verbleiben.
-
-## Gruppen zuweisen
-
-Weisen Sie dem Benutzer die passenden Gruppen zu. Die wirksamen Rechte ergeben sich aus der Gruppen‑Rechte‑Matrix (siehe [Gruppen & Rechte](./groups-permissions.md)). Änderungen wirken sofort auf die UI (nach dem nächsten Laden der Seite bzw. nach erneutem Login).
-
-## Passwort zurücksetzen
-
-Admins können in der Detailansicht ein neues Passwort für den ausgewählten Benutzer setzen (**Passwort neu setzen**). Zusätzlich existiert die Seite **Administration → Passwörter zurücksetzen** für Nutzer mit dem Recht `users.reset_passwords`. Das ist hilfreich, wenn ein Key‑User Passwörter verwalten darf, aber kein Voll‑Admin sein soll.
-
-## Benutzer löschen
-
-In der Detailansicht können Benutzer gelöscht werden. In vielen Organisationen ist jedoch „Inaktivieren“ die bessere Wahl, weil die Historie nachvollziehbar bleibt.
-
-Hinweis: Der eigene Account kann nicht gelöscht werden.
-
-::: info Zusammenfassung
-- Nutzer sind aktiv/inaktiv und optional Admin.
-- Rechte werden über Gruppen vergeben (best practice).
-- Passwort‑Resets sind eine separate, sensible Berechtigung.
-:::
+Wenn der angezeigte Sicherheitsstand veraltet ist, laden Sie ihn neu und prüfen den Entwurf erneut. Getrennte Arbeitsplätze können Änderungen erst bei der nächsten Verbindung erfahren; die zentrale Übernahme prüft die aktuellen Rechte unabhängig davon.

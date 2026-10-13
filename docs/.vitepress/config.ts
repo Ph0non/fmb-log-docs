@@ -46,7 +46,7 @@ export default defineConfig({
 					items: [
 						{ text: "Überblick", link: "/user-guide/" },
 						{ text: "Schnellstart", link: "/user-guide/quickstart" },
-						{ text: "Suche & Deep-Links", link: "/user-guide/search" },
+						{ text: "Suche & Nachweise", link: "/user-guide/search" },
 						{ text: "Datenqualität", link: "/user-guide/data-quality" },
 						{ text: "Gebinde & Messungen", link: "/user-guide/containers" },
 						{ text: "Import (RPT / GS)", link: "/user-guide/import" },
@@ -56,7 +56,7 @@ export default defineConfig({
 						},
 						{ text: "FMK", link: "/user-guide/fmk" },
 						{ text: "Gebindeabrechnung", link: "/user-guide/reports" },
-						{ text: "Einstellungen", link: "/user-guide/settings" },
+						{ text: "Verbindung & Cache", link: "/user-guide/settings" },
 						{ text: "Konto & Passwort", link: "/user-guide/account" },
 						{ text: "Glossar", link: "/user-guide/glossary" },
 					],
@@ -76,6 +76,10 @@ export default defineConfig({
 						},
 						{ text: "Freigabewerte (FGW)", link: "/admin-guide/fgw" },
 						{ text: "Betrieb & Datenbank", link: "/admin-guide/database" },
+						{
+							text: "Root-Freigabe für Reset",
+							link: "/admin-guide/server-reset-signing",
+						},
 						{ text: "Technische Doku", link: "/admin-guide/technical" },
 						{ text: "Troubleshooting", link: "/admin-guide/troubleshooting" },
 					],
@@ -101,7 +105,11 @@ export default defineConfig({
 					items: [
 						{ text: "Überblick", link: "/architecture/" },
 						{
-							text: "ADR‑001: CR‑SQLite",
+							text: "ADR-007: Server & IPLD",
+							link: "/architecture/adr-007-server-ipld",
+						},
+						{
+							text: "ADR‑001: CR‑SQLite (historisch)",
 							link: "/architecture/adr-001-crsqlite",
 						},
 						{

@@ -12,3 +12,10 @@ Das Glossar erklärt die wichtigsten Begriffe, die in der UI und in der Dokument
 - **FMK**: Freimesskampagne (Konfiguration für Pfade/Prüfungen).
 - **FGW**: Freigabewerte je Nuklid und Pfad (Einheit abhängig vom Pfad).
 - **SW/KF**: Schwellenwert/Korrekturfaktor zur Anpassung von Freigabewert/Aktivität.
+
+- **CID**: Inhaltsadresse einer unveränderten Originaldatei oder kanonischen Datenhülle. Geänderte Bytes ergeben eine andere CID.
+- **IPLD / DAG-CBOR**: Datenmodell mit verknüpften Inhaltsadressen und dessen kanonische binäre Kodierung für strukturierte Originale.
+- **Outbox**: Dauerhaft gespeicherte signierte Arbeit auf dem Arbeitsplatz, deren zentrale Übernahme noch geprüft werden muss.
+- **Generation**: Abschnitt des zentralen Fachbestands; ein genehmigter Reset beginnt eine neue Generation.
+- **Stub**: Genehmigter Ausgangsbestand mit Root-Freigabe, ohne vorgetäuschte Nutzersignaturen.
+- **Vault**: Verschlüsselter Schlüsselspeicher eines Nutzers, der lokal mit dessen Passwort entsperrt wird.

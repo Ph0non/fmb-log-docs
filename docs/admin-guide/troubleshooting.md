@@ -1,93 +1,49 @@
-# Troubleshooting
+# Fehlerbehebung
 
-## App schließt sich ohne Meldung / „Crash“
+## Verbindung zum Dienst schlägt fehl
 
-Im Production‑Build läuft Rust mit `panic = "abort"`. Das bedeutet: Ein Panic beendet die Anwendung sofort, ohne dass ein Fehlerdialog angezeigt wird.
+Prüfen Sie Serveradresse einschließlich Port und den von der Administration bestätigten SSH-Fingerabdruck. Die Anwendung verwendet einen direkten SSH-Kanal; HTTP-/HTTPS-Proxy und PAC sind daran nicht beteiligt. Eine Firewall kann SSH auch auf Port 80 sperren, obwohl HTTP dort erlaubt ist.
 
-FMB Log schreibt deshalb eine Logdatei mit Crash‑Hinweisen und Backtrace:
+Bei abweichendem Hostschlüssel bricht die Verbindung vor der Anmeldung ab. Übernehmen Sie keinen unbekannten Fingerabdruck als Umgehung. Der Betreiber prüft, ob eine beabsichtigte Schlüsseländerung oder eine falsche Zieladresse vorliegt.
 
-- Öffnen über **Administration → Einstellungen → Diagnose → Log öffnen**
-- Pfad (Windows): `%LOCALAPPDATA%\\com.ewn.fmblog\\logs\\fmb-log.log`
+Auf dem Server helfen `systemctl status fmblog-server`, `journalctl -u fmblog-server` und die CLI-Diagnose mit dem Laufzeitkonto. Eine laufende systemd-Unit allein beweist noch keine erfolgreiche API-Anmeldung.
 
-Wenn die Anwendung beim Start erkennt, dass der letzte Start unerwartet endete, erscheint zusätzlich ein Hinweis auf der Anmeldeseite.
+## Offline-Entsperren funktioniert nicht
 
-## „Diese Seite funktioniert nur in der Tauri-Desktop-App“
+Offline-Zugriff setzt die erste erfolgreiche Online-Anmeldung auf genau diesem Arbeitsplatz voraus. Nach einer administrativen Zugangswiederherstellung müssen Sie das vorläufige Passwort online ändern und sich erneut anmelden. Nach einem Passwortwechsel auf einem anderen Arbeitsplatz muss dieser Rechner den neuen Vault ebenfalls online abrufen.
 
-Einige Funktionen (Dateidialoge, Zugriff auf Ressourcenpfade, PDF‑Export, Datenbankzugriff) benötigen Tauri‑APIs. Wenn Sie die Web‑UI im Browser starten (z. B. mit `pnpm dev`), sind diese APIs nicht verfügbar und die Anwendung zeigt entsprechend einen Hinweis.
+Löschen Sie lokale Vaults, Sicherheitsdateien oder Repliken nicht zur Fehlerbehebung. Dort können noch unbestätigte Änderungen liegen.
 
-Für Desktop-Tests:
+## Abgleich unterbrochen oder Übernahme abgelehnt
 
-- `pnpm tauri dev`
+**Lokal gespeichert** bestätigt die Speicherung am Arbeitsplatz. **Zentral bestätigt** bestätigt die Übernahme durch den Dienst. Prüfen Sie die Fehlermeldung und den Zustand des betroffenen Datensatzes; nach behobener Verbindungsstörung können Sie **Jetzt abgleichen** wählen.
 
-## Export/Dateidialoge funktionieren nicht
+Bei einem Konflikt bleiben beide signierten Zweige erhalten. Lösen Sie ihn in der betreffenden Fachansicht durch eine neue signierte Version auf. Bei entzogenen Rechten oder einem widerrufenen Schlüssel muss die Administration den Zugang klären; wiederholtes Senden allein hebt die Ablehnung nicht auf.
 
-Dateidialoge und das Öffnen/exportieren von Dateien funktionieren nur in der Desktop‑App und sind zusätzlich durch das Tauri‑Permissions‑System abgesichert. Wenn Sie eine Meldung wie „not allowed“ oder „Permission … not found“ sehen, prüfen Sie:
+Eine Kompatibilitätsmeldung verlangt zueinander passende Client-/Dienstversionen. Bei einem zurückliegenden oder nicht passenden Servernachweis lokale Checkpoints nicht löschen, sondern Datenbankidentität, Generation und Wiederherstellungsstand durch den Betreiber prüfen lassen.
 
-- ob Sie die Funktion in der Desktop‑App ausführen (nicht im Browser),
-- ob das passende Plugin (z. B. `opener`) aktiviert ist,
-- ob die Berechtigung in `src-tauri/capabilities/default.json` erlaubt ist (z. B. `opener:allow-open-path`).
+## Nach Reset fehlen bisherige Daten
 
-## Netzwerk-DB: sporadische Locks/Fehler
+Ein genehmigter Reset ersetzt den aktiven Fachbestand durch den Stub und wechselt die Generation. Unbestätigte Arbeit der alten Generation liegt unter **Suche → Eigene archivierte Arbeit nach Reset**. Sie wird nicht automatisch in die neue Generation übernommen.
 
-Wenn die Datenbank auf einem Netzlaufwerk liegt, können sporadische Sperren oder Zugriffsfehler auftreten. Ursache ist meist das Zusammenspiel aus SMB‑Locking, OpLocks und gleichzeitigen Schreibzugriffen. Typische Maßnahmen:
+## Originalprotokoll oder PDF nicht offline verfügbar
 
-Prüfen:
+Nur lokal gespeicherte Originale können offline geöffnet werden. Entfernte bestätigte Messprotokolle werden bei bestehender Verbindung erneut vom Server geladen. Noch nicht übertragene Importdateien befinden sich zunächst auf dem importierenden Arbeitsplatz; dieser muss seine Operation erfolgreich abgleichen.
 
-- Schreibrechte im Zielordner und Stabilität der Verbindung
-- Share/SMB‑Konfiguration (Locking/OpLocks)
-- ob mehrere Nutzer gleichzeitig schreiben (z. B. paralleler Import)
+Die vorgesehene Cache-Bereinigung schützt Originale lokaler, abgelehnter, konfliktbehafteter und archivierter Arbeit. Ein manuelles Löschen der Datenbankdateien umgeht diesen Schutz. PDF- und TSA-Nachweise werden durch die Protokoll-Cache-Funktion nicht entfernt.
 
-Wenn Fehler reproduzierbar unter Last auftreten, ist ein lokaler DB‑Pfad pro Nutzer die robustere Variante.
+## Neue Abrechnung kann nicht abgeschlossen werden
 
-## Protokoll kann nicht geladen werden
+Neue offizielle Abrechnungen benötigen eine Online-Sitzung, einen erreichbaren Dienst und den TSA-Nachweis. Prüfen Sie Hinweise in der Vorschau sowie ausstehende Änderungen und Konflikte. Hat sich die Berechnungsgrundlage inzwischen geändert, muss eine neue Vorschau geprüft und autorisiert werden.
 
-Wenn beim Öffnen eines Messprotokolls eine Fehlermeldung erscheint, sind die häufigsten Ursachen:
+Bei unterbrochener Abschlussantwort verwenden Sie **Abschluss erneut abfragen** für die gespeicherte Anfrage. Erzeugen Sie nicht vorschnell eine zweite Abrechnung. Bereits zentral gespeicherte Dokumente stehen in der **Historie**.
 
-1. **Hub nicht erreichbar** (Netzlaufwerk offline / Pfad falsch)  
-   Protokolle werden im Hub‑Ordner als Packfiles unter `protocols/…` gespeichert. Ist der Hub nicht erreichbar, kann die App Protokolle nur laden, wenn sie bereits im lokalen Cache liegen.
+## Signatur oder Integritätsnachweis auffällig
 
-2. **Offline‑Import auf anderem Rechner**  
-   Wurde eine Messung importiert, während der Hub nicht erreichbar war, ist das Protokoll zunächst nur auf dem importierenden Rechner im lokalen Cache verfügbar. Der Upload in `protocols/…` wird automatisch nach dem nächsten erfolgreichen Sync nachgeholt. Bis dahin können andere Clients die Messung sehen, das Protokoll aber nicht öffnen.
+Öffnen Sie den konkreten Treffer unter **Suche und Nachweise** beziehungsweise **Sicherheits-Audit**. Fehlende Originale oder Schlüssel bedeuten einen unvollständigen Nachweis; manipulierte Bytes oder ungültige Signaturen sind Integritätsbefunde. Ein ausdrücklich Root-autorisierter Stub besitzt absichtlich keine Nutzersignatur.
 
-3. **Lokaler Cache wurde geleert**  
-   Wenn ein Protokoll noch nicht in das Hub‑Archiv hochgeladen war und der lokale Cache gelöscht wurde, kann es ggf. nicht mehr automatisch hochgeladen werden. In diesem Fall muss das Protokoll erneut importiert werden (oder aus einem Backup wiederhergestellt werden).
+Signieren Sie historische oder fehlerhafte Nachweise nicht pauschal neu, um den Befund zu verbergen. Bewahren Sie Originalbeleg, CID, betroffene Generation und Fehlermeldung für die Klärung auf.
 
-## Import hängt / Import beendet nicht
+## Desktop-Funktion oder Dateidialog fehlt
 
-Wenn ein Import scheinbar „endlos“ läuft, zeigt die Import‑Seite unter dem Button **Importieren** den aktuellen Schritt (z. B. „Schritt: Protokoll speichern…“). Das hilft, den Engpass einzugrenzen.
-
-FMB Log verwendet außerdem Timeouts, damit ein Import nicht unbegrenzt hängen bleibt. Falls eine Zeitüberschreitung auftritt, enthält die Fehlermeldung den betroffenen Schritt.
-
-Typische Ursachen je Schritt:
-
-- **„Protokoll speichern…“**: Zugriff auf den Hub‑Ordner (Schreibrechte/SMB/Antivirus) oder Initialisierung der zstd‑Kompression.
-- **„Gebinde signieren…“ / „Signatur (neu/alt)…“**: Stronghold‑Vault nicht erreichbar (liegt im Hub‑Ordner) oder falsches Signier‑/Vault‑Passwort.
-- **„Messung speichern…“**: lokale Replica‑DB ist blockiert (z. B. durch parallele Aktionen) oder Hub/Sync verursacht Locking unter Last.
-
-Für die Diagnose ist die Logdatei hilfreich:
-
-- Öffnen über **Administration → Einstellungen → Diagnose → Log öffnen**
-- Pfad (Windows): `%LOCALAPPDATA%\\com.ewn.fmblog\\logs\\fmb-log.log`
-
-## „Signatur fehlt“ / „Signatur ungültig“ (nach Update oder Datenübernahme)
-
-Wenn in **Administration → Audit** oder in Stammdaten‑Ansichten Meldungen wie „Signatur fehlt“ oder „Signatur ungültig“ erscheinen, sind typische Ursachen:
-
-1. **Falsche Datenquelle** (z. B. noch lokale Stub‑DB statt Hub‑DB).
-2. **Integritätsschutz nicht vollständig aktiv** (Zertifikat `<db>.integrity.dbkey.json` fehlt/inkonsistent).
-3. **Nach Update wurden neue Signatur‑Felder eingeführt**, aber bestehende Datensätze wurden noch nicht nachgezogen.
-
-Vorgehen (empfohlen):
-
-1. Als Admin anmelden.
-2. **Administration → Einstellungen → Integritätsschutz** prüfen:
-   - Status muss **„aktiviert (zertifiziert)“** sein.
-3. Falls Signaturen wirklich fehlen: **Administration → Einstellungen → Fehlende Signaturen nachholen** ausführen.
-   - Signiert nur Datensätze, bei denen `user_signature`/`signing_meta_id` fehlen.
-   - Schreibt einen Audit‑Trail‑Eintrag und erstellt einen Audit‑Trail‑Pin (mit TSA, falls verfügbar; sonst ohne TSA).
-
-::: info Kurzcheck
-- Browser‑Modus (`pnpm dev`) eignet sich für UI‑Layout, nicht für Tauri‑Funktionen.
-- Desktop‑Tests immer mit `pnpm tauri dev`.
-- „not allowed“ deutet meist auf fehlende Tauri‑Permissions hin.
-:::
+Dateidialoge, lokale Vaults, SQLite und der direkte SSH-Transport benötigen die Tauri-Desktop-Anwendung. Ein normaler Browser mit der Entwicklungsoberfläche ersetzt sie nicht. Bei einem nativen Fehler prüfen Entwickler die zugehörigen Tauri-Berechtigungen; Zugangsdaten, private Schlüssel und Sitzungstoken gehören nicht in Fehlerberichte.

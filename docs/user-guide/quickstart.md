@@ -1,65 +1,41 @@
 # Schnellstart
 
-Der Schnellstart führt Sie einmal durch den typischen Ablauf – von der ersten Anmeldung bis zum Export einer Gebindeabrechnung. Die Detailseiten beschreiben anschließend einzelne Arbeitsschritte genauer.
+FMB Log arbeitet am Arbeitsplatz mit einem lokalen Datenbestand. Der gemeinsame Bestand liegt auf dem **FMB-Log Server**. Die vertrauten Bereiche für Gebinde, Messungen, Stammdaten und Abrechnungen bleiben die Einstiege für die tägliche Arbeit.
 
-## 1) Anwendung starten
+## 1) Arbeitsplatz verbinden
 
-Starten Sie FMB Log über die Desktop-Verknüpfung oder das Startmenü. Die Anwendung öffnet sich im Anmeldefenster.
+Beim ersten Start wählen Sie **Serververbindung einrichten**. Die Administration stellt drei Angaben bereit:
 
-## 2) Ersteinrichtung (einmalig)
+| Feld | Eingabe |
+| --- | --- |
+| Serveradresse | Adresse einschließlich Port, etwa `ssh://192.168.1.121:80` |
+| SSH-Serverschlüssel | Vollständiger `SHA256:…`-Fingerabdruck des Dienstes |
+| Öffentlicher Root-Schlüssel | Von der Administration bereitgestellter Base64url-Wert |
 
-Beim allerersten Start wird die **Ersteinrichtung** geöffnet. Hier legen Sie den ersten Administrator an. Dieser Admin kann später weitere Nutzer, Gruppen und Rechte pflegen.
+Mit **Prüfen und verwenden** wird die Verbindung geprüft und die Anwendung neu geladen. Einen Datenbankpfad oder ein Linux-/SSH-Benutzerkonto benötigen Sie nicht. Den ersten Administrator richtet der Betreiber am Dienst ein; weitere Nutzer legt die Administration in FMB Log an.
 
-Nach erfolgreicher Ersteinrichtung wechselt die Anwendung in den normalen Anmeldemodus. Die Ersteinrichtung erscheint nur dann, wenn noch keine Benutzer vorhanden sind.
+## 2) Anmelden
 
-Wenn in Ihrer Umgebung bereits eine produktive Datenquelle existiert (z. B. im Netzlaufwerk), können Sie die Ersteinrichtung auf einem neuen Arbeitsplatz überspringen:
+Geben Sie Benutzername und Passwort ein und wählen Sie **Am Server anmelden**. Auf einem neuen Arbeitsplatz ist dafür eine Verbindung zum Dienst erforderlich. Der eigene verschlüsselte Schlüsselspeicher wird abgerufen und lokal entsperrt.
 
-- Im Setup-Modus **Datenquelle ändern** auswählen und den Pfad zur bestehenden Datenbank angeben.
-- Danach direkt anmelden.
+Nach der ersten erfolgreichen Anmeldung können Sie denselben Arbeitsplatz mit **Offline entsperren** verwenden. Bereits geladene Daten und lokal verfügbare Originalprotokolle stehen dann ohne Serververbindung bereit. Neue Passwörter müssen mindestens zwölf Zeichen haben.
 
-Passwörter müssen mindestens **8 Zeichen** lang sein und werden sicher verschlüsselt gespeichert.
+**Bestehenden Zugang aktivieren** ist ausschließlich für zuvor registrierte Altzugänge bestimmt. Dafür werden das bisherige Passwort und die unverändert benannte Nutzer-Vault-Datei benötigt. Ein neu angelegter Zugang verwendet die normale Anmeldung.
 
-::: info Kurzfassung (Ersteinrichtung)
-- Admin-Benutzername, Anzeigename und Passwort setzen
-- Danach mit dem Admin anmelden
-:::
+## 3) Daten bearbeiten und abgleichen
 
-## 3) Anmeldung
+Die **Übersicht** zeigt den lokal verfügbaren Stand. Sichtbare Bereiche und Aktionen hängen von Ihren Rechten ab.
 
-Melden Sie sich mit Benutzername und Passwort an. Die sichtbaren Menüpunkte und Aktionen hängen von Ihren Rechten ab (Admins sehen alle Bereiche; Nicht-Admins erhalten Rechte über Gruppen).
+1. Stammdaten und FMK prüfen beziehungsweise auswählen.
+2. Gebinde anlegen oder öffnen.
+3. Messprotokolle importieren und Messungen prüfen.
+4. Änderungen speichern. Die Anwendung signiert sie und bewahrt sie lokal bis zur Übernahme auf.
+5. Bei Verbindung den Abgleich abwarten oder **Jetzt abgleichen** wählen.
 
-## 4) Übersicht (Dashboard)
+**Lokal gespeichert** bedeutet noch keine zentrale Bestätigung. Bei konkurrierenden Änderungen zeigt die Anwendung einen Konflikt; bei fehlenden Rechten oder anderen Übernahmefehlern bleibt die lokale Arbeit zur Klärung erhalten. Details stehen unter [Einstellungen und Synchronisation](./settings.md).
 
-Nach der Anmeldung öffnet sich die **Übersicht**. Diese Seite zeigt aktuelle Kennzahlen, damit Sie schnell erkennen, was „offen" ist (z. B. nicht exportierte Messungen) und wie viele Gebinde heute bearbeitet wurden.
+## 4) Verbindlich abrechnen
 
-Die Kennzahlen beziehen sich auf **aktuelle und gültige Revisionen** (d. h. die derzeit gültige Version einer Messung).
+Für eine neue offizielle Abrechnung müssen Sie online angemeldet sein. Unter **Abrechnungen** wählen Sie die Gebinde und erstellen die Vorschau. Prüfen Sie die Hinweise und autorisieren Sie genau diesen Datenstand. **Signieren, zeitstempeln und zentral abschließen** veröffentlicht die geprüfte Abrechnung auf dem Server.
 
-::: info Was bedeutet „offen"?
-- **Nicht exportiert**: Messungen, die noch in keiner Gebindeabrechnung enthalten sind
-- **Nicht vollständig**: Gebinde, die noch nicht als „vollständig" markiert sind
-:::
-
-![Übersicht (Shortcuts)](../screenshots/uebersicht.annotated.png)
-
-- (1) „Letzte Gebindeabrechnungen“ (Liste)
-- (2) Shortcut zur Seite **Gebindeabrechnung**
-- (3) „Letzte Imports“ (Liste)
-- (4) Liste der enthaltenen Gebinde/Messungen je Gebindeabrechnung
-
-## 5) Typischer Ablauf
-
-In der Praxis beginnt die Arbeit meist mit einem Gebinde und den zugehörigen Protokollen. Optional werden vorher Stammdaten geprüft (FMK/NV/FGW), typischerweise durch Admins oder Key-User. Anschließend importieren Sie RPT-Dateien, prüfen die Messungen, markieren das Gebinde als vollständig und erzeugen schließlich eine Gebindeabrechnung als PDF.
-
-::: info Kurzfassung (Ablauf)
-1. Optional: Stammdaten prüfen (FMK/NV/FGW)
-2. Gebinde anlegen oder auswählen
-3. RPT-Dateien importieren (Gammaspektrometrie)
-4. Messungen prüfen, ggf. Messdatum korrigieren
-5. Gebinde als vollständig markieren
-6. Gebindeabrechnung als Vorschau erzeugen und PDF exportieren
-7. Exportierte Gebindeabrechnungen in der Historie nachschlagen
-:::
-
-## Ablaufdiagramm
-
-![Ablaufdiagramm (User)](../diagrams/user-flow.svg)
+Erst nach zentralem Abschluss steht das verbindliche PDF zur Ausgabe bereit. Bereits gespeicherte Abrechnungen finden Sie unter **Historie**. Lokal vorhandene PDF- und Nachweisdaten können Sie auch offline prüfen und speichern. Siehe [Gebindeabrechnung](./reports.md).

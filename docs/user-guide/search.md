@@ -1,25 +1,25 @@
-# Suche & Deep‑Links
+# Suche & Nachweise
 
-FMB Log bietet eine **globale Suche**, mit der Sie schnell zu einem Gebinde, einer Messung oder einer Gebindeabrechnung springen können – besonders hilfreich, wenn Sie nur eine **ID** oder einen **Fingerprint** (Kurzform aus der PDF‑Fußzeile) vorliegen haben.
+Öffnen Sie **Suche** in der Hauptnavigation. Die Suche verwendet den lokal verfügbaren Bestand und zeigt dessen Generation und Veröffentlichungsstand an. Sie umfasst in der aktuellen Generation auch historische Versionen und Konfliktzweige.
 
-## Was kann gesucht werden?
+## Suchen und eine Version öffnen
 
-Die Suche unterstützt u. a.:
+1. Den **Suchbereich** wählen: **Aktuelle Generation** oder **Eigene archivierte Arbeit nach Reset**.
+2. Fachliche ID, Bezeichnung, Operations-ID, CID oder Signatur eingeben und **Suchen** wählen.
+3. Beim gewünschten Treffer **Öffnen** wählen.
 
-- **Gebinde**: Gebindenummer, Datenblattnummer, Herkunft, FMK
-- **Messungen**: Mess‑ID, Gebindenummer, Messungs‑Revision‑ID
-- **Gebindeabrechnungen**: Abrechnungsdatum, FMK, Gebindeabrechnungs‑ID, Fingerprints (DATA/TSA)
+Originaldatei-CIDs finden die zugehörigen signierten Versionen. Berechtigte Nutzer finden auch veröffentlichte Abrechnungen über Bericht-ID, Nachweis-CIDs und Autorisierungssignatur. Signaturen verwenden Base64url; bei Signaturpräfixen wird Groß- und Kleinschreibung unterschieden.
 
-## Nutzung
+Die Detailansicht prüft CID und Nutzersignatur und zeigt Version, Generation, Autor, Schlüssel und vollständige Nutzdaten. Ausgangsversionen, gebundene Stammdaten und gemeinsam signierte Änderungen lassen sich direkt öffnen. Eine gültige Signatur allein bedeutet keine zentrale Übernahme; beachten Sie den angezeigten Zustand.
 
-1. Öffnen Sie in der Top‑Navigation **Suche**.
-2. Geben Sie den Suchbegriff ein (z. B. Gebinde, Mess‑ID oder Fingerprint).
-3. Klicken Sie einen Treffer an:
-   - **Gebinde** → öffnet die Gebinde‑Detailansicht
-   - **Messungen** → öffnet die Gebinde‑Detailansicht und markiert die passende Revision
-   - **Gebindeabrechnungen** → öffnet die Historie und selektiert die passende Gebindeabrechnung
+Mit **Signierte Originaloperation speichern** exportieren Sie die unveränderten Originalbytes. Zugehörige Originaldateien können exportiert werden, sofern sie lokal vorhanden sind. Ein Root-autorisierter Stub wird gesondert ausgewiesen und besitzt keine Nutzersignatur.
 
-::: info Tipp
-Wenn im Audit oder in einer Rückmeldung nur eine ID genannt wird, ist die globale Suche meist der schnellste Weg, den passenden Datensatz zu öffnen.
-:::
+## Archivierte Arbeit nach einem Reset
 
+Diese Ansicht enthält eigene lokale Änderungen früherer Generationen. Öffnen und Export verändern den aktiven Bestand nicht; die Operationen werden nicht automatisch erneut übertragen. Nach einem Reset fehlende Originaldateien können nicht aus dem neuen aktiven Serverbestand nachgeladen werden.
+
+## Integritätsprüfungen
+
+Der Bereich **Veröffentlichungskette prüfen** bietet die Prüfung des zentralen Log-Nachweises. Ergänzend können der zentrale Fachbestand und **Eigene gespeicherte Arbeit** geprüft werden. Letzteres umfasst auch lokale, konkurrierende, abgelehnte und archivierte Operationen.
+
+Fehlende Originaldateien oder Schlüssel ergeben einen unvollständigen Nachweis. Ungültige Signaturen oder veränderte Originalbytes werden als Befunde gemeldet; betroffene Versionen lassen sich öffnen. Ein gespeicherter Prüfstand kann durch spätere Änderungen veralten. Abrechnungs-/TSA-Nachweise prüfen Sie gesondert in der **Historie**, Sicherheitsänderungen im **Sicherheits-Audit**.

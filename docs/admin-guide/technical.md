@@ -1,347 +1,72 @@
 # Technische Dokumentation
 
-Dieses Kapitel ergänzt den Admin Guide um technische Details für Betrieb, IT‑Integration und Fehlersuche. Es beschreibt, **wo** FMB Log Daten ablegt, **welche** Dateien „außerhalb der Datenbank“ existieren und **wie** Signaturen/Authentifizierung technisch funktionieren.
+## Laufzeit und gemeinsame Module
 
-> Zielgruppe: Admins/Key‑User und IT‑Betreiber (z. B. wenn FMB Log auf mehreren Arbeitsplätzen gegen einen gemeinsamen Hub betrieben wird).
+FMB-Log Server verwendet Node.js 24, TypeScript/Fastify und den PostgreSQL-Treiber `pg`. Die Desktop-Anwendung verwendet Tauri, Vue und lokale SQLite-Repliken. `packages/protocol` definiert kanonische DAG-CBOR-Daten, IPLD-Verweise, CIDs und Signaturprüfung. Berechnung und PDF-Erzeugung werden gemeinsam genutzt; der Rust-TSA-Prüfer wird als Bestandteil des Dienstpakets ausgeliefert.
 
-## 1) Datenablage: `resources` vs. Hub‑Datenordner vs. AppLocalData
+## Daten am Arbeitsplatz
 
-FMB Log unterscheidet drei Speicherbereiche:
+Im lokalen Anwendungsdatenverzeichnis liegen:
 
-1. **Programm‑Ressourcen (`resources/` im Programmordner)**  
-   Enthält gebündelte Dateien, die zur App gehören (Extensions, Dictionaries, Logo, Stub‑DB).
-2. **Hub‑Datenordner (gemeinsam, z. B. Netzlaufwerk)**  
-   Enthält die **Hub‑DB** sowie **Vaults** und **Protokoll‑Archive**. Dieser Ordner ist die „Quelle der Wahrheit“ für den gemeinsamen Betrieb.
-3. **AppLocalData (pro Windows‑Benutzer, lokal)**  
-   Enthält die **lokale Replica‑DB** und den **lokalen Protokoll‑Cache**, damit die App offline weiter nutzbar bleibt.
+| Verzeichnis | Inhalt |
+| --- | --- |
+| `server-replicas/` | SQLite-Repliken je Datenbank/Nutzer mit Originalen, Ansichten, Outbox und lokalem Objektbestand |
+| `server-security/` | `connection.json`, `credentials.sqlite` und `checkpoints.sqlite` |
+| `server-vaults/` | Lokale Stronghold-Vaults |
 
-Typische Struktur (vereinfacht):
+Das Verzeichnis hängt von Betriebssystem, Nutzer und Anwendungskennung ab. Eine getrennte Abnahmeinstallation verwendet eine eigene Kennung und damit einen eigenen Datenbestand. Replikdateien dürfen nicht als beliebig löschbarer Cache behandelt werden: Sie können noch unbestätigte Arbeit enthalten. Die dafür vorgesehene Protokoll-Bereinigung schützt diese Originale.
 
-- **Programmordner** (lokal)
-  - `resources/`
-    - `extensions/crsqlite.dll` (CR‑SQLite Extension)
-    - `zstd-dicts/rpt-v2.dict` (optional, aktuelles Zstd‑Dictionary für RPT‑Kompression)
-    - `zstd-dicts/rpt-v1.dict` (optional, Legacy‑Dictionary für ältere Protokolle)
-    - `Logo_EWN_RGB.png` (Logo für Gebindeabrechnung)
-    - `fmblog.stub.db` (Stub‑DB als „Baseline“; wird nur kopiert, wenn noch keine DB existiert)
-- **Hub‑Datenordner** (gemeinsam)
-  - `<db>.db` (Hub‑DB; Name frei wählbar)
-  - `<db>.integrity.pub.json` (DB‑Public‑Key)
-  - `<db>.integrity.dbkey.json` (DB‑Key‑Zertifikat; Root‑signiert)
-  - `vaults/`
-    - `<user_id>.vault` (Pepper + User‑Signierschlüssel)
-    - `<db>.integrity.vault` (DB‑Signierschlüssel; Admin‑Entsperren)
-  - `protocols/`
-    - `<site-id-hex>/pack-*.bin` (Packfiles für komprimierte Protokolle)
-    - `<site-id-hex>/state.json` (merkt „aktuelles“ Packfile)
-- **AppLocalData** (lokal)
-  - `replicas/fmblog.<hash>.db` (Replica‑DB)
-  - `protocols-cache/<hub-hash>/` (lokaler Protokoll‑Cache; Dateien nach Protokoll‑BLAKE3 benannt)
+## Daten auf dem Server
 
-::: info Zusammenfassung (Speicherorte)
-- `resources/` enthält „App‑Ressourcen“ (Extension/Dictionaries/Logo/Stub), nicht die produktiven Daten.
-- Produktive Daten liegen im Hub‑Datenordner: Hub‑DB + `vaults/` + `protocols/` + Integritätsdateien.
-- AppLocalData ist pro Nutzer lokal: Replica‑DB + Cache (offline‑fähig).
-:::
+PostgreSQL speichert kanonische Originaloperationen und Objekte sowie relationale Ansichten. Das Runtime-Paket liegt unter `/usr/lib/fmblog`, die Dienst-/Archivkonfiguration unter `/etc/fmblog`; geprüfte Reset-Archive werden standardmäßig unter `/var/lib/fmblog/archives` abgelegt. Laufzeit, Migration und Archivierung besitzen getrennte Konten und Datenbankrechte.
 
-::: tip Stub‑DB aktualisieren (bei Schema‑Änderungen)
-Die Stub‑DB ist die „Baseline“ für neue DB‑Dateien (Hub/Replica). Wenn sich das Schema durch neue Migrationen ändert, sollte die Stub‑DB aktualisiert werden:
+Schemaänderungen des Dienstes stehen in `server/migrations/` und werden ausdrücklich über die CLI angewendet. Die bisherigen CR-SQLite-Migrationsdateien sind keine Quelle für das neue zentrale Schema. Die neuen Clienttabellen werden durch die Module unter `src/lib/serverSync/` verwaltet.
 
-`pnpm -s db:stub:update`
+## Transport und Formatversionen
 
-Wichtig: Das Skript muss auf **Windows** ausgeführt werden (nicht in WSL), da es die lokal installierten Build‑Tools/Abhängigkeiten nutzt.
-:::
+`server-security/connection.json` verwendet `fmblog-server-connection/v2` und bindet SSH-Adresse, Hostschlüssel-Fingerabdruck, Datenbank-/Dienstidentität und öffentlichen Root-Schlüssel. Die API meldet ihre unterstützten Versionen vor Schreiboperationen. Alte HTTPS-Konfigurationen verlangen eine bewusste Neueinrichtung, ohne lokale Daten zu löschen.
 
-::: tip Migrationen: Quelle der Wahrheit
-FMB Log nutzt **eine Quelle der Wahrheit** für Schema‑Migrationen:
+Die API wird innerhalb des gepinnten SSH-Subsystems angesprochen. Der Dienst bietet darüber weder Shell/SFTP noch Portweiterleitung an. Der administrative sshd ist davon unabhängig. Eine Freigabe für HTTP auf Port 80 ist kein Beweis für eine SSH-Freigabe.
 
-- **Quelle:** `src/lib/db/migrations.ts` (TypeScript)
-- **Rust‑Hub‑Migrationen:** `src-tauri/src/db_migrations_generated.rs` ist **generiert** und darf nicht manuell editiert werden.
+Neue Fachoperationen verwenden `fmblog-operation/v2` mit Schema 2, CIDv1/BLAKE3 und kanonischem DAG-CBOR. Originalprotokolle und PDFs erhalten `raw`-CIDs über ihre Originalbytes. Historische TSA-/SHA-256-Nachweise werden nicht umgeschrieben. Details stehen in [ADR-007](../architecture/adr-007-server-ipld.md), [Datenmodell](../reference/data-model.md) und [Sicherheitsarchitektur](./security.md).
 
-Wenn `migrations.ts` geändert wird, muss danach die Rust‑Datei aktualisiert und mit committed werden:
+## Installation und Diagnose
 
-- `pnpm -s db:migrations:export-rust`
+Die vollständige Debian-Anleitung steht im Repository unter `server/debian/INSTALL.md`. Sie beschreibt Paketbau, PostgreSQL-17-Rollen und Peer-Zuordnung, Bootstrap, Hostschlüssel, systemd, Upgrade und Wiederanlauf. `server/README.md` dokumentiert Implementierung und konkrete Abnahmebelege einschließlich ihrer Grenzen.
 
-In CI kann mit `pnpm -s db:migrations:check` geprüft werden, dass die generierte Datei zum Repo‑Stand passt.
-:::
-
-## 2) Messprotokolle: zstd‑Kompression, Packfiles und lokaler Cache
-
-Messprotokolle werden aus Performance‑ und Sync‑Gründen **nicht** als BLOB in der CR‑SQLite‑Datenbank synchronisiert. Stattdessen:
-
-1. Die Protokoll‑Bytes werden **zstd‑komprimiert** (optional mit Dictionary, z. B. `rpt-v2.dict`).
-2. Die komprimierten Bytes werden als **Packfile‑Eintrag** in den Hub geschrieben (append‑only).
-3. In der DB wird nur eine **Referenz** gespeichert (`measurement_protocols`):
-   - `pack_file`, `pack_offset`, `pack_length` (wo liegt das Protokoll im Packfile?)
-   - `blake3` (Integritäts‑Hash über die komprimierten Bytes; gespeichert als 32‑Byte‑BLOB, angezeigt als Hex)
-   - `dict_id` (welches Dictionary wurde verwendet, falls vorhanden?)
-4. Zusätzlich wird das Protokoll lokal im **Protokoll‑Cache** abgelegt, damit es offline gelesen werden kann.
-
-### Offline‑Import (Hub nicht erreichbar)
-
-Offline‑Import ist erlaubt. In diesem Fall:
-
-- Die DB enthält zunächst eine „ausstehende“ Referenz (`pack_file=''` und/oder `pack_length=0`).
-- Das Protokoll liegt bereits im lokalen Cache des Import‑Clients (unter dem `blake3`‑Namen).
-- Zusätzlich wird lokal eine Outbox geführt (`protocol_upload_outbox`), die Upload‑Versuche, Backoff und Fehlerstatus verwaltet.
-- Sobald der Hub wieder erreichbar ist, lädt der Import‑Client das Protokoll automatisch in den Hub hoch (Outbox‑Flush) und ergänzt `pack_file/offset/length`. Der Status ist in der UI auf der Import‑Seite unter „Ausstehende Uploads“ sichtbar und kann dort manuell per „Jetzt synchronisieren“ angestoßen werden.
-
-Wichtig: Wenn ein Protokoll **noch nicht** im Hub archiviert wurde, können andere Clients die Messung sehen, aber das Protokoll erst öffnen, nachdem der Import‑Client wieder online war und der Upload erfolgt ist.
-
-### Cache‑Reset
-
-Der lokale Protokoll‑Cache ist ein Performance‑/Offline‑Feature. Ein „Cache leeren“ löscht nur lokale Dateien. Beachten Sie:
-
-- Der Cache ist als **LRU** mit einem Größenlimit ausgelegt (aktuell ~100 MB pro Hub). Bei Bedarf werden ältere, nicht mehr benötigte Einträge automatisch entfernt.
-- Wurde ein Protokoll offline importiert und noch nicht in den Hub hochgeladen, darf der Cache **nicht** geleert werden, da sonst der spätere Upload nicht mehr möglich ist.
-  Prüfen Sie vorher „Ausstehende Uploads“ (Import‑Seite): wenn dort ausstehende/pausierte Uploads angezeigt werden, darf der Cache nicht geleert werden.
-  Zusätzlich zeigt die Seite „Cache leeren“ an, ob noch ausstehende Uploads existieren; in diesem Fall ist „Cache leeren“ deaktiviert.
-
-### Dictionary‑Training (optional)
-
-Da RPT‑Protokolle oft sehr ähnlich sind, kann ein Zstd‑Dictionary den Speicherbedarf und die I/O‑Last deutlich reduzieren. Das Dictionary kann bei Bedarf neu trainiert werden:
-
-- `pnpm -s dict:train:rpt`  
-  Trainiert standardmäßig `src-tauri/res/zstd-dicts/rpt-v2.dict` aus den Beispieldateien unter `./RPT`.
-  (Optional: `RPT_DICT_ID=rpt-v1 pnpm -s dict:train:rpt` für das Legacy‑Dictionary.)
-
-::: info Zusammenfassung (Protokolle)
-- Protokolle liegen als zstd‑Bytes in `protocols/...` (Hub) – nicht als DB‑BLOB.
-- Integrität wird über `measurement_protocols.blake3` geprüft (BLAKE3 über komprimierte Bytes).
-- Offline‑Import: Protokoll zuerst lokal, Upload in den Hub wird später nachgeholt.
-- Cache nur leeren, wenn keine „pending“ Protokolle mehr existieren.
-:::
-
-## 3) CR‑SQLite/CRDT: Warum es gebraucht wird (technisch)
-
-CR‑SQLite behandelt Tabellen als **CRR** und protokolliert Änderungen in `crsql_changes`. Daraus ergibt sich:
-
-- Die App kann lokal schreiben (Replica), ohne File‑Locks im Hub „dauerhaft“ zu halten.
-- Der Sync ist „best effort“ und führt zu **eventual consistency**: nach erfolgreichem Sync konvergieren alle Replicas deterministisch.
-
-Technisch wichtig sind Schema‑Constraints von CR‑SQLite:
-
-- Primary Keys müssen non‑NULL sein.
-- `NOT NULL`‑Spalten benötigen Defaults (Forward/Backward‑Compatibility).
-- Schema‑Änderungen erfolgen über App‑Migrations.
-
-Wichtig für Updates im Mehrplatzbetrieb:
-
-- **Replica‑DBs** (lokal) werden wie bisher im App‑Code migriert.
-- **Hub‑DB** (Netzlaufwerk) wird **Rust‑seitig** migriert: beim Verbinden mit einer Datenquelle führt das Backend
-  `crsqlitehubprepare(...)` aus und bringt die Hub‑DB auf die neueste Migration (Tabelle `schema_migrations`).
-  Das ist notwendig, weil CR‑SQLite **kein DDL synchronisiert**.
-
-Die CR‑SQLite Extension wird als Datei `resources/extensions/crsqlite.dll` gebündelt und vom SQL‑Plugin geladen.
-
-::: info Zusammenfassung (CR‑SQLite)
-- Lokale Replica reduziert Locking‑Probleme auf Netzlaufwerken.
-- CR‑SQLite stellt Anforderungen an das Schema → IDs/Defaults sind wichtig.
-- Extension liegt als `crsqlite.dll` im App‑`resources`‑Ordner.
-:::
-
-## 4) Authentifizierung: Passwort + Pepper + Stronghold (technisch)
-
-FMB Log nutzt zwei Ebenen:
-
-- **Passwort‑Hash in der DB:** Argon2id über `password + pepper` (Pepper ist pro Nutzer zufällig).
-- **Pepper in Stronghold:** Das Pepper liegt nicht in SQLite, sondern in `vaults/<user_id>.vault`.
-
-Login‑Ablauf (vereinfacht):
-
-1. Aus eingegebenem Passwort + `user_id` wird ein **Vault‑Key** abgeleitet (Argon2id, 32‑Byte‑Key).
-2. Mit diesem Key wird die Stronghold‑Vault entschlüsselt.
-3. Wenn Entschlüsselung fehlschlägt → Passwort falsch.
-4. Wenn Entschlüsselung gelingt → Pepper wird gelesen → Hash wird geprüft.
-
-::: info Zusammenfassung (Auth)
-- Hash‑Swap‑Angriffe via DB werden durch user‑spezifisches Pepper verhindert.
-- Pepper liegt in Stronghold‑Vault, nicht in SQLite.
-- Vault‑Key ist an `user_id + password` gebunden.
-:::
-
-## 5) Signaturen & Delegation: was wird womit signiert?
-
-FMB Log signiert verschiedene Datenklassen, um Manipulationen in einer „Datei‑DB“ zu erkennen.
-
-### 5.1 Root‑Trust und DB‑Signierschlüssel (Admin)
-
-- **Root Public Key** ist **fest in der App** eingebaut (Compile‑Time).
-- Der **DB‑Public‑Key** liegt als Datei neben der DB: `<db>.integrity.pub.json`.
-- Das **DB‑Key‑Zertifikat** `<db>.integrity.dbkey.json` ist Root‑signiert und muss vorhanden sein (Fail‑Closed).
-- Der **DB‑Private‑Key** liegt in Stronghold: `vaults/<db>.integrity.vault` und wird per Signier‑Passwort entsperrt.
-
-Damit werden u. a. signiert:
-
-- `users`, `groups`, `user_groups`, `group_permissions`
-- `capability_certs` (Delegations‑Zertifikate)
-- Admin‑Security‑Einstellungen
-
-### 5.2 User‑Signaturen (Key‑User, ohne Admin‑Signier‑Passwort)
-
-Jeder Nutzer besitzt zusätzlich einen **User‑Signierschlüssel** (Ed25519) im eigenen Vault:
-
-- `vaults/<user_id>.vault` enthält neben Pepper auch den User‑Signing‑Key.
-- Der Key‑User kann Stammdaten signieren, ohne den DB‑Signier‑Key zu kennen.
-
-Damit ein Key‑User wirklich „nur in seinem Scope“ signieren kann, wird die Berechtigung über **Capability‑Zertifikate** delegiert:
-
-- Tabelle: `capability_certs`
-- Signiert vom DB‑Signier‑Key (Admin‑Aktion)
-- Gültigkeit: `issued_at`, optional `expires_at`, optional `revoked_at`
-
-Ein Key‑User darf z. B. Stammdaten nur signieren, wenn ein gültiges Zertifikat für den Scope existiert (z. B. `masterdata.fgw`, `masterdata.nv`, `masterdata.fmk`).
-
-::: info Zusammenfassung (Signaturen)
-- Root‑Trust: Root Public Key ist in der App eingebaut, DB‑Key wird per Zertifikat an Root gebunden.
-- Admin‑Key (DB‑Key) signiert Security‑kritische Daten und Delegationen.
-- Key‑User signieren Stammdaten per User‑Key + Admin‑Delegation (Capability‑Zertifikat).
-:::
-
-### 5.3 Signatur‑Metadaten deduplizieren (`signing_metas`)
-
-In vielen Tabellen wiederholen sich Signatur‑Metadaten sehr häufig (z. B. `signed_by_user_id`, `signed_by_key_id`, `capability_id`, `signed_at`). Das ist für eine Datei‑DB und insbesondere für CR‑SQLite‑Sync unnötige Datenmenge.
-
-FMB Log reduziert diese Redundanz über eine zentrale Tabelle:
-
-- `signing_metas`: enthält eindeutige Tupel aus `(signed_by_user_id, signed_by_key_id, capability_id, signed_at)`
-- `signing_meta_id`: referenziert das Tupel in den signierten Tabellen
-
-Dadurch muss pro signiertem Datensatz nur noch die `signing_meta_id` gespeichert werden – die Metadaten selbst stehen einmalig in `signing_metas`. Für Abwärtskompatibilität existieren die ursprünglichen Spalten weiterhin, können aber (je nach Tabelle) leer/`NULL` sein, wenn `signing_meta_id` gesetzt ist.
-In aktuellen Datenbanken werden diese ursprünglichen Metadaten‑Spalten nach der Umstellung entfernt, sodass Signatur‑Metadaten ausschließlich über `signing_meta_id` + `signing_metas` abgebildet werden.
-
-Typisch betroffen sind u. a.:
-- Stammdaten‑Tabellen (FGW/NV/FMK inkl. Untertabellen)
-- `containers` (Gebinde‑Signaturen)
-- `measurement_revisions` (Messdaten‑Signaturen)
-- `daily_report_invalidations` (Invalidierungen)
-
-## 6) Hash‑Algorithmen: BLAKE3 vs. SHA‑256
-
-In FMB Log werden zwei Hash‑Algorithmen bewusst parallel genutzt:
-
-- **BLAKE3** (schnell, parallelisierbar):  
-  Für Integrität/Signaturen und Protokoll‑Integrität im Betrieb (Audit, Packfiles, Audit‑Cache).
-- **SHA‑256** (Standard für externe Systeme):  
-  Für RFC3161‑TSA (FreeTSA erwartet SHA‑256) – der Imprint (`tsa_snapshot_sha256`) und der Token‑Hash (`tsa_token_sha256`) bleiben SHA‑256.
-
-::: info Zusammenfassung (Hashes)
-- BLAKE3: intern, schnell (Audit/Protokolle/Signatur‑Workflows).
-- SHA‑256: extern kompatibel (TSA).
-:::
-
-## 7) Gebindeabrechnung: Snapshot, QR‑Code, TSA (technisch)
-
-Beim PDF‑Export wird ein **Snapshot** der exportierten Inhalte gebildet und gehasht:
-
-- `daily_reports.snapshot_hash`: BLAKE3 des Snapshots (DATA‑Hash)
-- `daily_reports.pdf_sha256`: BLAKE3 der finalen PDF‑Bytes (PDF‑Hash; Spaltenname historisch)
-- `daily_report_invalidations`: signierte Invalidierungs‑Events (wer/wann/warum; referenziert Report + Snapshot/PDF‑Hash zum Zeitpunkt der Invalidierung)
-- Verpflichtend bei neuen Desktop-Exporten (TSA):
-  - `tsa_provider`, `tsa_gen_time`, `tsa_snapshot_sha256`, `tsa_token_sha256`, `tsa_token_base64`
-
-Hinweis: Hashes (32 Byte) und Signaturen (Ed25519, 64 Byte) werden in SQLite als **BLOB** gespeichert (I/O‑sparend). Im Frontend werden BLOBs als **Base64‑Strings** transportiert (keine JSON‑Byte‑Arrays), in der UI werden Hashes aber als **Hex/Fingerprint** angezeigt.
-
-Die PDF enthält in der Fußzeile:
-
-- einen QR‑Code mit kompakter Payload (u. a. Snapshot‑Hash und beim Desktop-Export TSA‑Token‑Hash)
-- daneben kurze Fingerprints (`DATA: …` und beim Desktop-Export `TSA: …`) für manuelle Gegenprüfung
-
-::: info Zusammenfassung (Gebindeabrechnung)
-- Snapshot‑Hash ist BLAKE3 (schnell, in QR/Fingerprint als DATA).
-- PDF‑Hash ist BLAKE3 (schnell, als Referenz in der Historie).
-- Für TSA wird zusätzlich `tsa_snapshot_sha256` gespeichert (RFC3161‑kompatibler Imprint).
-- QR‑Code + Fingerprints ermöglichen schnelle Verifikation in der Historie/Audit.
-:::
-
-## 8) Audit & Performance (technisch)
-
-Der Audit prüft Security‑Signaturen, Delegationen, Stammdaten‑Signaturen, Messdaten‑Signaturen und Protokoll‑Integrität. Um die Laufzeit zu reduzieren, nutzt FMB Log ein lokales Cache‑Konzept:
-
-- Tabellen: `audit_cache`, `known_keys`, `known_deps`
-- Enthält BLAKE3‑basierte „Deps/Message/Signature“ Hashes pro Scope/Entity.
-- `audit_cache` ist **lokal** (nicht CRR) und wird nicht in den Hub synchronisiert.
-- Zusätzlich wird `row_db_version` gespeichert, damit sich Audits auf geänderte Zeilen beschränken können.
-- Um Platz/I/O zu sparen, werden wiederkehrende Hashes (Verify‑Key und Deps) dedupliziert und in `audit_cache` nur als FK (`*_id`) referenziert.
-
-::: info Zusammenfassung (Audit)
-- Audit ist vollständig, aber kann teuer sein → Cache + Inkrementalität reduziert Laufzeit.
-- `audit_cache` ist pro Client lokal und wird nicht mit dem Hub synchronisiert.
-:::
-
-## 9) Phasenzeiten & Performance-Log
-
-Bei langen Operationen zeigt FMB Log **Phasenzeiten** im UI an und schreibt dieselben Informationen zusätzlich als strukturierte Einträge (`[perf]`) in die Diagnose‑Logdatei.
-
-Betroffene Aktionen:
-
-- **Administration → Audit** (prüft Security/Stammdaten/Messdaten/Protokolle)
-- **Administration → Einstellungen → Stammdaten neu signieren**
-- **Administration → Einstellungen → Fehlende Signaturen nachholen**
-- **Gebindeabrechnung → PDF exportieren**
-
-Die Logzeilen enthalten JSON mit `action`, `ok`, `total_ms` und `phases` (je Phase: `name`, `ms`). So können Sie bei Performance‑Problemen nachvollziehen, ob z. B. **I/O (Hub/Protokolle)**, **Hashing** oder **DB‑Zugriffe** dominieren.
+Der native Client und der Dienst werden getrennt ausgeliefert. Die folgende Release-Infrastruktur beschreibt den bisherigen Desktop-Updatepfad; der dort genannte Update-Dialog ist im neuen Serverbereich nicht eingebunden. Ein neues Release oder eine Veröffentlichung wird durch diese Dokumentation nicht ausgelöst.
 
 ## 10) Auto‑Update (Tauri Updater)
 
 FMB Log nutzt den **Tauri Updater** für In‑App‑Updates. Im Unterschied zum „Installer herunterladen und manuell ausführen“ kann die App Updates direkt finden, herunterladen und installieren.
 
-### 10.1 Schlüssel (Update‑Signatur)
+### 10.1 Getrennte Schlüssel und Installationen
 
-Der Updater verlangt ein Signatur‑Keypair. **Der Private Key bleibt geheim** (nur Build‑Server/Release‑Pipeline), der **Public Key ist in der App eingebettet** (`src-tauri/tauri.conf.json`).
+Client v2 wird als **FMB Log v2** mit eigener App-ID und eigenem Datenverzeichnis
+parallel zu v1 installiert. Der neue Update-Signierschlüssel und der separate
+Verschlüsselungsschlüssel gehören ausschließlich zu v2. Alte v1-Schlüssel und
+GitLab-Variablen bleiben erhalten; es gibt keinen Schlüssel-Fallback.
 
-Key‑Generierung (Windows):
+Die neuen geschützten GitLab-Variablen heißen `FMB_CLIENT_V2_SIGNING_PRIVATE_KEY`,
+`FMB_CLIENT_V2_SIGNING_PRIVATE_KEY_PASSWORD` und `FMB_CLIENT_V2_UPDATER_KEK_B64`.
+Private Schlüssel gehören weder ins Repository noch in Logs oder Release-Artefakte.
+Der öffentliche Schlüssel ist in der App eingebettet. Die Verschlüsselung der
+Update-Dateien ersetzt nicht deren Signaturprüfung.
 
-`pnpm tauri signer generate --password "<PASSWORT>" --write-keys .secrets\\tauri-updater.key --force --ci`
+### 10.2 Release-Artefakte und Hosting
 
-Dabei entstehen:
+GitLab baut und prüft die Anwendungen; GitHub Releases in `Ph0non/fmb-log-docs`
+verteilt sie. Client-Tags heißen `client-v2.0.0`, Server-Tags `server-v0.1.0`.
+Die automatischen Hooks verstehen außerdem `cv2.0.0` beziehungsweise `sv0.1.0`.
 
-- `.secrets/tauri-updater.key` (Private Key, niemals committen)
-- `.secrets/tauri-updater.key.pub` (Public Key, wird in `tauri.conf.json` hinterlegt)
-- `.secrets/tauri-updater.key.password` (Passwort, niemals committen; wird für CI benötigt)
+- v1 bleibt auf `https://github.com/Ph0non/fmb-log-docs/releases/latest/download/latest.json`.
+- v2 verwendet `https://github.com/Ph0non/fmb-log-docs/releases/download/client-v2-updates/latest.json`.
+- Neue Client- und Server-Releases dürfen niemals das globale GitHub-Latest ersetzen.
+- Client-Releases enthalten Installer, Signatur, verschlüsseltes Update und Manifest.
+- Server-Releases enthalten Debian-Paket, Prüfsummen und Installationsanleitung.
+  Der Server wird administrativ aktualisiert und verändert keinen Client-Update-Kanal.
 
-Build‑Zeit‑Variablen:
-
-- `TAURI_SIGNING_PRIVATE_KEY` (**Base64‑String** des Private‑Key‑Inhalts; z. B. Inhalt aus `.secrets/tauri-updater.key`)
-- `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (Passwort für den Private Key)
-- `FMB_UPDATER_KEK_B64` (**Base64**, 32 Byte) – Key‑Encryption‑Key (KEK) für verschlüsselte Update‑Artefakte (`*.cha`)
-
-KEK generieren (Beispiel):
-
-`openssl rand -base64 32`
-
-Optional (Chunk‑Größe für `*.cha`, Standard: 1 MiB):
-
-- `FMB_UPDATER_CHACHA_CHUNK_SIZE` (64 KiB .. 16 MiB)
-
-::: warning Hinweis (Update‑Verschlüsselung / Threat Model)
-Die `.cha`‑Verschlüsselung ist **kein Ersatz** für die Updater‑Signatur.  
-Der KEK muss der App zum Entschlüsseln zur Verfügung stehen (Release‑Build), daher schützt die Verschlüsselung primär **At‑Rest/Transport‑Obfuskation** und „kurzzeitiges Klartext‑Handling“, während die **Authentizität/Integrität** weiterhin über die Minisign‑Signatur abgesichert wird.
-:::
-
-### 10.2 Release‑Artefakte & Hosting (GitHub)
-
-Der Update‑Server ist in FMB Log auf GitHub Releases konfiguriert:
-
-- Endpoint: `https://github.com/Ph0non/fmb-log-docs/releases/latest/download/latest.json`
-
-Beim Release‑Build erzeugt Tauri die **Installer‑Artefakte** und (bei gesetztem Signier‑Key) die **Signaturdatei** `*.exe.sig` (Windows/NSIS). Die Datei `latest.json` wird **nicht automatisch** von Tauri generiert. Stattdessen erstellt GitLab CI das `latest.json` im Release‑Step (Script `scripts/github_publish_updater.mjs`) und lädt anschließend **alle Updater‑Assets** in das Repo `Ph0non/fmb-log-docs` hoch (Release‑Tag = Git‑Tag):
-
-- NSIS‑Installer `*.exe`
-- Signatur `*.exe.sig`
-- Verschlüsseltes Update‑Artefakt `*.cha` (ChaCha20‑Poly1305, chunked; enthält den Installer verschlüsselt)
-- `latest.json` (statisches Updater‑Manifest für `@tauri-apps/plugin-updater`)
-
-Wichtig: Damit `latest.json` korrekt ist, müssen die Artefakte im selben GitHub Release (Assets) liegen.
-
-Wenn `FMB_UPDATER_KEK_B64` gesetzt ist, erweitert `scripts/github_publish_updater.mjs` das Manifest zusätzlich um `platforms.windows-x86_64.encrypted_url` (Download‑URL des `*.cha`). Die App bevorzugt dann das verschlüsselte Artefakt für die Installation.
-
-Technisch ist `*.cha` ein „Envelope“:
-
-- pro Release wird ein zufälliger **Content‑Key (CEK)** erzeugt
-- der CEK wird unter dem **KEK** per ChaCha20‑Poly1305 **gewrappt** (im Header)
-- der Installer wird mit dem CEK **chunkweise** (Nonce‑Prefix + Counter) per ChaCha20‑Poly1305 verschlüsselt
-- der Header ist über AEAD‑AAD mit authentifiziert; zusätzlich enthält der Header die Minisign‑Signatur des Klartext‑Installers, die vor dem Ausführen verifiziert wird
+Vollständige Einrichtung und Fehlerbehandlung stehen in `ci/RELEASES.md` im Repository.
 
 ### 10.3 Client‑Verhalten (UI)
 
@@ -355,7 +80,7 @@ Technisch ist `*.cha` ein „Envelope“:
   - manuell prüfen
   - ignorierte Version zurücksetzen
 
-Update‑Einstellungen werden **nur lokal** gespeichert (Replica‑DB) und nicht über den Hub synchronisiert.
+Update‑Einstellungen werden **nur lokal** gespeichert. Client v2 speichert sie unabhängig von der fachlichen Datenbank im eigenen App-Verzeichnis.
 
 ::: info Zusammenfassung (Updater)
 - Signierung: Private Key nur im Build/CI, Public Key in der App.

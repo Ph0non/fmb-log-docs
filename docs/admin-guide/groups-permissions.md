@@ -1,46 +1,22 @@
 # Gruppen & Rechte
 
-FMB Log nutzt ein gruppenbasiertes Berechtigungsmodell: Sie definieren **Gruppen** (Rollen) und vergeben Rechte in einer Matrix. Benutzer erhalten Rechte, indem sie einer oder mehreren Gruppen zugeordnet werden. Dieses Vorgehen ist im Alltag deutlich wartbarer als individuelle Rechte pro Nutzer, weil Rollen (z. B. „Messung“, „Auswertung“, „Key‑User“) konsistent abgebildet werden können.
+Unter **Administration → Benutzer und Rechte** verwalten online angemeldete Administratoren Gruppen, Nutzer und Berechtigungen. Administratoren besitzen die administrativen Rechte; andere Nutzer erhalten ihre Rechte über die zugewiesenen Gruppen.
 
-Die Gruppen- und Rechteverwaltung befindet sich in der App unter **Administration → Gruppen & Rechte**.
+## Gruppe bearbeiten
 
-## Rollenmodell
+1. Eine vorhandene Gruppe oder **Gruppe anlegen** wählen.
+2. Gruppennamen eingeben und die benötigten **Berechtigungen** auswählen.
+3. **Zentral speichern** wählen.
+4. Den Nutzer auswählen, die **Gruppenzugehörigkeit** setzen und ebenfalls zentral speichern.
 
-Ein Benutzer kann als **Admin** markiert werden. Admins besitzen immer alle Rechte und sehen zusätzlich die Administrationsseiten. Für alle anderen gilt: Rechte kommen ausschließlich aus den zugewiesenen **Gruppen**.
+Die aktuelle Serveroberfläche bietet Gruppenanlage, Umbenennung und Rechteänderungen. Eine Gruppenlöschung oder ein separater Aktiv-Schalter für Gruppen ist dort nicht vorgesehen. Entziehen Sie Rechte über die Berechtigungsauswahl oder die Gruppenzugehörigkeit.
 
-Das hat einen praktischen Vorteil: Wenn eine Funktion fehlt (oder zu viel sichtbar ist), lässt sich das fast immer auf die Gruppenzuordnung bzw. die Gruppen‑Matrix zurückführen.
+Der Sicherheitsstand ist versioniert. Wenn ein anderer Administrator zwischenzeitlich Änderungen gespeichert hat, laden Sie den aktuellen Stand und prüfen Ihren Entwurf erneut. Bereits signierte unveränderte Anfragen können nach einem Verbindungsabbruch erneut übertragen werden.
 
-## Gruppen verwalten
+## Wirksamkeit und Offline-Betrieb
 
-Gruppen können angelegt, umbenannt, deaktiviert/aktiviert und gelöscht werden. Nur **aktive** Gruppen werden bei der Berechnung der wirksamen Rechte berücksichtigt. In der Praxis ist „Deaktivieren“ häufig die bessere Wahl als „Löschen“, weil sich so die Historie nachvollziehen lässt und die Gruppe später bei Bedarf wieder aktiviert werden kann.
+Rechteänderungen werden online gespeichert und bei der Übernahme fachlicher Operationen erneut geprüft. Betroffene Sitzungen können beendet werden; Änderungen an der eigenen Zuordnung können auch die eigene Sitzung schließen. Ein bereits getrennter Arbeitsplatz kennt zunächst weiterhin die zuletzt bestätigten Rechte.
 
-## Rechte (Matrix)
+Offline gespeicherte Arbeit erhält deshalb keine garantierte spätere Freigabe. Wird sie nach einem Rechte- oder Schlüsselentzug abgewiesen, bleibt sie mit dem Übernahmefehler lokal erhalten. Eine historische gültige Signatur allein begründet keine aktuelle Schreibberechtigung.
 
-Die Rechte werden pro Gruppe in einer Matrix vergeben. Die UI blendet Funktionen entsprechend ein/aus; zusätzlich werden sensible Aktionen auch serverseitig geprüft.
-
-![Gruppen & Rechte](../screenshots/gruppen-rechte.annotated.png)
-
-- (1) Gruppenliste
-- (2) Neue Gruppe anlegen
-- (3) Rechte‑Matrix (Checkboxen)
-- (4) Gruppe aktiv / Speichern / Löschen
-
-::: tip Hinweis: Änderungen greifen ohne Logout
-Rechte können sich während einer laufenden Sitzung ändern (z. B. durch Admin‑Änderungen). FMB Log prüft kritische Aktionen „Just‑in‑Time“ gegen den aktuellen DB‑Stand. Dadurch werden entziehene Rechte nicht zuverlässig „mitgenommen“, auch wenn die Seite noch geöffnet ist.
-:::
-
-Typische Beispiele für Rechte sind:
-
-- Messungen importieren/ändern/löschen sowie **Messdatum ändern**
-- Gebindeabrechnungen ungültig machen (`reports.invalidate`)
-- FMK und NV anlegen/ändern/löschen
-- Freigabewerte ändern (`fgw.update`)
-- Passwörter anderer Nutzer zurücksetzen (`users.reset_passwords`)
-
-Die vollständige Liste der Permission Keys befindet sich in der Referenz: [Rechte](../reference/permissions.md).
-
-::: info Zusammenfassung (Gruppen & Rechte)
-- Rechte werden über Gruppen vergeben; Admins haben immer alles.
-- „Deaktivieren“ ist oft sinnvoller als „Löschen“ (Historie, Wiederverwendbarkeit).
-- Kritische Rechte (FGW ändern, Passwörter zurücksetzen, Messdatum ändern, Gebindeabrechnungen ungültig machen) nur gezielt vergeben.
-:::
+Typische Rechte sind FMK-/NV-Leserechte, Stammdatenbearbeitung, Messungsimport und -änderung, gesonderte Messdatumsänderung, `fgw.update`, `reports.invalidate` und `users.reset_passwords`. Die [Rechtereferenz](../reference/permissions.md) beschreibt die fachlichen Schlüssel.

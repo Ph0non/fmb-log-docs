@@ -1,71 +1,36 @@
-# Einstellungen
+# Verbindung, Synchronisation und lokaler Cache
 
-## Datenbankpfad
+## Serververbindung
 
-Standard ist eine lokale Datenbank-Datei im Programmordner. Optional kann eine andere Datenbank-Datei ausgewählt werden (z. B. Netzlaufwerk). Diese Einstellung ist in der Regel **nur für Administratoren** verfügbar (Menü: **Administration → Einstellungen**).
+Auf der Anmeldeseite öffnen Sie **Serververbindung ändern**. Benötigt werden Serveradresse einschließlich Port, SSH-Fingerabdruck und öffentlicher Root-Schlüssel. **Prüfen und verwenden** prüft den Dienst und lädt die Anwendung neu.
 
-Ein Netzlaufwerk kann sinnvoll sein, wenn mehrere Arbeitsplätze auf dieselbe Datenbank zugreifen sollen.
+Die Adresse kann beispielsweise `ssh://192.168.1.121:80` lauten. Verwenden Sie den von der Administration genannten Port. Der Fingerabdruck wird vor der Anmeldung geprüft; bei einer Abweichung wird die Verbindung abgebrochen. Lassen Sie die Ursache durch die Administration klären, statt einen unbekannten Schlüssel zu übernehmen.
 
-::: warning Hinweis (Mehrbenutzerbetrieb)
-- Testen Sie den Mehrbenutzerbetrieb unter realistischen Bedingungen.
-- Planen Sie regelmäßige Backups ein.
-:::
+Die Anwendung baut einen direkten SSH-Kanal auf. HTTP-/HTTPS-Proxy- und PAC-Einstellungen werden dafür nicht verwendet. Ein für HTTP freigegebener Port 80 kann SSH trotzdem blockieren; die Administration muss die tatsächliche Netzwerkfreigabe prüfen. Es gibt keinen automatischen Wechsel zu HTTPS oder Klartext.
 
-::: info Kurzfassung
-- Standard: lokaler Programmordner
-- Optional: anderer Pfad (z. B. Netzlaufwerk)
-:::
+## Synchronisationsstatus
 
-## Verbindungsstatus (Hub/Synchronisation)
+Die Oberfläche liest aus der lokalen SQLite-Replik. Bei bestehender Verbindung werden Änderungen nach dem Speichern, beim Wiederverbinden und regelmäßig im Hintergrund abgeglichen. **Jetzt abgleichen** stößt den Abgleich manuell an.
 
-Unten links in der Anwendung wird angezeigt, ob die lokale Datenbank mit dem Hub synchronisieren kann und **wann der letzte erfolgreiche Sync** war:
+| Zustand | Bedeutung |
+| --- | --- |
+| Lokal gespeichert | Die signierte Arbeit liegt dauerhaft auf diesem Arbeitsplatz; zentrale Übernahme steht aus. |
+| Zentral bestätigt | Der Dienst hat die Operation übernommen. |
+| Konflikt | Es gibt konkurrierende Versionen. Eine neue signierte Auflösung muss die betroffenen Zweige einbeziehen. |
+| Übernahme abgelehnt | Der Dienst hat die Änderung nicht aktiviert. Die lokale Arbeit und der Fehler bleiben erhalten. |
 
-- **Hub: verbunden** → Sync läuft regulär.
-- **Hub: instabil** → einzelne Sync-Versuche schlagen fehl, die App arbeitet aber weiter lokal.
-- **Hub: offline** → der Hub ist nicht erreichbar.
+**Zentral abgeglichen** beschreibt den letzten erfolgreichen Abgleich. **Abgleich unterbrochen** zeigt ein Verbindungs- oder Übernahmeproblem an. Prüfen Sie zusätzlich die Zustände der betroffenen Datensätze.
 
-Die Zeitangabe „letzter Sync" wird in der **lokalen Zeitzone** des Rechners angezeigt.
+Nach einer ersten erfolgreichen Online-Anmeldung erlaubt **Offline entsperren** die Arbeit mit dem lokalen Bestand. Änderungen, Import und Signieren bleiben im Rahmen der zuletzt bekannten Rechte möglich. Nutzer-/Rechteverwaltung, Passwortwechsel und neue offizielle Abrechnungen erfordern eine Online-Anmeldung. Der Dienst prüft Rechte bei der späteren Übernahme erneut.
 
-::: info Kurzfassung (Statusanzeige)
-- Anzeige hilft beim Arbeiten im Netzlaufwerk-Betrieb („Bin ich gerade online am Hub?").
-- Bei „offline" bleiben lokale Änderungen möglich, werden aber erst nach erfolgreichem Sync verteilt.
-:::
+## Protokoll-Cache
 
-## Protokoll-Cache (lokal)
+Unter **Stammdaten → Lokaler Cache** sehen Sie die lokal vorhandenen Originaldateien und die entfernbaren Messprotokolle. **Bestätigte Protokolle aus Cache entfernen** entfernt nach Bestätigung nur dafür freigegebene lokale Protokolle. Für den erneuten Abruf ist eine Serververbindung erforderlich.
 
-Damit Messprotokolle auch ohne Hub-Verbindung angezeigt werden können, nutzt FMB Log einen **lokalen Protokoll-Cache**. Beim Import werden Protokolle immer in diesen Cache geschrieben. Ist der Hub erreichbar, werden sie zusätzlich hochgeladen; ist der Hub nicht erreichbar, wird der Upload später automatisch nachgeholt.
+Originale aus ausstehenden, abgelehnten, konfliktbehafteten oder archivierten Änderungen sowie noch nicht zugeordnete Importdateien bleiben geschützt. PDFs, Zeitstempel, signierte Datenversionen und Versandwarteschlange werden nicht bereinigt. Die Größen beziehen sich auf Originalbytes; freier Platz innerhalb der SQLite-Datei wird für neue Daten wiederverwendet.
 
-![Protokoll‑Cache](../screenshots/cache.annotated.png)
+Löschen Sie lokale Datenbank-, Vault- oder Sicherheitsdateien nicht manuell als Ersatz für diese Funktion. Insbesondere enthält die lokale Replik auch Arbeit, die auf dem Server noch nicht vorhanden ist.
 
-- (1) Cache‑Pfad (lokal)
-- (2) Bereinigen (alte Einträge entfernen)
-- (3) Cache leeren
-- (4) Statistik (Dateien / Größe / Limit)
+## Nach einem zentralen Reset
 
-Der Cache wird automatisch verwaltet: ältere, nicht mehr benötigte Einträge werden bei Bedarf entfernt. Unter **Administration → Cache leeren** können Sie den Cache-Pfad und die aktuelle Cache-Größe einsehen. Zusätzlich gibt es dort die Aktion **Bereinigen**.
-
-::: warning Hinweis (Cache leeren)
-- Wenn Sie den Cache leeren, können Protokolle offline nicht mehr angezeigt werden, bis der Hub wieder erreichbar ist.
-- Leeren Sie den Cache nur, wenn der Hub erreichbar ist und ausstehende Uploads bereits erfolgt sind.
-:::
-
-## Updates
-
-FMB Log kann Updates automatisch über den integrierten Updater beziehen. Die Einstellungen finden Sie im Benutzer-Menü oben rechts unter **Updates**.
-
-![Updates](../screenshots/updates.annotated.png)
-
-- (1) Automatisch beim Start nach Updates suchen
-- (2) „Jetzt prüfen“ (manuelle Prüfung)
-- (3) „Ignorieren zurücksetzen“
-- (4) Installierte Version
-- (5) Letzter Check
-
-- **Beim Programmstart automatisch nach Updates suchen**: Ist diese Option aktiv, prüft FMB Log beim Start, ob eine neue Version verfügbar ist.
-- Wenn ein Update gefunden wurde, erscheint ein Hinweis mit drei Optionen:
-  - **Jetzt installieren**: Download und Installation starten.
-  - **Beim nächsten Start erinnern**: Hinweis schließen (bei nächstem Start erneut prüfen).
-  - **Nicht mehr erinnern**: Die gefundene Version wird ignoriert, bis Sie die Ignorierung zurücksetzen oder ein neueres Update verfügbar ist.
-- Zusätzlich kann ein Update jederzeit manuell über **Jetzt prüfen** gesucht werden.
-
-Wichtig: Update-Einstellungen werden **nur lokal** gespeichert (in der lokalen Replica-Datenbank) und nicht mit dem Hub synchronisiert.
+Die Anwendung prüft den Reset-Nachweis, archiviert unbestätigte Arbeit der alten Generation und lädt den neuen Bestand. Alte Operationen werden nicht automatisch erneut übertragen. Unter **Suche → Eigene archivierte Arbeit nach Reset** können Sie diese Arbeit öffnen und ihre Originaloperation exportieren.

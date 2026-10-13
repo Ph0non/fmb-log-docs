@@ -7,14 +7,14 @@ FMB Log ist bewusst so aufgebaut, dass typische Aufgaben schnell erreichbar sind
 ## Inhalt
 
 - [Schnellstart](./quickstart.md)
-- [Suche & Deep‑Links](./search.md)
+- [Suche & Nachweise](./search.md)
 - [Datenqualität](./data-quality.md)
 - [Gebinde & Messungen](./containers.md)
 - [Import (RPT)](./import.md)
 - [Nuklidvektoren (NV)](./nuclide-vectors.md)
 - [FMK](./fmk.md)
 - [Gebindeabrechnung](./reports.md)
-- [Einstellungen](./settings.md)
+- [Verbindung, Synchronisation und Cache](./settings.md)
 - [Konto & Passwort](./account.md)
 - [Glossar](./glossary.md)
 

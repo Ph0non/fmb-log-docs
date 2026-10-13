@@ -2,16 +2,20 @@
 
 Die Gebindeabrechnung erzeugt ein PDF im A4-Querformat mit **Tagesabrechnung – Maximalwerte** und anschließend **Gebindeabrechnung – Details**. Vorschau und PDF verwenden denselben eingefrorenen Datenstand.
 
-## Auswahl und Ablauf
+## Auswahl und zentraler Abschluss
 
-1. Optional eine FMK filtern; ohne Filter stehen die Gebinde aller FMKs zur Auswahl.
-2. Gebinde und Abrechnungsdatum wählen. Der Filter **Nur vollständig gemessene Gebinde** ist standardmäßig aktiv.
-3. **Vorschau erstellen** und beide Teile einschließlich der Hinweise prüfen.
-4. **PDF exportieren**. Der Export erscheint anschließend in der Historie.
+Neue offizielle Abrechnungen erfordern eine Online-Anmeldung und einen erreichbaren Dienst. Gleichen Sie lokale Änderungen vorher ab und klären Sie konkurrierende Versionen.
 
-Einbezogen werden **alle aktuellen gültigen Messrevisionen** der ausgewählten Gebinde, auch bereits exportierte Messungen. Ungültige und ersetzte Revisionen sind ausgeschlossen. Messtagsauswahl und Exportfilter entfallen: Ein früherer Export darf die Ermittlung des Gebindemaximums nicht einschränken.
+1. Unter **Abrechnungen** optional nach FMK filtern und Gebinde sowie Abrechnungsdatum wählen. **Nur vollständig gemessene Gebinde** ist standardmäßig aktiv.
+2. **Vorschau erstellen** und beide Teile einschließlich der Hinweise prüfen. Der Dienst erfasst dafür konkrete zentrale Datenversionen.
+3. Die Autorisierung genau dieser Vorschau bestätigen und **Signieren, zeitstempeln und zentral abschließen** wählen.
+4. Nach zentralem Abschluss das PDF ausgeben beziehungsweise unter **Historie → PDF prüfen und speichern** exportieren.
 
-![Ablauf der Gebindeabrechnung](../diagrams/reports-flow.svg)
+Einbezogen werden die aktuellen gültigen Messversionen der ausgewählten Gebinde, auch bereits abgerechnete Messungen. Der Dienst prüft Ausgangsstand und Rechte vor Veröffentlichung erneut. Hat sich der Stand geändert, muss eine neue Vorschau geprüft werden.
+
+Bei unterbrochener Abschlussantwort bleibt die autorisierte Anfrage lokal erhalten. **Abschluss erneut abfragen** setzt denselben Vorgang fort, auch nach einem Neustart; eine bereits gespeicherte Abrechnung wird nicht erneut erzeugt. Die Ausgabe erfolgt erst nach zentraler Bestätigung. Eine neue Abrechnung kann offline nicht verbindlich abgeschlossen werden.
+
+Die folgenden Abbildungen zeigen die fachliche Darstellung; ältere Aufnahmen enthalten noch die frühere Exportbeschriftung.
 
 ![Vorschau einer Gebindeabrechnung](../screenshots/gebindeabrechnung-vorschau.png)
 
@@ -102,14 +106,12 @@ Die nummerierten Fußnoten beginnen je Abrechnung bei 1 und werden auf Folgeseit
 
 ## Historie und Verifikation
 
-Der Desktop-Export speichert die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen und Maximalwerte in einem unveränderlichen Datenstand (Snapshot-Version 5, einschließlich der jahresbezogenen Pfadprüfungen und verwendeten Ausnahmebestätigungen). Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. QR-Code, Fingerprints und RFC-3161-Zeitstempel beziehen sich auf dieses gespeicherte Paket. Tagesabrechnung und Gebindeabrechnung bleiben eine gemeinsame PDF-Datei mit identischen DATA- und TSA-Fingerprints auf allen Seiten.
+Der zentrale Abschluss speichert PDF, Snapshot, Nutzerautorisierung, TSA-Nachweis und die Zuordnung zu den verwendeten Versionen gemeinsam. Der Snapshot enthält die eindeutige Messliste, Berechnungsgrundlagen, Blattzuordnungen, Maximalwerte und verwendeten Jahresentscheidungen. Mehrfachdarstellungen eines Mischgebindes erzeugen keine doppelten Messverknüpfungen. Tagesabrechnung und Gebindeabrechnung bleiben eine gemeinsame PDF-Datei mit identischen DATA- und TSA-Fingerprints auf allen Seiten.
 
-Unter **Historie** lassen sich das PDF und die verwendeten Daten öffnen, Fingerprints suchen und Original-PDFs gegen die gespeicherten Prüfsummen prüfen. Alte Tagesabrechnungen einschließlich Version-3- und Version-4-Snapshots bleiben lesbar; ihre PDFs und ursprünglichen Daten werden nicht umgeschrieben.
+Unter **Historie** öffnen Sie **Daten und Nachweise prüfen** oder **PDF prüfen und speichern**. Bereits lokal vorhandene Dokumente und Nachweise können auch offline geprüft und gespeichert werden. Fehlende Dateien benötigen einen Online-Abruf. Historische Originalnachweise werden nicht durch neue Signaturen oder umgeschriebene Hashverfahren ersetzt.
 
-Änderungen an enthaltenen Messungen oder Gebinde-Stammdaten verwenden weiterhin das bestehende Invalidierungsverfahren. Mit `reports.invalidate` kann eine Abrechnung manuell ungültig gemacht werden. Der Exportstatus dokumentiert weiterhin den Export, begrenzt aber nicht mehr den Messumfang einer neuen Gebindeabrechnung.
+Änderungen an gebundenen Daten können eine bestehende Abrechnung invalidieren. Mit `reports.invalidate` können Sie sie außerdem mit Begründung manuell ungültig machen. Die Invalidierung wird signiert und vorgemerkt; ihre zentrale Wirkung folgt nach Übernahme. Die Originalabrechnung bleibt als Nachweis erhalten.
 
-Die PDF-Prüfung gilt für die unveränderte Originaldatei. Neu gespeicherte oder eingescannte PDFs besitzen eine andere Prüfsumme.
+Die PDF-Prüfung gilt für die unveränderte Originaldatei. Neu gespeicherte oder eingescannte PDFs besitzen eine andere Inhaltsadresse beziehungsweise Prüfsumme.
 
-Die fachlichen Entscheidungen sind in [ADR-005: Gebindeabrechnung](../architecture/adr-005-gebindeabrechnung.md) dokumentiert.
-
-Jahresbezogene Ausnahmen und Altbestätigungen werden unter [FMK – Pfadprüfung je Messjahr](fmk.md#pfadprufung-je-messjahr) erläutert.
+Die fachlichen Entscheidungen stehen in [ADR-005: Gebindeabrechnung](../architecture/adr-005-gebindeabrechnung.md), der zentrale Ablauf in [ADR-007](../architecture/adr-007-server-ipld.md). Jahresbezogene Ausnahmen erläutert [FMK – Pfadprüfung je Messjahr](fmk.md#pfadprufung-je-messjahr).

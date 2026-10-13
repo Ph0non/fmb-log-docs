@@ -1,5 +1,7 @@
 # ADR-006: Jahresbezogene FMK-Ausnahmebestätigungen
 
+> Die fachlichen Jahresentscheidungen bleiben gültig. Verweise auf die frühere CR-SQLite-Übertragung beschreiben den damaligen Stand; der Serverbetrieb verwendet versionierte DAG-CBOR-Operationen nach [ADR-007](./adr-007-server-ipld.md).
+
 - **Status:** umgesetzt
 - **Datum:** 2026-09-24
 

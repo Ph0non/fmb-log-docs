@@ -4,7 +4,7 @@ title: FMB Log – Benutzeranleitung
 hero:
   name: FMB Log
   text: Benutzer- & Admin-Handbuch
-  tagline: Dokumentation für Erfassung, Auswertung und Gebindeabrechnung von Freimessungen (Tauri + SQLite).
+  tagline: Erfassung, Auswertung und Gebindeabrechnung mit lokalem Offline-Bestand und FMB-Log Server.
   actions:
     - theme: brand
       text: User Guide
@@ -17,19 +17,21 @@ hero:
       link: /reference/
 features:
   - title: Offline-first
-    details: Lokale SQLite-Datenbank, optional auf Netzlaufwerk (abhängig von Dateisperren/SMB).
+    details: Lokale SQLite-Repliken und signierte Offline-Arbeit; zentraler Abgleich mit PostgreSQL über den Dienst.
   - title: Nachvollziehbarkeit
-    details: Messungen werden versioniert (Revisionen) gespeichert; Protokolle werden zstd-komprimiert archiviert.
+    details: Unveränderliche signierte Versionen, DAG-CBOR/IPLD und CIDs für Originaldaten und PDFs.
   - title: Rollen & Rechte
-    details: Benutzerverwaltung über Gruppen und Rechte-Matrix; Passwort-Hashing via Argon2.
+    details: Online-Verwaltung von Nutzern, Gruppen und Schlüsseln; Passwortanmeldung und lokal entsperrte Vaults.
 ---
 
 ## Zielgruppe
 
 - **User Guide**: Endanwender (Messungen importieren, Gebinde prüfen, Gebindeabrechnung exportieren).
-- **Admin Guide**: Admins/Key-User (Ersteinrichtung, Nutzer & Rechte, FGW-Pflege, Betrieb/Backup).
+- **Admin Guide**: Admins/Key-User (Ersteinrichtung, Nutzer & Rechte, FGW-Pflege, Dienstbetrieb und Reset).
 
 ## Versionshinweis
 
-Die Dokumentation beschreibt den aktuellen Funktionsstand der Anwendung. Einzelne Features sind als **„geplant“** gekennzeichnet, wenn sie in der UI noch nicht verfügbar sind.
+Die Betriebs- und Einrichtungsanleitung beschreibt den neuen Serverbetrieb. Die fachliche Oberfläche baut auf Version 1.10.5 auf; ältere Abbildungen können daher bei Bezeichnungen und Statusanzeigen abweichen. Frühere Datei-Hub-Entscheidungen bleiben als historische ADRs erhalten.
+
+Die Implementierung wird noch abgenommen. Konkrete Prüfstände und offene Zielnetz-/Zielservernachweise stehen in `server/README.md`; diese Anleitung ist keine Erklärung einer abgeschlossenen Produktionsfreigabe.
 

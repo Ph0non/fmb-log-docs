@@ -1,5 +1,7 @@
 # ADR‑003: Messprotokolle als Packfiles
 
+> Historische Entscheidung für den Datei-Hub-Betrieb. Für den neuen Serverbetrieb ersetzt [ADR-007](./adr-007-server-ipld.md) die hier beschriebene Speicher-, Synchronisations- und Vertrauensarchitektur.
+
 - **Status:** angenommen
 - **Datum:** 2026‑01‑11
 

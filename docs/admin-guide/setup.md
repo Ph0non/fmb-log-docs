@@ -1,232 +1,40 @@
 # Ersteinrichtung
 
-## Administrator anlegen (einmalig)
+FMB Log und FMB-Log Server werden getrennt installiert. Der Betreiber richtet den zentralen Dienst ein; die Arbeitsplatzanwendung verbindet sich anschließend mit ihm. Der gemeinsame Bestand liegt in PostgreSQL auf dem Serverdatenträger. Arbeitsplätze erhalten keine SQL-Zugangsdaten.
 
-Beim ersten Start ist die Anwendung im Setup‑Modus. In diesem Schritt wird der **erste Administrator** angelegt. Dieser Account ist notwendig, weil ohne Admin niemand Nutzer, Gruppen und Stammdaten verwalten kann.
+## Dienst bereitstellen
 
-Nach dem Anlegen des Administrators führt FMB Log zusätzlich eine einmalige Initialisierung durch (kann einige Sekunden dauern):
+Die vollständigen Paket-, Rollen-, Migrations- und systemd-Befehle stehen in `server/debian/INSTALL.md` im Repository beziehungsweise in der mitgelieferten Debian-Installationsanleitung. Voraussetzungen sind Debian 13 und PostgreSQL 17. Das Dienstpaket enthält Node.js 24, die Anwendung und den Rust-TSA-Prüfer.
 
-- RFC3161‑Zeitstempel für Gebindeabrechnungen wird als **verpflichtend** aktiviert.
-- Delegations‑Zertifikate für den Admin werden erstellt (Scopes: `masterdata.fgw`, `masterdata.nv`, `masterdata.fmk`).
-- Die bereits vorhandenen Stammdaten aus der Stub‑DB werden mit dem Admin‑Signierschlüssel signiert (FGW/NV/FMK/SW/KF).
-- Die Sicherheitsdaten in der DB (Benutzer/Gruppen/Rechte/Delegationen/Admin‑Einstellungen) werden mit dem DB‑Signierschlüssel signiert.
+Der Betreiber richtet ein:
 
-Anschließend wechselt die Anwendung zur Anmeldung. Ab diesem Zeitpunkt können weitere Nutzer und Gruppen angelegt werden.
+1. PostgreSQL-Datenbank und getrennte Laufzeit-, Migrations- und Archivrechte über den Unix-Socket.
+2. Dienstadresse und freien TCP-Port sowie die Freigabe für das vorgesehene LAN.
+3. Einen Ed25519-SSH-Hostschlüssel und dessen vertrauenswürdig verteilten SHA256-Fingerabdruck.
+4. Den öffentlichen Integritäts-Root und das genehmigte kanonische DAG-CBOR-Stub-Manifest.
+5. Den ersten Administrator über die CLI `fmblog-server bootstrap` mit einem vorbereiteten, geprüften Nutzerschlüssel und verschlüsselten Vault.
+6. Archivhelfer, Diagnose und ausdrücklich aktivierten systemd-Dienst.
 
-Technischer Hinweis: Die Anwendung erkennt „Ersteinrichtung erforderlich“, wenn in der Datenbank noch **kein** Benutzer existiert.
+Die Bootstrap-Datei enthält Zugangsdaten, muss geschützt sein und wird nach der Einrichtung entfernt. Der private Root-Schlüssel verbleibt am Signierarbeitsplatz. Er gehört weder auf den Server noch in die Arbeitsplatzkonfiguration.
 
-::: warning Empfehlung
-- Legen Sie mindestens einen zweiten Admin an, sobald die Grundkonfiguration steht (Single‑Admin‑Risiko).
-:::
+Port 80 ist möglich, wenn dieselbe Server-IP dort noch keinen Listener besitzt. Der Port ist konfigurierbar. Der administrative SSH-Zugang auf Port 22 bleibt davon unabhängig. Die Arbeitsplatzverbindung verwendet direkt SSH; eine Netzwerkfreigabe ausschließlich für HTTP genügt nicht zwangsläufig.
 
-## Datenquelle wählen (wenn bereits eine produktive DB existiert)
+Der Dienst lässt 32 gleichzeitige TCP-Verbindungen je Quell-IP und 64 insgesamt zu; acht API-Aufrufe werden gleichzeitig bearbeitet. Auch 20 Clients hinter derselben NAT-/VPN-Adresse oder auf einem Terminalserver können dadurch arbeiten. Fachliche Anfragen sind auf 120 je Minute pro geprüfter vollständiger Sitzung begrenzt. Anonyme Anfragen, Anmeldung und Sicherheitsänderungen teilen weiterhin 120 Anfragen je Minute und Quell-IP; Passwortanmeldungen sind zusätzlich auf zehn je Minute und Nutzername begrenzt. Prüfen Sie die tatsächliche Netzstruktur bei der Mehrplatzabnahme.
 
-Wenn FMB Log auf mehreren Arbeitsplätzen betrieben wird, existiert in der Regel bereits eine produktive Hub‑Datenquelle (DB + `vaults/` + `protocols/` im gemeinsamen Ordner).
+## Arbeitsplatz verbinden
 
-In diesem Fall muss auf einem neuen Client **keine Ersteinrichtung** durchgeführt werden. Stattdessen:
+Die Administration übergibt Serveradresse mit Port, SSH-Fingerabdruck und den öffentlichen Root-Schlüssel als Base64url-Wert. In FMB Log wählen Sie **Serververbindung einrichten**, tragen diese Werte ein und bestätigen **Prüfen und verwenden**.
 
-1. Im Setup‑Modus auf **Datenquelle ändern** klicken.
-2. Den Pfad zur bestehenden Hub‑DB auswählen (z. B. im Netzlaufwerk).
-3. Die Anwendung lädt die Datenquelle; wenn bereits Benutzer existieren, wechselt FMB Log automatisch in den normalen **Anmeldemodus**.
+Danach erfolgt die Anmeldung mit Benutzername und Passwort. Ein neuer Arbeitsplatz benötigt weder eine gemeinsam geöffnete SQLite-Datei noch einen kopierten Vault-Ordner. Nach der ersten erfolgreichen Anmeldung kann der Nutzer diesen Arbeitsplatz auch offline entsperren. Siehe [Schnellstart](../user-guide/quickstart.md).
 
-::: info Kurzfassung
-- **Nur einmal** im Betrieb: Ersteinrichtung + erster Admin.
-- **Alle weiteren Clients**: Datenquelle ändern → anmelden.
-:::
+## Gruppen, Rechte und Nutzer
 
-## Erstkonfiguration (empfohlen)
+Melden Sie sich als Administrator online an und öffnen Sie **Administration → Benutzer und Rechte**. Legen Sie zuerst die benötigten Gruppen mit ihren Berechtigungen an, dann die Nutzer und Gruppenzuordnungen. Für neu gesetzte Passwörter gelten mindestens zwölf Zeichen.
 
-Nach der Ersteinrichtung empfiehlt sich eine kurze Grundkonfiguration, damit das Tagesgeschäft sauber getrennt ist (Messung/Prüfung/Administration):
+Bei der Nutzeranlage erzeugt der Client den Schlüssel und den verschlüsselten Vault lokal. Der Server speichert den verschlüsselten Vault und den Passwort-Prüfwert. Einzelheiten stehen unter [Benutzer](./users.md) und [Gruppen & Rechte](./groups-permissions.md).
 
-1. Legen Sie mindestens eine **Benutzergruppe** an (z. B. „Messung“, „Auswertung“, „Key‑User“).
-2. Weisen Sie den Gruppen die benötigten Rechte in der **Rechte‑Matrix** zu.
-3. Legen Sie Nutzer an und ordnen Sie sie den Gruppen zu.
+## Ausgangsbestand und bisherige Testdaten
 
-Warum dieser Schritt wichtig ist: In der Praxis sollen kritische Aktionen (z. B. FGW ändern, Passwörter zurücksetzen) nur wenigen Personen möglich sein, während der Import und die Arbeit mit Gebinden breiter verfügbar sein kann.
+Ein Reset übernimmt ausschließlich den ausdrücklich genehmigten Stub. Dessen Stammdaten werden als **Root-autorisierter Ausgangsbestand** ausgewiesen; sie erhalten keine vorgetäuschten Nutzersignaturen. Erst eine spätere Bearbeitung erzeugt eine nutzersignierte Folgeversion.
 
-::: info Kurzfassung
-- Admin anlegen → anmelden → Gruppen/Rechte/Nutzer einrichten
-- Rechte steuern Sichtbarkeit und Bearbeitung in der UI
-:::
-
-## Integritätsschutz – DB‑Key‑Zertifikat (verpflichtend)
-
-Der Integritätsschutz verhindert, dass Manipulationen an **Benutzern/Gruppen/Rechten** in der SQLite‑Datei unbemerkt bleiben. Technisch werden die relevanten Datensätze signiert.
-
-Damit ein Angreifer den Schutz nicht durch einen einfachen Austausch des DB‑Public‑Keys aushebeln kann, ist ein **DB‑Key‑Zertifikat** verpflichtend: Der DB‑Public‑Key wird durch eine Root‑Signatur autorisiert und die Anwendung prüft diese Signatur gegen den fest eingebauten Root‑Public‑Key.
-
-Dabei gilt:
-
-- Der **Root‑Public‑Key** ist fest in der Anwendung hinterlegt (Compile‑Time).
-- Der **Root‑Private‑Key** bleibt beim Administrator und wird nur zum Erstellen des Zertifikats benötigt (z. B. beim Build/Deployment).
-
-### Vorgehen
-
-1. Root‑Schlüssel erzeugen (einmalig, nur auf dem Admin‑Build‑Rechner):
-   - `pnpm -s integrity:rootkey`
-   - Ergebnis: Public Key in `src/lib/security/rootPublicKey.jwk.json`, Private Key in `.secrets/…` (darf nicht committed werden)
-2. In der Anwendung: **Einstellungen → Integritätsschutz → Aktivieren**
-   - Dadurch wird `<db>.integrity.pub.json` neben der DB erzeugt.
-3. Zertifikat für den DB‑Public‑Key erzeugen:
-   - `pnpm -s integrity:certify --db-public <db>.integrity.pub.json --out <db>.integrity.dbkey.json`
-4. Auf dem Netzlaufwerk: Die Dateien gegen Änderungen schützen (ACL/Schreibrechte):
-   - `<db>.integrity.dbkey.json` (Zertifikat)
-   - `<db>.integrity.pub.json` (Public Key)
-
-### Alternative: Zertifikat per GitHub Actions erzeugen (Variante A, manuell)
-
-Wenn der Root‑Private‑Key nicht auf dem Arbeitsplatz verfügbar sein soll, kann das DB‑Key‑Zertifikat auch über einen **geschützten GitHub Actions Workflow** erzeugt werden. Die App kann das nicht „automatisch“ auslösen (Sicherheitsgründe), aber die Schritte sind dadurch reproduzierbar und zentralisiert.
-
-**Einmalig in GitHub einrichten (Repo z. B. `Ph0non/fmb-log-docs`):**
-
-1. **Environment** anlegen (empfohlen): `integrity-signing`
-   - Settings → Environments → New environment
-   - Optional: Required reviewers aktivieren (damit nicht jeder den Workflow laufen lassen kann).
-2. **Secret** hinterlegen (im Environment oder Repo):
-   - Name: `INTEGRITY_ROOT_PRIVATE_JWK_BASE64`
-   - Wert: Base64URL des Root‑Private‑Key‑JWK (`.secrets/integrity-root-private.jwk.json`)
-     - Beispiel (Node): `node -e "console.log(Buffer.from(require('fs').readFileSync('.secrets/integrity-root-private.jwk.json','utf8')).toString('base64url'))"`
-3. Workflow Datei anlegen: `.github/workflows/integrity-certify-dbkey.yml` (Manual Dispatch)
-   - Der Workflow erwartet als Input `db_public_jwk_base64` (Base64URL der Datei `<db>.integrity.pub.json`) und erstellt als Artifact die Datei `*.integrity.dbkey.json`.
-
-Beispiel‑Workflow (kopieren nach GitHub, Repo `Ph0non/fmb-log-docs`):
-
-```yaml
-name: integrity-certify-dbkey
-
-on:
-  workflow_dispatch:
-    inputs:
-      db_public_jwk_base64:
-        description: "Base64URL von <db>.integrity.pub.json"
-        required: true
-      out_filename:
-        description: "Ziel-Dateiname (z. B. fmblog.db.integrity.dbkey.json)"
-        required: true
-
-jobs:
-  certify:
-    runs-on: ubuntu-latest
-    # Optional aber empfohlen: nur in einem geschützten Environment mit Required Reviewers
-    environment: integrity-signing
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Generate certificate
-        env:
-          ROOT_PRIV_B64: ${{ secrets.INTEGRITY_ROOT_PRIVATE_JWK_BASE64 }}
-          DB_PUB_B64: ${{ inputs.db_public_jwk_base64 }}
-          OUT_FILENAME: ${{ inputs.out_filename }}
-        run: |
-          node <<'NODE'
-          import { webcrypto } from "node:crypto";
-          import fs from "node:fs";
-
-          function recordMessage(parts) {
-            return parts.map((p) => String(p)).join("\u001f");
-          }
-          function dbKeyCertificateMessage(jwk) {
-            if (!jwk?.kty || !jwk?.crv || !jwk?.x) {
-              throw new Error("Invalid DB public JWK (expected kty/crv/x).");
-            }
-            return recordMessage(["v2", "dbkey", jwk.kty, jwk.crv, jwk.x]);
-          }
-
-          const dbPublicJwk = JSON.parse(Buffer.from(process.env.DB_PUB_B64, "base64url").toString("utf8"));
-          const rootPrivateJwk = JSON.parse(Buffer.from(process.env.ROOT_PRIV_B64, "base64url").toString("utf8"));
-
-          const rootPrivKey = await webcrypto.subtle.importKey(
-            "jwk",
-            rootPrivateJwk,
-            { name: "Ed25519" },
-            false,
-            ["sign"],
-          );
-
-          const msg = new TextEncoder().encode(dbKeyCertificateMessage(dbPublicJwk));
-          const sig = await webcrypto.subtle.sign({ name: "Ed25519" }, rootPrivKey, msg);
-
-          const cert = {
-            version: 2,
-            dbPublicJwk,
-            rootSignatureBase64: Buffer.from(new Uint8Array(sig)).toString("base64url"),
-            createdAt: new Date().toISOString(),
-          };
-
-          fs.writeFileSync(process.env.OUT_FILENAME, `${JSON.stringify(cert, null, 2)}\n`, "utf8");
-          console.log(`Wrote: ${process.env.OUT_FILENAME}`);
-          console.log(`::group::DB key certificate (${process.env.OUT_FILENAME})`);
-          console.log(JSON.stringify(cert, null, 2));
-          console.log("::endgroup::");
-          NODE
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dbkey-certificate
-          path: ${{ inputs.out_filename }}
-```
-
-**Workflow ausführen (pro DB, manuell):**
-
-1. In FMB Log (Setup oder Administration → Einstellungen → Integritätsschutz) den Public Key laden und den Wert `db_public_jwk_base64` kopieren.
-2. In GitHub Actions den Workflow `integrity-certify-dbkey` starten und `db_public_jwk_base64` einfügen.
-3. Artifact herunterladen und als `<db>.integrity.dbkey.json` neben der DB ablegen.
-4. In der App „Zertifikat prüfen“ klicken.
-
-::: warning Sicherheit
-Der Root‑Private‑Key in GitHub Secrets ist nur so sicher wie die GitHub‑Repo‑Berechtigungen und Workflow‑Policies. Verwenden Sie nach Möglichkeit ein Environment mit Required Reviewers und erlauben Sie Workflow‑Änderungen nur auf protected branches/tags.
-:::
-
-::: warning Hinweise
-- Ohne `<db>.integrity.dbkey.json` gilt der Integritätsschutz als **nicht funktionsfähig** (Fail‑Closed) und FMB Log blockiert sicherheitsrelevante Vorgänge, bis das Zertifikat wieder vorhanden ist.
-- Bewahren Sie den Root‑Private‑Key außerhalb des Repos sicher auf.
-- Das Zertifikat ist nicht geheim, aber wichtig für Recovery/Deployment: Sie können es zusätzlich separat sichern.
-:::
-
-## Smoke‑Test (nach der Ersteinrichtung)
-
-Diese kurze Checkliste hilft, eine frische Installation in wenigen Minuten zu verifizieren – besonders wichtig vor dem Rollout auf weitere Clients.
-
-### 1) Integritätsschutz / Dateien prüfen
-
-1. Als Admin anmelden.
-2. **Administration → Einstellungen → Integritätsschutz**
-   - Status muss **„aktiviert (zertifiziert)“** sein.
-3. Neben der Hub‑DB müssen (im gleichen Ordner) vorhanden sein:
-   - `<db>.integrity.pub.json`
-   - `<db>.integrity.dbkey.json`
-   - `vaults/<db>.integrity.vault`
-
-::: tip Warum ist das wichtig?
-Ohne Zertifikat (dbkey) läuft FMB Log fail‑closed und blockiert sicherheitsrelevante Funktionen. Fehlende Vaults führen zu „Passwort falsch“/DoS‑Symptomen.
-:::
-
-### 2) Stammdaten‑Signaturen (FGW/NV/FMK) prüfen
-
-1. **Stammdaten → Freigabewerte (FGW)** öffnen → Tabelle muss ohne Signatur‑Fehler laden.
-2. **Stammdaten → Nuklidvektoren** öffnen → NV‑Liste/Detail muss ohne Signatur‑Fehler laden.
-3. **Stammdaten → FMK** öffnen → FMK‑Liste/Detail muss ohne Signatur‑Fehler laden.
-
-::: info Hinweis
-Bei der Ersteinrichtung signiert FMB Log die vorhandenen Stammdaten automatisch. Wenn hier Fehlermeldungen auftreten, ist meist der Integritätsschutz nicht korrekt aktiv (Zertifikat fehlt/inkonsistent) oder die Datenquelle zeigt auf eine nicht initialisierte DB.
-:::
-
-### 3) Delegation (Capability‑Zertifikate) prüfen
-
-1. **Administration → Benutzer → Signatur-Delegationen**:
-   - Für den Admin sollten Delegationen für `masterdata.fgw`, `masterdata.nv` und `masterdata.fmk` sichtbar sein.
-   - Beim Erteilen, Widerrufen oder Abgleichen wird bei gesperrtem Signierschlüssel das Signier-Passwort abgefragt.
-
-### 4) Audit / Gebindeabrechnung (kurzer Funktionscheck)
-
-1. **Administration → Audit → Audit ausführen**
-   - Erwartung: Audit läuft durch und meldet keine kritischen Fehler.
-2. **Gebindeabrechnung**
-   - Vorschau erstellen (mit Testdaten).
-   - Optional: **PDF exportieren**.
-3. **Administration → Einstellungen → Zeitstempeldienst**
-   - **FreeTSA** ist der Standard. Bei Bedarf kann **Open TSA (open-tsa.eu)** gewählt und mit entsperrtem Signierschlüssel gespeichert werden. Einen Ein-/Ausschalter für die Zeitstempelpflicht gibt es nicht.
-
-::: warning Hinweis
-Der PDF‑Export in der Desktop-App benötigt eine Verbindung zum gewählten Dienst für den verpflichtenden RFC3161‑Zeitstempel. Ohne Verbindung schlägt der Export fehl – die Vorschau funktioniert weiterhin.
-:::
+Für bisherige Testdaten gibt es eine einmalige Übernahme in das neue IPLD-Modell. Historische Originale und bekannte Signaturfehler müssen dabei sichtbar erhalten bleiben. Alte Clients und CR-SQLite dürfen nicht parallel in den neuen zentralen Bestand schreiben. Ein Server-Reset ist kein Migrationsverfahren; Ablauf und Schutzumfang stehen unter [Betrieb & Datenbank](./database.md).

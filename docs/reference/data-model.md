@@ -1,25 +1,35 @@
-# Datenmodell (vereinfacht)
+# Datenmodell (Serverbetrieb)
 
-Die Anwendung nutzt SQLite. Das Modell ist auf Nachvollziehbarkeit ausgelegt (Revisionen statt Überschreiben).
+Der zentrale Bestand liegt in PostgreSQL; jeder Arbeitsplatz besitzt lokale SQLite-Repliken. Fachliche IDs bleiben über Änderungen hinweg stabil. Unveränderliche Operationen und ihre CIDs bestimmen die Versionen. Die Tabellen sind Ansichten beziehungsweise Speicherorte dieses IPLD-Modells, nicht ein Ersatz für die signierten Originalbytes.
 
-![Datenmodell (vereinfacht)](../diagrams/data-model.svg)
+## Fachliche Beziehungen
 
-## Entitäten & Beziehungen (fachlich)
+FMK referenzieren versionierte Nuklidvektoren und Freigabewerte. Jahresfaktoren beziehen sich auf die passende FMK-Version. Gebinde binden ihre FMK; Messungen binden Gebinde, benötigte Stammdaten und ihr Originalprotokoll. Eine atomare Operation kann mehrere zusammengehörige Änderungen enthalten.
 
-Zusätzlich gibt es eine vereinfachte fachliche Sicht auf die Hauptentitäten und deren Beziehungen:
+## Zentrale Tabellen
 
-![Datenmodell (ER – Entitäten & Beziehungen)](../diagrams/data-model-er.svg)
+| Bereich | Wesentliche Tabellen |
+| --- | --- |
+| Dienstzustand | `service_state`, `server_migrations` |
+| Fachliche Originale | `operations` mit kanonischen Bytes, Autor, Operations-ID und Übernahmeentscheidung |
+| Versionsansichten | `versions`, `entity_heads`, `current_entities` |
+| Originalobjekte | `objects`, `object_uploads`, `operation_objects` |
+| Veröffentlichungen | `publication_log` mit festem Log-Präfix |
+| Anmeldung und Rechte | `users`, `user_keys`, `sessions`, `security_groups`, `memberships`, `permissions` |
+| Sicherheitsnachweise | `security_history`, `authentication_events` |
+| Abrechnungen | `reports`, `report_objects`, `report_watches` |
+| Reset | `reset_jobs`, `stub_manifests`, `stub_entities` |
 
-## SQL-Schema (ER)
+Die verbindliche SQL-Definition steht in `server/migrations/`. Die lokalen Tabellen in `src/lib/serverSync/` bilden den Clientbestand samt Outbox, Versionszweigen und Suchnachweisen ab. Sicherheits- und Checkpointdateien liegen zusätzlich getrennt von den Repliken.
 
-Zusätzlich ist das SQL-Schema als Entity-Relationship-Diagramm (D2 `sql_table`) verfügbar:
+## IPLD und Signaturen
 
-![SQL-Schema (ER)](../diagrams/sql-schema.svg)
+Operationen verwenden `fmblog-operation/v2` mit Schema 2. DAG-CBOR kodiert Verweise als IPLD-Links. Die Ed25519-Signatur bindet die kanonische Nutzlast; die CID wird anschließend aus der vollständigen signierten Hülle berechnet. Neue CIDs verwenden BLAKE3 mit 32 Byte Digest. Originaldateien und PDFs verwenden den `raw`-Codec.
 
-Hinweis: Die tatsächlichen Tabellen-/Spaltennamen können abweichen; diese Seite dient als Orientierung.
+## Abrechnungen und Reset-Stub
 
-## Gebindeabrechnung
+Eine Abrechnung bindet einen geprüften Snapshot konkreter Versionen, die Nutzerautorisierung, den TSA-Nachweis und die PDF-CID. Der zentrale Abschluss prüft Ausgangsstand und Rechte erneut. Nachträgliche fachliche Änderungen können die gespeicherte Abrechnung invalidieren; deren Originale werden nicht überschrieben.
 
-`daily_reports` speichert weiterhin die Exporte. Snapshots ab Version 4 ergänzen die eindeutigen Messrevisionen um Chargen-/Stoffklassenblätter und Maximalwertzeilen; `daily_report_measurements` enthält jede verwendete Revision nur einmal. Die vorhandenen `material_masses_json` und `batches_json` liefern Reststoffanteile und eindeutige Chargenzuordnungen. Version 5 speichert zusätzlich die jahresbezogenen Pfadentscheidungen und deren Bestätigungsgrundlagen. Version-3- und Version-4-Snapshots bleiben unverändert lesbar. Siehe [ADR-005](../architecture/adr-005-gebindeabrechnung.md).
+Ein genehmigter Reset installiert einen versionierten Stub als Root-autorisierten Ausgangsbestand. Stub-Einträge besitzen eine Manifest-CID, aber keine Nutzersignatur. Eine spätere Bearbeitung referenziert den Stub als Ausgangsversion und erzeugt eine neue nutzersignierte Operation.
 
-Jahresbezogene FMK-Ausnahmen verwenden das bestehende signierte JSON-Feld der FMK-Pfade; Details stehen in [ADR-006](../architecture/adr-006-jahresbezogene-fmk-bestaetigungen.md).
+Historische Testdaten und Nachweise werden bei der einmaligen Übernahme gesondert erhalten. Die früheren SQLite-Tabellen und Diagramme des Datei-Hubs beschreiben nicht das zentrale PostgreSQL-Schema. Siehe [Architekturentscheidung](../architecture/adr-007-server-ipld.md).
