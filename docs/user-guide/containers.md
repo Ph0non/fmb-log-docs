@@ -139,13 +139,18 @@ Jede Fläche ist getrennt für innen und außen zuordenbar.
 ### Orientierung
 
 Die Innenansicht ist die feste Referenz: beim Blick auf die Wand läuft die
-erste Koordinate an A von links 1→2, an B und D 4→1, an C 2→1. Die zweite
+erste Koordinate an A von links 1→2, an B 1→4, an C 2→1 und an D 4→1. Die zweite
 Koordinate steigt von unten nach oben. Auf E und F läuft die erste Koordinate
 von A nach C, die zweite von D nach B. Die frei gewählte A-Wand einer
 symmetrischen Mulde muss am realen Gebinde eindeutig gekennzeichnet sein.
 
-**Außen ist die Projektion der Innenseite:** A innen 1/1 und A außen 1/1
-liegen sich gegenüber. Die 2D-Außenansicht zeigt diese Innenprojektion.
+**Die Ansicht zeigt die gewählte Seite:** B innen 1/1 liegt unten links;
+beim Blick von außen liegt B außen 1/1 unten rechts. Gleich nummerierte
+Innen- und Außenflächen liegen sich am selben Bauteil gegenüber. Das gilt
+für das 2D-Raster und das 3D-Modell. Bei Boden und Deckel liegt A oben und C unten;
+die Ansicht von unten zeigt D und B gegenüber der Ansicht von oben vertauscht.
+Bestehende Messwertzuordnungen bleiben an ihrer Feldkennung erhalten; die
+Korrektur der B-Nummerierung ändert ihre dargestellte Position, nicht die gespeicherte Zuordnung.
 Im drehbaren 3D-Modell bleiben die Kennungen fest am Bauteil; die Kameraposition
 ändert keine Nummerierung. Die Oberseite einer Ablage gehört zum oberen,
 ihre Unterseite zum unteren Raster. Übergreifende Anbauten werden der Fläche
