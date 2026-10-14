@@ -18,6 +18,19 @@ Mit **Signierte Originaloperation speichern** exportieren Sie die unveränderten
 
 Diese Ansicht enthält eigene lokale Änderungen früherer Generationen. Öffnen und Export verändern den aktiven Bestand nicht; die Operationen werden nicht automatisch erneut übertragen. Nach einem Reset fehlende Originaldateien können nicht aus dem neuen aktiven Serverbestand nachgeladen werden.
 
+## Konflikte auflösen
+
+Unter **Administration → Konflikte** steht jeder betroffene Eintrag einmal mit der Anzahl seiner Fassungen. **Unterschiede prüfen** öffnet den Vergleich im passenden Editor. Dieser Ablauf gilt für FMK, SW/KF-Jahresfaktoren, Nuklidvektoren, Freigabewerte, Gebinde und Messungen.
+
+1. Eine **Ausgangsfassung** wählen. Standardmäßig werden nur unterschiedliche fachliche Werte angezeigt; gleiche Werte können eingeblendet werden.
+2. Je Feld den gewünschten Wert auswählen. Zusammengehörige Angaben wie Referenzen, Pfadbestätigungen und importierte Messursprungsdaten werden gemeinsam übernommen.
+3. **Auswahl übernehmen** wählen. Die Auswahl steht jetzt als Entwurf im gewohnten Formular und kann dort weiterbearbeitet werden. Fachliche Prüfungen gelten auch für zusammengestellte Werte, etwa die Summe der Nuklidanteile.
+4. **Konflikt auflösen** wählen. Bei einer Löschung ist zusätzlich die Löschung zu bestätigen. Die Historie bleibt erhalten.
+
+Eine lokal gespeicherte Auflösung bleibt bis zum erfolgreichen Abgleich ausstehend. Gibt es noch nicht übertragene eigene Änderungen, verwenden Sie zuerst **Jetzt abgleichen**. Fehlen Rechte oder muss zuerst die übergeordnete FMK beziehungsweise das Gebinde geklärt werden, zeigt der Editor den Grund.
+
+Wenn sich die konkurrierenden Fassungen während der Bearbeitung ändern, bleibt der Entwurf erhalten und das Speichern wird gestoppt. **Vergleich neu laden** führt durch die Rückfrage zu ungespeicherten Eingaben, bevor der neue Vergleich geöffnet wird. Versionskennungen und vollständige Ursprungsdaten stehen bei Bedarf unter **Technische Details**.
+
 ## Integritätsprüfungen
 
 Unter **Administration → Audit** startet **Audit ausführen** einen gemeinsamen Prüflauf für Veröffentlichungskette, zentralen Fachbestand, eigene Arbeit und Abrechnungsnachweise. Beim Öffnen der Seite wird noch keine Prüfung gestartet. Eigene Arbeit umfasst auch lokale, konkurrierende, abgelehnte und archivierte Operationen.

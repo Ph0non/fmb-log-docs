@@ -5,7 +5,7 @@ Die Benutzerverwaltung befindet sich in der App unter **Administration → Benut
 ## Benutzer im Serverbetrieb
 
 Bei eingerichteter Serververbindung verwenden Administratoren den Bereich **Benutzer und Rechte**.
-Für **Nutzer anlegen** sind eine Online-Anmeldung, ein Benutzername und ein zweimal eingegebenes
+Für **Nutzer anlegen** sind eine Online-Anmeldung, ein Benutzername, ein Anzeigename und ein zweimal eingegebenes
 Passwort mit mindestens acht Zeichen erforderlich. Wählen Sie die Gruppen und gegebenenfalls
 den Administratorstatus. **Zentral speichern** erzeugt den Nutzerschlüssel und den verschlüsselten
 Vault auf diesem Arbeitsplatz und registriert den Zugang auf dem Server.
@@ -40,8 +40,10 @@ Zugangs führt ein anderer berechtigter Nutzer durch.
 
 ## Vorhandenen Nutzer bearbeiten
 
-Wählen Sie den Nutzer und ändern Sie Benutzername, **Zugang aktiv**, Administratorstatus oder Gruppenzugehörigkeit. **Zentral speichern** übernimmt die signierte Änderung. Betroffene Sitzungen werden beendet; Änderungen am eigenen Konto können die eigene Sitzung ebenfalls schließen. Mindestens ein aktiver Administrator mit aktivem Schlüssel muss erhalten bleiben.
+Wählen Sie den Nutzer und ändern Sie Anzeigename, Benutzername, **Zugang aktiv**, Administratorstatus oder Gruppenzugehörigkeit. **Zentral speichern** übernimmt die signierte Änderung. Betroffene Sitzungen werden beendet; Änderungen am eigenen Konto können die eigene Sitzung ebenfalls schließen. Mindestens ein aktiver Administrator mit aktivem Schlüssel muss erhalten bleiben.
 
 Die Serveroberfläche löscht keine Nutzer. Sperren Sie einen Zugang über **Zugang aktiv**, damit seine historischen Belege erhalten bleiben. Unter **Schlüssel** können einzelne aktive Schlüssel mit Begründung widerrufen werden. Ein Widerruf verhindert neue Übernahmen mit diesem Schlüssel, ohne historische Signaturen zu entfernen.
 
 Wenn der angezeigte Sicherheitsstand veraltet ist, laden Sie ihn neu und prüfen den Entwurf erneut. Getrennte Arbeitsplätze können Änderungen erst bei der nächsten Verbindung erfahren; die zentrale Übernahme prüft die aktuellen Rechte unabhängig davon.
+
+Der Anzeigename kann beispielsweise Vor- und Nachname enthalten (1–200 Zeichen). Er muss nicht eindeutig sein; zur Anmeldung dient weiterhin der Benutzername. Bestehende Nutzer erhalten zunächst ihren Benutzernamen als Anzeigename.

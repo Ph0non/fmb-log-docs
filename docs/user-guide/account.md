@@ -2,6 +2,8 @@
 
 Die erste Anmeldung auf einem Arbeitsplatz erfolgt mit Benutzername und Passwort am eingerichteten Server. Danach kann der eigene lokale Vault auch offline entsperrt werden. Ein gesperrter Zugang oder entzogene Rechte werden spätestens beim nächsten erfolgreichen Sicherheitsabgleich wirksam; ein getrennter Arbeitsplatz kennt zunächst nur den zuletzt bestätigten Stand.
 
+Die Anmeldung bleibt ohne Bedienung bestehen. Der Client verlängert den Zugang automatisch, unabhängig vom Datenabgleich. Nach einer Netzunterbrechung oder dem Standby versucht er die Verlängerung erneut; ein vorübergehender Verbindungsfehler meldet Sie nicht ab. Abmeldung, Zugangssperren und Schlüsselwiderrufe bleiben wirksam.
+
 ## Eigenes Passwort ändern
 
 1. Online anmelden und das Benutzermenü oben rechts öffnen.

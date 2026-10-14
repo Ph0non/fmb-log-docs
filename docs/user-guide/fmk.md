@@ -20,6 +20,8 @@ Die Jahreszuordnung ergibt sich dabei aus dem Messdatum der jeweiligen Messung: 
 
 ## FMK bearbeiten
 
+Die Tabelle zeigt Kürzel und Beschreibung. Nur ausstehende Änderungen, Konflikte oder Fehler erhalten einen zusätzlichen Hinweis. Auch in FMK-Auswahlfeldern stehen Kürzel und Beschreibung; interne Kennungen sind nicht Teil der Auswahlbeschriftung.
+
 Oben stehen Kürzel, Beschreibung und Nuklidvektor. Danach folgen die Chargen. Die kompakten Felder für Standard-Umrechnung, maximale Bezugsmasse und maximale Messfläche stehen zusammen mit der Messgeräteauswahl darunter. Bei wenig Platz brechen die Felder in weitere Zeilen um.
 
 Die vier Messgeräte werden über direkt sichtbare Checkboxen ausgewählt; mehrere Geräte können gleichzeitig aktiv sein. Mindestens ein Gerät ist erforderlich. Die Auswahl hat keinen eigenen Scrollbalken.
@@ -88,6 +90,12 @@ Auf kleinen Bildschirmen wählen Sie das Gerät oberhalb der Tabelle aus; dadurc
 5. Systemstandard `1,00`.
 
 Klicken Sie eine Matrixzelle an, um SW und KF für genau diesen Gültigkeitsbereich zu bearbeiten. Beide Faktoren können unabhängig voneinander als eigene Abweichung aktiviert oder wieder auf den geerbten Wert zurückgesetzt werden.
+
+Übernehmen Sie die Zelleneingabe zunächst in den Entwurf. **Speichern** unterhalb der Matrix speichert die gesamte Jahreskonfiguration. Noch nicht übertragene Änderungen werden als ausstehend angezeigt.
+
+Wenn die FMK inzwischen geändert wurde, erscheint **FMK-Änderungen prüfen**. Der Vergleich zeigt die Unterschiede zum bisherigen Bezug. **Konfiguration an aktuelle FMK anpassen** übernimmt den neuen Bezug in den Entwurf; erst **Speichern** macht die Anpassung dauerhaft. Nicht mehr passende Geräte- oder Pfadabweichungen bleiben sichtbar und müssen ausdrücklich entfernt werden. Ein Hintergrundabgleich stellt vorhandene Konfigurationen nicht automatisch um.
+
+Bei konkurrierenden Fassungen wählen Sie die gewünschten SW- und KF-Werte einzeln im [Konfliktvergleich](./search.md#konflikte-auflosen). Ist bereits die übergeordnete FMK ungeklärt, lösen Sie zuerst deren Konflikt.
 
 ::: info Zusammenfassung (FMK)
 - FMK verbindet NV, Messgeräte und Pfad‑Reihenfolge zu einem einheitlichen Auswerte‑Set.
