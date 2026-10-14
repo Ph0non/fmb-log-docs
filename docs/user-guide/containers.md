@@ -39,7 +39,11 @@ Die Messungsliste kann zwischen **aktuelle Revisionen** und **alle Revisionen** 
 
 ### Stammdaten am Gebinde ändern
 
-Die Gebinde-Stammdaten (Herkunft, Datenblattnummer, FMK) werden in der Detailansicht im Bereich **Stammdaten** angezeigt. Über die Schaltfläche **Stammdaten bearbeiten** (Stift-Symbol) können die Werte geändert und gespeichert werden.
+Der Bereich **Stammdaten** zeigt zunächst die gespeicherten Werte. Erst **Stammdaten bearbeiten** öffnet das Formular. Nach erfolgreichem Speichern erscheint wieder die gespeicherte Ansicht. **Bearbeitung abbrechen** verwirft Änderungen nach Bestätigung. Unverändertes Speichern erzeugt keine neue Version.
+
+**Gebindemasse** und **Gebindeoberfläche** sind eigene Stammdaten. **Masse [kg] (Messungen)** und **Fläche [m²] (Messungen)** gehören dagegen zur einzelnen Messung. Bei der Berechnung der Gesamtaktivität gilt jeweils der kleinere Wert aus tatsächlicher Messmasse/-fläche und maximaler Bezugsgröße der FMK. Fehlt eine FMK-Grenze, gilt der Messwert. Gebindewerte ersetzen keine fehlenden Messwerte.
+
+Dateiimporte und neue Importrevisionen erfolgen ausschließlich über **Import**.
 
 ::: warning Hinweis
 Beim Import werden Stammdaten eines **bestehenden** Gebindes nicht geändert. Wenn Sie Korrekturen vornehmen müssen (z. B. falsche FMK oder Datenblattnummer), erledigen Sie das im Menü **Gebinde** in der Detailansicht.
