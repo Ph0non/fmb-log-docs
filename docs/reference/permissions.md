@@ -10,7 +10,7 @@ Die reinen Leserechte `fmk.read` und `nv.read` erlauben den Zugriff auf die jewe
 | `measurements.update` | Messungen ändern |
 | `measurements.delete` | Messungen löschen |
 | `measurements.update_date` | Messdatum ändern |
-| `reports.invalidate` | Gebindeabrechnungen ungültig machen |
+| `reports.create` | Abrechnungen erzeugen, ersetzen und ungültig machen |
 | `fmk.read` | FMK ansehen |
 | `fmk.create` | FMK anlegen |
 | `fmk.update` | FMK ändern |
@@ -21,3 +21,7 @@ Die reinen Leserechte `fmk.read` und `nv.read` erlauben den Zugriff auf die jewe
 | `nv.delete` | NV löschen |
 | `fgw.update` | Freigabewerte ändern |
 | `users.reset_passwords` | Zugang anderer aktiver Nutzer mit neuem Schlüssel/Vault und vorläufigem Passwort wiederherstellen |
+
+`reports.create` ist zusätzlich zu den jeweiligen Bearbeitungsrechten erforderlich, wenn eine konkrete Änderung mindestens eine gültige Abrechnung ungültig machen würde. Eine Revision ohne Auswirkung auf gültige Abrechnungen benötigt dieses zusätzliche Recht nicht. Bei Sammeloperationen wird die gesamte Operation geprüft und gegebenenfalls abgelehnt.
+
+Bestehende Gruppen mit dem früheren Recht `reports.invalidate` erhalten bei der Aktualisierung automatisch `reports.create`. Reine Leser können vorhandene Abrechnungen weiterhin prüfen und herunterladen.

@@ -4,14 +4,18 @@ Die Gebindeabrechnung erzeugt ein PDF im A4-Querformat mit **Tagesabrechnung –
 
 ## Auswahl und zentraler Abschluss
 
-Neue offizielle Abrechnungen erfordern eine Online-Anmeldung und einen erreichbaren Dienst. Gleichen Sie lokale Änderungen vorher ab und klären Sie konkurrierende Versionen.
+Neue offizielle Abrechnungen erfordern das Recht **Abrechnungen erzeugen** (`reports.create`), eine Online-Anmeldung und einen erreichbaren Dienst. Gleichen Sie lokale Änderungen vorher ab und klären Sie konkurrierende Versionen.
 
-1. Unter **Abrechnungen** optional nach FMK filtern und Gebinde sowie Abrechnungsdatum wählen. **Nur vollständig gemessene Gebinde** ist standardmäßig aktiv.
+1. Unter **Abrechnungen** optional nach FMK filtern und Gebinde sowie Abrechnungsdatum wählen. Es sind ausschließlich vollständig gemessene Gebinde auswählbar. **Alle vollständig gemessenen Gebinde auswählen** hebt den FMK-Filter auf und ersetzt die bisherige Auswahl durch alle vollständigen Gebinde.
 2. **Vorschau erstellen** und beide Teile einschließlich der Hinweise prüfen. Der Dienst erfasst dafür konkrete zentrale Datenversionen.
 3. Die Autorisierung genau dieser Vorschau bestätigen und **Signieren, zeitstempeln und zentral abschließen** wählen.
 4. Nach zentralem Abschluss das PDF ausgeben beziehungsweise unter **Historie → PDF prüfen und speichern** exportieren.
 
 Einbezogen werden die aktuellen gültigen Messversionen der ausgewählten Gebinde, auch bereits abgerechnete Messungen. Der Dienst prüft Ausgangsstand und Rechte vor Veröffentlichung erneut. Hat sich der Stand geändert, muss eine neue Vorschau geprüft werden.
+
+Sind Gebinde bereits in einer gültigen Abrechnung enthalten, zeigt die Vorschau die betroffenen Gebinde und Abrechnungen. Bestätigen Sie den vollständigen Ersatz ausdrücklich. Erst beim erfolgreichen zentralen Abschluss werden die früheren Abrechnungen vollständig ungültig, auch wenn nur einzelne ihrer Gebinde erneut abgerechnet werden. Ein Abbruch lässt sie gültig. Das erneute Herunterladen eines vorhandenen PDFs erzeugt keine neue Abrechnung.
+
+Gebinde und Messungen zeigen ihren Exportstatus einschließlich Exportdatum oder **Früherer Export ungültig**. Fehlende lokale Nachweise werden als unbekannter Status ausgewiesen.
 
 Bei unterbrochener Abschlussantwort bleibt die autorisierte Anfrage lokal erhalten. **Abschluss erneut abfragen** setzt denselben Vorgang fort, auch nach einem Neustart; eine bereits gespeicherte Abrechnung wird nicht erneut erzeugt. Die Ausgabe erfolgt erst nach zentraler Bestätigung. Eine neue Abrechnung kann offline nicht verbindlich abgeschlossen werden.
 
@@ -21,7 +25,7 @@ Die folgenden Abbildungen zeigen die fachliche Darstellung; ältere Aufnahmen en
 
 ## Blattaufteilung und Kopfzeilen
 
-Im PDF stehen Logo, mittiger Titelblock und Angaben zu Datum/Prüfung/Seite nebeneinander mit gemeinsamem oberen Abstand. Die Fingerprints stehen im rechten Fußbereich untereinander unmittelbar links vom QR-Code; die Fußnoten stehen links.
+Im PDF stehen Logo, mittiger Titelblock und Angaben zu Datum/Prüfung/Seite nebeneinander mit gemeinsamem oberen Abstand. Die Fingerprints erscheinen ausschließlich in der Kurzform `XXX-YYY-ZZZ`. Der vollständige Datenstand des QR-Codes ist in Vorschau und Historie direkt beim Fingerprint aufklappbar. Im PDF stehen die Fingerprints im rechten Fußbereich untereinander unmittelbar links vom QR-Code; die Fußnoten stehen links.
 
 Die Hauptüberschriften lauten **Tagesabrechnung** und **Gebindeabrechnung**, ohne Teilnummer oder Datum im Titel. Darunter steht **Maximalwerte** beziehungsweise **Details**. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“. Beide Abrechnungen haben eine eigene Seitennummerierung `1/N`, die jeweils über alle zugehörigen Blätter läuft.
 
@@ -110,7 +114,7 @@ Der zentrale Abschluss speichert PDF, Snapshot, Nutzerautorisierung, TSA-Nachwei
 
 Unter **Historie** öffnen Sie **Daten und Nachweise prüfen** oder **PDF prüfen und speichern**. Bereits lokal vorhandene Dokumente und Nachweise können auch offline geprüft und gespeichert werden. Fehlende Dateien benötigen einen Online-Abruf. Historische Originalnachweise werden nicht durch neue Signaturen oder umgeschriebene Hashverfahren ersetzt.
 
-Änderungen an gebundenen Daten können eine bestehende Abrechnung invalidieren. Mit `reports.invalidate` können Sie sie außerdem mit Begründung manuell ungültig machen. Die Invalidierung wird signiert und vorgemerkt; ihre zentrale Wirkung folgt nach Übernahme. Die Originalabrechnung bleibt als Nachweis erhalten.
+Änderungen an gebundenen Daten können eine bestehende Abrechnung invalidieren. Würde eine konkrete Operation eine noch gültige Abrechnung ungültig machen, ist zusätzlich zu den Bearbeitungsrechten `reports.create` erforderlich; andernfalls wird die gesamte Operation abgelehnt. Eine Revision einer noch nicht abgerechneten Messung ohne solche Auswirkungen bleibt mit den bisherigen Änderungsrechten zulässig. Mit `reports.create` können Sie sie außerdem mit Begründung manuell ungültig machen. Die Invalidierung wird signiert und vorgemerkt; ihre zentrale Wirkung folgt nach Übernahme. Die Originalabrechnung bleibt als Nachweis erhalten.
 
 Die PDF-Prüfung gilt für die unveränderte Originaldatei. Neu gespeicherte oder eingescannte PDFs besitzen eine andere Inhaltsadresse beziehungsweise Prüfsumme.
 

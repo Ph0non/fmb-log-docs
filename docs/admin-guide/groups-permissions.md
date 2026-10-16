@@ -19,4 +19,4 @@ Rechteänderungen werden online gespeichert und bei der Übernahme fachlicher Op
 
 Offline gespeicherte Arbeit erhält deshalb keine garantierte spätere Freigabe. Wird sie nach einem Rechte- oder Schlüsselentzug abgewiesen, bleibt sie mit dem Übernahmefehler lokal erhalten. Eine historische gültige Signatur allein begründet keine aktuelle Schreibberechtigung.
 
-Typische Rechte sind FMK-/NV-Leserechte, Stammdatenbearbeitung, Messungsimport und -änderung, gesonderte Messdatumsänderung, `fgw.update`, `reports.invalidate` und `users.reset_passwords`. Die [Rechtereferenz](../reference/permissions.md) beschreibt die fachlichen Schlüssel.
+Typische Rechte sind FMK-/NV-Leserechte, Stammdatenbearbeitung, Messungsimport und -änderung, gesonderte Messdatumsänderung, `fgw.update`, `reports.create` und `users.reset_passwords`. Die [Rechtereferenz](../reference/permissions.md) beschreibt die fachlichen Schlüssel.

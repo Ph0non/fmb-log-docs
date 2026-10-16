@@ -26,6 +26,10 @@ Im Kanal laufen Passwortprüfung, Abruf ausschließlich des eigenen verschlüsse
 
 Neue offizielle Abrechnungen verlangen einen erreichbaren Dienst. Dieser erstellt einen geprüften Snapshot, empfängt Nutzerautorisierung und TSA-Nachweis und erzeugt das PDF. Externe TSA-Anfragen und PDF-Erzeugung halten keine Datenbanktransaktion offen. Vor dem atomaren Abschluss werden Ausgangsstand und Rechte erneut geprüft.
 
+Neue Abrechnungen verwenden `fmblog-report-snapshot/v3`. Die Liste zu ersetzender Abrechnungen (ID und Manifest-CID) gehört zum signierten Snapshot und wird unter der Veröffentlichungssperre erneut geprüft. Veröffentlichung und Invalidierung erfolgen atomar; die neue Manifest-CID ist die nachprüfbare Invalidierungsursache. Historische Snapshots `v2` bleiben unverändert lesbar. Server und Client müssen für diese Änderung gemeinsam aktualisiert werden.
+
+Das Recht `reports.create` ersetzt `reports.invalidate`. Es schützt Erstellung, Ersatz und manuelle Invalidierung. Andere Operationen benötigen es zusätzlich zu ihren Fachrechten nur, wenn die gemeinsame Auswirkungsprüfung eine noch gültige Abrechnung trifft. Die gesamte Operation wird sonst zurückgerollt. Bestehende Gruppenzuweisungen werden bei der Migration übernommen.
+
 Ein Reset bindet per einmaliger Root-Signatur den konkreten Stand und den genehmigten Stub. Erst nach Export, isolierter Wiederherstellung und Manifestvergleich wird der Fachbestand atomar zurückgesetzt. Sicherheitsbestand und Reset-Historie bleiben erhalten. Clients archivieren alte unbestätigte Arbeit, bevor die neue Generation aktiv wird.
 
 ## Konsequenzen
