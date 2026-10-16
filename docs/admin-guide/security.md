@@ -6,15 +6,15 @@ Im Serverbetrieb entscheidet der zentrale Dienst über Anmeldung, Rechte und Üb
 
 | Schlüssel | Aufgabe |
 | --- | --- |
-| SSH-Hostschlüssel des Dienstes | Verschlüsselte Verbindung und Prüfung des erwarteten Servers anhand des hinterlegten Fingerabdrucks |
+| TLS-Zertifikat des Dienstes | Verschlüsselte Verbindung und Prüfung des erwarteten Servers anhand des exakt importierten öffentlichen Zertifikats |
 | Nutzerschlüssel im verschlüsselten Vault | Signatur der eigenen Operationen und Nachweis des Schlüsselbesitzes bei der Anmeldung |
 | Integritäts-Root | Autorisierung eines genau gebundenen Resets; nur sein öffentlicher Schlüssel liegt auf dem Server und im Client |
 
-Ein gültiger SSH-Fingerabdruck ersetzt keine Nutzeranmeldung. Eine gültige Nutzersignatur ersetzt keine aktuelle Berechtigung. Eine Root-Freigabe ersetzt keine aktuelle Administrator-Sitzung.
+Ein gültiges TLS-Zertifikat ersetzt keine Nutzeranmeldung. Eine gültige Nutzersignatur ersetzt keine aktuelle Berechtigung. Eine Root-Freigabe ersetzt keine aktuelle Administrator-Sitzung.
 
 ## Passwort, Vault und Sitzung
 
-Die Anmeldung überträgt Benutzername und Passwort im direkten verschlüsselten SSH-Kanal. Der Dienst prüft einen gesalzenen Argon2id-Prüfwert. Die zunächst eingeschränkte Sitzung erlaubt ausschließlich den Abruf des eigenen verschlüsselten Vaults. Erst nach lokaler Entschlüsselung und Antwort auf eine einmalige Signatur-Challenge entsteht die vollständige Sitzung.
+Die Anmeldung überträgt Benutzername und Passwort im direkten verschlüsselten WSS-Kanal. Der Dienst prüft einen gesalzenen Argon2id-Prüfwert. Die zunächst eingeschränkte Sitzung erlaubt ausschließlich den Abruf des eigenen verschlüsselten Vaults. Erst nach lokaler Entschlüsselung und Antwort auf eine einmalige Signatur-Challenge entsteht die vollständige Sitzung.
 
 Der private Nutzerschlüssel wird nicht im Klartext an den Server gesendet. Anmeldung und sensible Endpunkte sind begrenzt; Passwörter, private Schlüssel und Sitzungstoken gehören nicht in Logs. Neue und geänderte Passwörter benötigen mindestens acht Zeichen. Die Aktivierung zuvor registrierter Altzugänge erlaubt das bisherige Passwort und verlangt den Nachweis mit dem bisherigen Vault.
 

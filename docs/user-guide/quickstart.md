@@ -8,8 +8,8 @@ Beim ersten Start wählen Sie **Serververbindung einrichten**. Die Administratio
 
 | Feld | Eingabe |
 | --- | --- |
-| Serveradresse | Adresse einschließlich Port, etwa `ssh://192.168.1.121:80` |
-| SSH-Serverschlüssel | Vollständiger `SHA256:…`-Fingerabdruck des Dienstes |
+| Serveradresse | Adresse einschließlich Port, etwa `wss://server:2222/v1/transport/ws` |
+| TLS-Zertifikat | Öffentliches PEM-Zertifikat aus der vertrauenswürdig erhaltenen v3-Autoconf |
 | Öffentlicher Root-Schlüssel | Von der Administration bereitgestellter Base64url-Wert |
 
 Mit **Prüfen und verwenden** wird die Verbindung geprüft und die Anwendung neu geladen. Einen Datenbankpfad oder ein Linux-/SSH-Benutzerkonto benötigen Sie nicht. Den ersten Administrator richtet der Betreiber am Dienst ein; weitere Nutzer legt die Administration in FMB Log an.

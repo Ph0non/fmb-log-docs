@@ -9,7 +9,7 @@
 | Lokaler Sicherheitsbereich | Verschlüsselte Zugangsdaten und bestätigte Generations-/Logstände, getrennt vom löschbaren Cache |
 | Lokale Reset-Archive auf dem Server | Geprüfter Export des Bestands vor einem ausgeführten Reset |
 
-PostgreSQL ist ausschließlich für den Dienst und die administrativen Rollen erreichbar. Clients verbinden sich über die authentifizierte API im direkten SSH-Kanal. Die neuen lokalen Repliken verwenden keine CR-SQLite-Synchronisation und werden nicht gemeinsam über ein Netzlaufwerk geöffnet.
+PostgreSQL ist ausschließlich für den Dienst und die administrativen Rollen erreichbar. Clients verbinden sich über die authentifizierte API im direkten WSS-Kanal. Die neuen lokalen Repliken verwenden keine CR-SQLite-Synchronisation und werden nicht gemeinsam über ein Netzlaufwerk geöffnet.
 
 ## Versionen und Synchronisation
 

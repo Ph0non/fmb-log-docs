@@ -10,20 +10,20 @@ Der Betreiber richtet ein:
 
 1. PostgreSQL-Datenbank und getrennte Laufzeit-, Migrations- und Archivrechte über den Unix-Socket.
 2. Dienstadresse und freien TCP-Port sowie die Freigabe für das vorgesehene LAN.
-3. Einen Ed25519-SSH-Hostschlüssel und dessen vertrauenswürdig verteilten SHA256-Fingerabdruck.
+3. Ein dauerhaftes selbstsigniertes ECDSA-P-256-Zertifikat unter `/etc/fmblog/tls/` und dessen vertrauenswürdig verteilte v3-Autoconf.
 4. Den öffentlichen Integritäts-Root und das genehmigte kanonische DAG-CBOR-Stub-Manifest.
 5. Den ersten Administrator über die CLI `fmblog-server bootstrap` mit einem vorbereiteten, geprüften Nutzerschlüssel und verschlüsselten Vault.
 6. Archivhelfer, Diagnose und ausdrücklich aktivierten systemd-Dienst.
 
 Die Bootstrap-Datei enthält Zugangsdaten, muss geschützt sein und wird nach der Einrichtung entfernt. Der private Root-Schlüssel verbleibt am Signierarbeitsplatz. Er gehört weder auf den Server noch in die Arbeitsplatzkonfiguration.
 
-Port 80 ist möglich, wenn dieselbe Server-IP dort noch keinen Listener besitzt. Der Port ist konfigurierbar. Der administrative SSH-Zugang auf Port 22 bleibt davon unabhängig. Die Arbeitsplatzverbindung verwendet direkt SSH; eine Netzwerkfreigabe ausschließlich für HTTP genügt nicht zwangsläufig.
+Port 80 ist möglich, wenn dieselbe Server-IP dort noch keinen Listener besitzt. Der Port ist konfigurierbar. Der administrative SSH-Zugang auf Port 22 bleibt davon unabhängig. Die Arbeitsplatzverbindung verwendet direkt WSS/TLS 1.3; prüfen Sie die Freigabe im Zielnetz.
 
-Der Dienst lässt 32 gleichzeitige TCP-Verbindungen je Quell-IP und 64 insgesamt zu; acht API-Aufrufe werden gleichzeitig bearbeitet. Auch 20 Clients hinter derselben NAT-/VPN-Adresse oder auf einem Terminalserver können dadurch arbeiten. Fachliche Anfragen sind auf 120 je Minute pro geprüfter vollständiger Sitzung begrenzt. Anonyme Anfragen, Anmeldung und Sicherheitsänderungen teilen weiterhin 120 Anfragen je Minute und Quell-IP; Passwortanmeldungen sind zusätzlich auf zehn je Minute und Nutzername begrenzt. Prüfen Sie die tatsächliche Netzstruktur bei der Mehrplatzabnahme.
+Der Dienst lässt 32 gleichzeitige TCP-Verbindungen je Quell-IP und 64 insgesamt zu; acht API-Aufrufe je Verbindung und höchstens 32 insgesamt werden gleichzeitig bearbeitet. Auch 20 Clients hinter derselben NAT-/VPN-Adresse oder auf einem Terminalserver können dadurch arbeiten. Fachliche Anfragen sind auf 120 je Minute pro geprüfter vollständiger Sitzung begrenzt. Anonyme Anfragen, Anmeldung und Sicherheitsänderungen teilen weiterhin 120 Anfragen je Minute und Quell-IP; Passwortanmeldungen sind zusätzlich auf zehn je Minute und Nutzername begrenzt. Prüfen Sie die tatsächliche Netzstruktur bei der Mehrplatzabnahme.
 
 ## Arbeitsplatz verbinden
 
-Die Administration übergibt Serveradresse mit Port, SSH-Fingerabdruck und den öffentlichen Root-Schlüssel als Base64url-Wert. In FMB Log wählen Sie **Serververbindung einrichten**, tragen diese Werte ein und bestätigen **Prüfen und verwenden**.
+Die Administration übergibt die unsignierte v3-Autoconf vertrauenswürdig. In FMB Log wählen Sie **Serververbindung einrichten → Autoconf-Datei auswählen** und bestätigen **Prüfen und verwenden**. Ein Zertifikatswechsel erfolgt ausschließlich mit `sudo fmblog-server rotate-tls-certificate` und verlangt einen erneuten Import auf allen Clients; Neustarts und Updates ersetzen das Zertifikat nicht.
 
 Danach erfolgt die Anmeldung mit Benutzername und Passwort. Ein neuer Arbeitsplatz benötigt weder eine gemeinsam geöffnete SQLite-Datei noch einen kopierten Vault-Ordner. Nach der ersten erfolgreichen Anmeldung kann der Nutzer diesen Arbeitsplatz auch offline entsperren. Siehe [Schnellstart](../user-guide/quickstart.md).
 

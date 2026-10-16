@@ -2,11 +2,13 @@
 
 ## Serververbindung
 
-Auf der Anmeldeseite öffnen Sie **Serververbindung ändern**. Benötigt werden Serveradresse einschließlich Port, SSH-Fingerabdruck und öffentlicher Root-Schlüssel. **Prüfen und verwenden** prüft den Dienst und lädt die Anwendung neu.
+Auf der Anmeldeseite öffnen Sie **Serververbindung ändern** und wählen die v3-Autoconf-Datei Ihrer Administration aus. **Prüfen und verwenden** prüft den Dienst, speichert die Verbindung und lädt die Anwendung neu. Danach melden Sie sich an.
 
-Die Adresse kann beispielsweise `ssh://192.168.1.121:80` lauten. Verwenden Sie den von der Administration genannten Port. Der Fingerabdruck wird vor der Anmeldung geprüft; bei einer Abweichung wird die Verbindung abgebrochen. Lassen Sie die Ursache durch die Administration klären, statt einen unbekannten Schlüssel zu übernehmen.
+Beispieladresse: `wss://server:2222/v1/transport/ws`. Der Client vertraut genau dem importierten öffentlichen Zertifikat und prüft Servername, Gültigkeit und TLS-Signaturen. Die Verbindung läuft direkt über WSS/TLS 1.3 ohne Proxy/PAC. Manuelle Einrichtung bietet eine Zertifikatsdateiauswahl; Adresse und öffentlichen Root-Schlüssel erhalten Sie ebenfalls von der Administration.
 
-Die Anwendung baut einen direkten SSH-Kanal auf. HTTP-/HTTPS-Proxy- und PAC-Einstellungen werden dafür nicht verwendet. Ein für HTTP freigegebener Port 80 kann SSH trotzdem blockieren; die Administration muss die tatsächliche Netzwerkfreigabe prüfen. Es gibt keinen automatischen Wechsel zu HTTPS oder Klartext.
+Nach einem ausdrücklich veranlassten Zertifikatswechsel benötigen Sie die neue Autoconf. Bis zum Import lehnt der Client das neue Zertifikat ab. Alte SSH-Konfigurationen benötigen einmalig einen v3-Import. Lokale Daten und ausstehende Änderungen bleiben erhalten. Verwenden Sie ausschließlich vertrauenswürdig erhaltene Dateien.
+
+Ein Netzwerkabbruch meldet Sie nicht ab. Die Anwendung verbindet sich automatisch neu und erneuert eine noch gültige, entsperrte Sitzung. Ein unbekanntes Ergebnis einer Änderung wird nicht blind wiederholt; prüfen Sie nach Wiederverbindung den Serverstand.
 
 ## Synchronisationsstatus
 

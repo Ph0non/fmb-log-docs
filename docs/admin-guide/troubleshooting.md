@@ -2,9 +2,9 @@
 
 ## Verbindung zum Dienst schlägt fehl
 
-Prüfen Sie Serveradresse einschließlich Port und den von der Administration bestätigten SSH-Fingerabdruck. Die Anwendung verwendet einen direkten SSH-Kanal; HTTP-/HTTPS-Proxy und PAC sind daran nicht beteiligt. Eine Firewall kann SSH auch auf Port 80 sperren, obwohl HTTP dort erlaubt ist.
+Prüfen Sie die WSS-Adresse einschließlich Port und `/v1/transport/ws`, die Systemzeit sowie die von der Administration erhaltene v3-Autoconf. Die Anwendung verbindet sich direkt über TLS 1.3 ohne Proxy/PAC. Die Firewall muss diesen Verkehr zulassen.
 
-Bei abweichendem Hostschlüssel bricht die Verbindung vor der Anmeldung ab. Übernehmen Sie keinen unbekannten Fingerabdruck als Umgehung. Der Betreiber prüft, ob eine beabsichtigte Schlüsseländerung oder eine falsche Zieladresse vorliegt.
+Bei abweichendem Zertifikat bricht die Verbindung vor der Anmeldung ab. Die Administration prüft, ob ein bewusster Zertifikatswechsel oder eine falsche Zieladresse vorliegt. Nach einem Wechsel die neue Autoconf importieren. Alte SSH-Konfigurationen benötigen ebenfalls einen v3-Import; lokale Daten bleiben erhalten.
 
 Auf dem Server helfen `systemctl status fmblog-server`, `journalctl -u fmblog-server` und die CLI-Diagnose mit dem Laufzeitkonto. Eine laufende systemd-Unit allein beweist noch keine erfolgreiche API-Anmeldung.
 
@@ -46,4 +46,4 @@ Signieren Sie historische oder fehlerhafte Nachweise nicht pauschal neu, um den 
 
 ## Desktop-Funktion oder Dateidialog fehlt
 
-Dateidialoge, lokale Vaults, SQLite und der direkte SSH-Transport benötigen die Tauri-Desktop-Anwendung. Ein normaler Browser mit der Entwicklungsoberfläche ersetzt sie nicht. Bei einem nativen Fehler prüfen Entwickler die zugehörigen Tauri-Berechtigungen; Zugangsdaten, private Schlüssel und Sitzungstoken gehören nicht in Fehlerberichte.
+Dateidialoge, lokale Vaults, SQLite und der direkte WSS-Transport benötigen die Tauri-Desktop-Anwendung. Ein normaler Browser mit der Entwicklungsoberfläche ersetzt sie nicht. Bei einem nativen Fehler prüfen Entwickler die zugehörigen Tauri-Berechtigungen; Zugangsdaten, private Schlüssel und Sitzungstoken gehören nicht in Fehlerberichte.
