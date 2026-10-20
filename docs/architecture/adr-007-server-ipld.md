@@ -6,7 +6,7 @@ Status: angenommen und implementiert; die noch offenen Betriebsabnahmen sind in 
 
 FMB Log bleibt die Desktop-Anwendung für Bedienung, lokale SQLite-Datenhaltung, Offline-Bearbeitung, Import, Nutzersignaturen und Administration. FMB-Log Server verwendet TypeScript/Fastify, Node.js 24 und PostgreSQL über `pg`. Gemeinsame Module liefern Datenvalidierung, Berechnung und PDF-Erzeugung; der Rust-TSA-Prüfer wird mit dem Serverpaket ausgeliefert.
 
-PostgreSQL und Dienst laufen zunächst gemeinsam auf Debian 13. PostgreSQL ist nur über den Unix-Socket für die vorgesehenen Dienst-/Administrationsrollen erreichbar. Clients erhalten keine SQL-Zugangsdaten. Die neuen Repliken verwenden keine CR-SQLite-Synchronisation.
+PostgreSQL und Dienst laufen zunächst gemeinsam auf Debian 13. PostgreSQL ist nur über den Unix-Socket für die vorgesehenen Dienst-/Administrationsrollen erreichbar. Clients erhalten keine SQL-Zugangsdaten. Die neuen Repliken verwenden gewöhnliches SQLite ohne Erweiterung. CR-SQLite, die gebündelte DLL und der frühere Datei-Hub-Abgleich sind entfernt. Bestehende Hub-Datenbanken werden weder geöffnet noch migriert oder gelöscht. Historische Nachweise bleiben erhalten; die alten Schema-Fixtures dienen weiterhin Browser- und Archivtests.
 
 ## Datenformat und Übernahme
 
@@ -15,6 +15,16 @@ Strukturierte Originale verwenden kanonisches DAG-CBOR mit nativen IPLD-Links, C
 Zusammengehörige Änderungen werden als atomare Operation gespeichert. Lokale Operation und Outbox werden dauerhaft gemeinsam abgelegt. Der Server prüft Berechtigungen und Ausgangsversionen innerhalb derselben Transaktion wie Übernahme und Veröffentlichung. Ein transaktional gesperrter Veröffentlichungsstand schützt die Cursorreihenfolge.
 
 Konkurrierende Versionen bleiben erhalten. Konfliktauflösung erzeugt eine neue signierte Version mit ausdrücklichen Verweisen auf die aufgelösten Zweige. Wiederholung derselben Operation ist idempotent. Der Client bewahrt abgelehnte und unbestätigte Arbeit auf.
+
+### Gemeinsame Versionsprüfung beim Messungsspeichern (HTTP-API 8)
+
+Einzelbearbeitung, Import, Sammelbearbeitung und Rasterkorrekturen verwenden denselben Speicherablauf. Der Client hält den Eingabeentwurf und Originaldateien dauerhaft vor und bereitet benötigte NV-, FMK- und Gebindefassungen vor der Messung vor. Jeder Schritt behält seine eigene signierte Operation im Format v2/Schema 2; historische Bytes werden nicht umgeschrieben.
+
+`POST /v1/measurement-saves/prepare` prüft das geordnete Paket mit den vorhandenen Schreibvalidatoren in einem zurückgerollten Savepoint. Die Antwort enthält betroffene Abrechnungen, blockierte Schritte und einen Hash über Operationen, relevante aktuelle Fassungen/Zweige, NV-Jahresfamilie, Faktoren, Freigabewerte und Rechte. `POST /v1/measurement-saves/commit` kontrolliert diesen Stand unter der Veröffentlichungssperre und übernimmt das gesamte Paket in einer PostgreSQL-Transaktion. Eine neue Abweichung liefert `SAVE_REVIEW_CHANGED`, ohne einen weiteren Konfliktzweig zu veröffentlichen. Wiederholungen vollständig übernommener CIDs liefern dieselbe Übernahme zurück.
+
+Die lokale Tabelle `server_measurement_saves` hält Entwürfe, Prüfung und Übertragungsstatus auch über einen Neustart. Ein Entwurf gilt erst nach Abruf aller bestätigten Operationen als abgeglichen. Originaldateien aus offenen Entwürfen sind von der Cachebereinigung ausgenommen. Fehlende Freigaben blockieren die Abrechnung, nicht eine ansonsten gültige Messung.
+
+Server und Desktop müssen gemeinsam auf HTTP-API **8** aktualisiert werden; die Fähigkeit heißt `measurement-save-v1`. Der gewöhnliche Push-Endpunkt nimmt keine Messungsschreibvorgänge mehr an (`SAVE_REVIEW_REQUIRED`). Alte ungesendete Messungsoperationen werden lokal zur Prüfung angeboten. Historische Konfliktzweige bleiben lesbar und können im gemeinsamen Dialog aufgelöst werden.
 
 ## Transport und Anmeldung
 
