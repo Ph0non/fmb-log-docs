@@ -33,6 +33,14 @@ Melden Sie sich als Administrator online an und öffnen Sie **Administration →
 
 Bei der Nutzeranlage erzeugt der Client den Schlüssel und den verschlüsselten Vault lokal. Der Server speichert den verschlüsselten Vault und den Passwort-Prüfwert. Einzelheiten stehen unter [Benutzer](./users.md) und [Gruppen & Rechte](./groups-permissions.md).
 
+## Einführung von MC2-Messzeiten und abgeleiteten Gebindemassen
+
+Aktualisieren Sie zuerst den Server, danach alle Arbeitsplätze. Neue MC2-Importe speichern die Messdauern im MC2-Datenformat Version 2; ältere Clients können diese Daten nicht auswerten. Beginnen Sie solche Importe erst nach der Client-Aktualisierung. Die bisherigen Audit- und Nachweisendpunkte bleiben kompatibel.
+
+Die Gebindemasse ergibt sich bei neuen Schreibvorgängen ausschließlich aus der Summe der Stoffklassenmassen. Sie ist kein unabhängiges Eingabefeld und keine Messungsbezugsgröße. Historische Fassungen bleiben lesbar.
+
+Ein online angemeldeter Administrator kann unter **Gebinde → Gebindemassen im Bestand korrigieren → Bestand prüfen** die bisherigen und abgeleiteten Massen vergleichen. **Korrekturen signieren und speichern** legt anschließend neue, vom Administrator signierte Fassungen an. Konflikte, lokale Änderungen, fehlende Stoffmassen und inzwischen geänderte Fassungen werden ausgelassen. Der Lauf ist wiederholbar und wird weder bei der Anmeldung noch durch das Serverupdate automatisch ausgeführt. Kontrollieren Sie die Ergebnisspalte und gegebenenfalls die noch ausstehende Serverübernahme.
+
 ## Ausgangsbestand und bisherige Testdaten
 
 Ein Reset übernimmt ausschließlich den ausdrücklich genehmigten Stub. Dessen Stammdaten werden als **Root-autorisierter Ausgangsbestand** ausgewiesen; sie erhalten keine vorgetäuschten Nutzersignaturen. Erst eine spätere Bearbeitung erzeugt eine nutzersignierte Folgeversion.

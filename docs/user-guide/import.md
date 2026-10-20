@@ -14,6 +14,8 @@ Beim Import liest FMB Log die RPT-Datei ein, extrahiert die für die Auswertung 
 
 Wählen Sie ein bestehendes Gebinde oder legen Sie über **Neues Gebinde** eines an. Bei bestehenden Gebinden sehen Sie die gespeicherten Stammdaten einschließlich Herkunft, Datenblatt, FMK, Stoffmassen, Gebindemasse und gegebenenfalls Gebindeoberfläche.
 
+Abgeschlossene Gebinde stehen nicht als Importziel zur Verfügung. Das gilt auch für neue Importrevisionen. Speichern Sie das Gebinde zuerst wieder als **unvollständig**. Über **Weitere Messungen importieren** im Gebinde gelangen Sie zum Import mit vorausgewähltem Ziel. Ungespeicherte Änderungen werden dabei berücksichtigt.
+
 ::: warning Hinweis
 Beim Import werden Stammdaten eines bestehenden Gebindes **nicht** geändert – Aktualisierungen erfolgen im Menü **Gebinde**. Zum Anlegen eines weiteren Gebindes verwenden Sie **Neues Gebinde**.
 :::
@@ -45,6 +47,14 @@ Beim Wechsel von Gebinde oder Messung bleiben ungespeicherte Eingaben geschützt
 Nach dem Speichern bleibt das **Importergebnis** sichtbar. Es unterscheidet übersprungene Dateien, lokal gespeicherte Messungen mit ausstehender Serverbestätigung und abgeglichene Messungen. Gleichzeitige lokale Änderungen lösen ein automatisches erneutes Laden aus; bereits eingegebene Werte bleiben erhalten.
 
 Unter **Gebinde** stehen die ISO-11929-Werte beziehungsweise MC2-Messpunkte neben dem Originalprotokoll. Bei MC2 werden die effektive Messeffizienz und der höchste OG-Wert angezeigt; gespeicherte Messungen verwenden ihre gebundene FMK- und Nuklidvektorfassung.
+
+## MicroCont-2-Messzeiten und Messprotokoll
+
+Die CSV enthält keine Messdauern. Der Import belegt **Messzeit mit 10 s** und **Nulleffektmesszeit mit 100 s** vor. Beide Werte sind vor dem Einlesen und in der Importvorschau editierbar. Unter **Abweichende Zeiten einzelner Punkte** lassen sich Ausnahmen erfassen; Änderungen der gemeinsamen Zeiten erhalten diese Ausnahmen. Nur endliche Werte größer null sind zulässig. Die Zeiten werden mit der Messrevision signiert. Nachträgliche Änderungen erfolgen über eine neue Importrevision; ältere Messungen behalten ihre bisherigen 10/100 s.
+
+Die Berechnung verwendet die bisherigen nuklidspezifischen Messeffizienzen: Co-60 28 %, Co-57 6 %, Cs-137 38 %, C-14 14 %, Cl-36 36,5 %, Fe-55 0,5 %, Ni-63 3 % und Sr-90 42,5 %. Andere Nuklide tragen mit 0 % bei. Geometriefaktor und Kalibrier-Geometriefaktor betragen jeweils 0,74, die relative Kalibrierunsicherheit 0 und Alpha, Beta sowie Gamma jeweils 0,05. Eine Geräte- oder Kalibrierverwaltung ist damit nicht verbunden.
+
+Bei gespeicherten MC2-Messungen lädt **MC2-Messprotokoll** ein eigenständiges PDF für die gewählte Fassung herunter. Es enthält Nettoaktivität und Unsicherheit, Erkennungs- und Nachweisgrenze, besten Schätzwert und Unsicherheit sowie beide Vertrauensgrenzen in Bq/cm². Der Rohwertanhang enthält alle Punkte mit Mess- und Nulleffektzeitpunkt, beiden Messdauern, Impulsraten und Detektorfläche. Die Ausgabe nennt die verwendeten Parameter und lässt Felder für Erstellung und Prüfung frei. Historische Fassungen lassen sich ebenfalls ausgeben; vorhandene Abrechnungen und PDFs werden nicht verändert.
 
 ## Hinweise
 
