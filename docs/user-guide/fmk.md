@@ -30,9 +30,9 @@ Die vier Messgeräte werden über direkt sichtbare Checkboxen ausgewählt; mehre
 
 ## Freigabepfade (Reihenfolge)
 
-Die Prüfung erfolgt in der FMK in einer festgelegten Reihenfolge. Die Anwendung prüft pfadweise und weist einem Gebinde den **ersten** Pfad zu, den **alle** gültigen Messungen des Gebindes bestehen. Damit entspricht die Auswertung dem üblichen Vorgehen: Man startet mit den „strengeren“/kleineren Pfaden und arbeitet sich nach oben.
+Die FMK hinterlegt die zulässigen Freigabepfade je Abrechnungsgruppe. Die Reihenfolge wird automatisch bestimmt: zuerst Hauptpfade in Bq/g, danach Hauptpfade in Bq/cm², jeweils aufsteigend nach **NV-Freigabewert × SW**. KF beeinflusst die Prüfung, aber nicht die Reihenfolge. Bei mehreren Messjahren beziehungsweise Messgeräten zählt je Pfad der kleinste dieser Werte über die gültigen Messungen des Messobjekts. Gleichstände werden nach dem zentralen Pfadkatalog aufgelöst.
 
-In der UI ändern Sie die Reihenfolge über Pfeil‑Buttons. Zusätzlich können Pfade manuell ergänzt werden. Bei Auswahl eines Nuklidvektors werden die geprüften/zulässigen Pfade automatisch übernommen und sinnvoll sortiert; manuell hinzugefügte Pfade bleiben erhalten.
+Ein Messobjekt erhält den ersten gemeinsamen Pfad, den sämtliche gültigen Messungen aller zugehörigen Gebinde einschließlich Zusatzprüfungen bestehen. Die manuelle Sortierung mit Pfeilen entfällt. Zulässige Pfade und ihre Zusatzprüfungen bleiben einstellbar.
 
 ### Pfadprüfung je Messjahr
 
@@ -98,8 +98,8 @@ Wenn die FMK inzwischen geändert wurde, erscheint **FMK-Änderungen prüfen**. 
 Bei konkurrierenden Fassungen wählen Sie die gewünschten SW- und KF-Werte einzeln im [Konfliktvergleich](./search.md#konflikte-auflosen). Ist bereits die übergeordnete FMK ungeklärt, lösen Sie zuerst deren Konflikt.
 
 ::: info Zusammenfassung (FMK)
-- FMK verbindet NV, Messgeräte und Pfad‑Reihenfolge zu einem einheitlichen Auswerte‑Set.
-- Pfade werden in Reihenfolge geprüft; der erste bestandene Pfad wird zugewiesen.
+- FMK verbindet NV, Messgeräte und zulässige Pfade zu einem einheitlichen Auswerte‑Set.
+- Pfade werden automatisch geordnet; der erste gemeinsam bestandene Pfad wird dem gesamten Messobjekt zugewiesen.
 - Optionaler Sekundärpfad ermöglicht Kombinationen wie „1a (mit OF)“.
 - SW/KF werden pro Jahr (aus Messdatum) und optional je Gerät/Pfad angewandt.
 :::

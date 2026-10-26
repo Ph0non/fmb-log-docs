@@ -1,10 +1,24 @@
 # Gebinde & Messungen
 
-In FMB Log ist ein **Gebinde** die zentrale Einheit. Messungen (aus Protokollen) werden immer einem Gebinde zugeordnet, damit Sie später:
+Ein **Messobjekt** fasst Gebinde einer FMK unter einer eindeutigen **MeObj-Nr.** zusammen. Jedes Gebinde enthält genau eine Stoffklasse; bei NEM01/NEM02 zusätzlich genau eine Metallart. Messungen (aus Protokollen) werden immer einem Gebinde zugeordnet, damit Sie später:
 
 - alle Messungen eines Gebindes gesammelt sehen,
 - deren Historie nachvollziehen können (Revisionen),
 - und daraus Gebindeabrechnungen erzeugen.
+
+## Messobjekte
+
+Unter **Messobjekte** legen Sie Messobjekte mit MeObj-Nr. und FMK an. Die Übersicht zeigt Gebindeanzahl, gemeinsamen Freigabepfad und Freigabestatus. In den Details sehen Sie je Gebinde, welche Pfade bestanden, ausgeschlossen oder noch nicht bewertbar sind. **Gebinde hinzufügen** öffnet ein neues Gebinde mit vorgegebenem Messobjekt. Bestehende Gebinde können innerhalb derselben FMK einem anderen Messobjekt zugeordnet werden.
+
+Im Gebindeformular wählen Sie zuerst das Messobjekt. Die FMK und ihre zulässigen Chargen, Stoffklassen und Freigabepfade werden daraus übernommen. Die FMK eines belegten Messobjekts kann nicht gewechselt werden; nur leere Messobjekte können gelöscht werden.
+
+Ein gemeinsamer Pfad muss für **alle Gebinde und sämtliche gültigen Messungen** einschließlich Zusatzprüfungen bestehen. Rot bedeutet, dass kein gemeinsamer Pfad mehr möglich ist. Gelb bedeutet, dass Daten, Messungen oder der Abschluss von Gebinden fehlen. Lokale Änderungen werden als vorläufig gekennzeichnet. Einzelne ausgeschlossene Pfade verhindern die Freigabe nicht, wenn ein anderer gemeinsamer Pfad besteht.
+
+### Messhilfe
+
+Die aufklappbare **Messhilfe** im Gebinde zeigt je zulässigem Pfad die maximal zulässige **Bruttoimpulsrate in Ips** für MicroCont 2 sowie die NV-Freigabewerte einschließlich SW für MC2 und Gammaspektrometrie. Sie können Messdatum, Nulleffekt, Nulleffektmesszeit und Messzeit ändern. Vorgaben sind 5 Ips, 100 s und 10 s. Bei einer ausgewählten Messung hat deren manuell hinterlegtes Messdatum Vorrang.
+
+Die Ips-Grenze berücksichtigt die obere Vertrauensgrenze, KF/SW und Zusatzprüfungen. Die verwendete Umrechnung wird angezeigt. Änderungen in der Messhilfe verändern keine gespeicherten Messungen. Ein nicht gemeinsam zulässiger Pfad bleibt entsprechend gekennzeichnet.
 
 ## Gebindeübersicht
 
@@ -29,7 +43,7 @@ Die Spalte **Messungen** zählt bewusst nur die **aktuellen Revisionen**. Das ma
 
 In der Detailansicht bearbeiten und prüfen Sie ein Gebinde. Typische Aufgaben sind:
 
-- Stammdaten am Gebinde (Herkunft, Datenblatt, FMK) ergänzen,
+- Stammdaten am Gebinde (Herkunft, Datenblatt, Messobjekt) ergänzen,
 - Messdaten pro Messung (Masse/Fläche, Umrechnung, Bemerkung) ergänzen oder korrigieren,
 - den Status **Vollständig** setzen oder zurücknehmen,
 - Messungen auswählen und Protokolle/ISO-Werte prüfen,

@@ -6,12 +6,12 @@ Die Gebindeabrechnung erzeugt ein PDF im A4-Querformat mit **Tagesabrechnung –
 
 Neue offizielle Abrechnungen erfordern das Recht **Abrechnungen erzeugen** (`reports.create`), eine Online-Anmeldung und einen erreichbaren Dienst. Gleichen Sie lokale Änderungen vorher ab und klären Sie konkurrierende Versionen.
 
-1. Unter **Abrechnungen** optional nach FMK filtern und Gebinde sowie Abrechnungsdatum wählen. Es sind ausschließlich vollständig gemessene Gebinde auswählbar. **Alle vollständig gemessenen Gebinde auswählen** hebt den FMK-Filter auf und ersetzt die bisherige Auswahl durch alle vollständigen Gebinde.
+1. Unter **Tagesabrechnung** optional nach FMK filtern und vollständige Messobjekte sowie das Abrechnungsdatum wählen. **Alle vollständigen Messobjekte auswählen** hebt den FMK-Filter auf. Vor dem Signieren werden sämtliche enthaltenen Gebinde angezeigt. Einzelne Mitglieder können nicht ausgelassen werden; fehlende Messungen oder unvollständige Gebinde verhindern den endgültigen Abschluss.
 2. **Vorschau erstellen** und beide Teile einschließlich der Hinweise prüfen. Der Dienst erfasst dafür konkrete zentrale Datenversionen.
 3. Die Autorisierung genau dieser Vorschau bestätigen und **Signieren, zeitstempeln und zentral abschließen** wählen.
 4. Nach zentralem Abschluss das PDF ausgeben beziehungsweise unter **Historie → PDF prüfen und speichern** exportieren.
 
-Einbezogen werden die aktuellen gültigen Messversionen der ausgewählten Gebinde, auch bereits abgerechnete Messungen. Der Dienst prüft Ausgangsstand und Rechte vor Veröffentlichung erneut. Hat sich der Stand geändert, muss eine neue Vorschau geprüft werden.
+Einbezogen werden die aktuellen gültigen Messversionen aller Gebinde der ausgewählten Messobjekte, auch bereits abgerechnete Messungen. Der Dienst prüft Ausgangsstand und Rechte vor Veröffentlichung erneut. Hat sich der Stand geändert, muss eine neue Vorschau geprüft werden.
 
 Sind Gebinde bereits in einer gültigen Abrechnung enthalten, zeigt die Vorschau die betroffenen Gebinde und Abrechnungen. Bestätigen Sie den vollständigen Ersatz ausdrücklich. Erst beim erfolgreichen zentralen Abschluss werden die früheren Abrechnungen vollständig ungültig, auch wenn nur einzelne ihrer Gebinde erneut abgerechnet werden. Ein Abbruch lässt sie gültig. Das erneute Herunterladen eines vorhandenen PDFs erzeugt keine neue Abrechnung.
 
@@ -22,6 +22,8 @@ Bei unterbrochener Abschlussantwort bleibt die autorisierte Anfrage lokal erhalt
 Die folgenden Abbildungen zeigen die fachliche Darstellung; ältere Aufnahmen enthalten noch die frühere Exportbeschriftung.
 
 ![Vorschau einer Gebindeabrechnung](../screenshots/gebindeabrechnung-vorschau.png)
+
+Die gemeinsame Pfadentscheidung berücksichtigt sämtliche Mitglieder eines Messobjekts. Unterschiedliche Stoffklassen beziehungsweise SON-/NEM-Unterteilungen bleiben auf ihren bisherigen Einzelblättern. Ein zusätzliches oder umgeordnetes Gebinde kann die gemeinsame Pfadwahl ändern und bestehende Abrechnungen ungültig machen. Historische PDFs werden dadurch nicht verändert.
 
 ## Blattaufteilung und Kopfzeilen
 
@@ -39,7 +41,7 @@ Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM 
 
 Pro FMK ist eine Charge je Stoffart erforderlich. Mehrere Chargen derselben Stoffart müssen vor der Abrechnung korrigiert werden. Bestandsdaten bleiben hierfür bearbeitbar.
 
-„Nicht freigabefähig“ bleibt ein eigener Abschnitt; danach folgen die Freigabepfade in FMK-Reihenfolge. Jeder Abschnitt beginnt auf einer neuen Seite. PDF und Vorschau enthalten zuerst alle Tagesabrechnungsabschnitte mit Maximalwerten, danach alle Gebindeabrechnungsabschnitte mit Details in derselben Blattreihenfolge.
+„Nicht freigabefähig“ bleibt ein eigener Abschnitt; danach folgen die Abschnitte der Freigabepfade. Jeder Abschnitt beginnt auf einer neuen Seite. PDF und Vorschau enthalten zuerst alle Tagesabrechnungsabschnitte mit Maximalwerten, danach alle Gebindeabrechnungsabschnitte mit Details in derselben Blattreihenfolge.
 
 **Mischgebinde** erscheinen auf jedem betroffenen Blatt. Die Messwerte bleiben gleich, Reststoffmasse und Gesamtaktivität beziehen sich jeweils ausschließlich auf die zugehörigen Stoffanteile. Die Gebindeanzahlen unterschiedlicher Materialblätter dürfen deshalb nicht zu einer eindeutigen Gesamtgebindeanzahl addiert werden.
 
@@ -103,7 +105,7 @@ Die nummerierten Fußnoten beginnen je Abrechnung bei 1 und werden auf Folgeseit
 | Tagesabrechnung | Reststoffmasse | Gesamtaktivität | OG |
 
 - **M**: massenspezifisch; **A**: flächenspezifisch. OG, FGW, SW und KF tragen diese Indizes.
-- **OG** (Fußnote 2 in der Gebindeabrechnung, Fußnote 3 in der Tagesabrechnung): „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 25457-1“.
+- **OG** (Fußnote 2 in der Gebindeabrechnung, Fußnote 3 in der Tagesabrechnung): „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 11929“.
 - **\***: unter Berücksichtigung des Korrekturfaktors (KF).
 - **\*\***: unter Berücksichtigung des Schwellenwertes (SW).
 - Die Maximalwertauswahl, Aktivitätsformel und anteilige Behandlung von Mischgebinden werden unmittelbar auf der Abrechnung erläutert.

@@ -28,7 +28,7 @@ Schemaänderungen des Dienstes stehen in `server/migrations/` und werden ausdrü
 
 Die API wird innerhalb des gepinnten SSH-Subsystems angesprochen. Der Dienst bietet darüber weder Shell/SFTP noch Portweiterleitung an. Der administrative sshd ist davon unabhängig. Eine Freigabe für HTTP auf Port 80 ist kein Beweis für eine SSH-Freigabe.
 
-Neue Fachoperationen verwenden `fmblog-operation/v2` mit Schema 2, CIDv1/BLAKE3 und kanonischem DAG-CBOR. Originalprotokolle und PDFs erhalten `raw`-CIDs über ihre Originalbytes. Historische TSA-/SHA-256-Nachweise werden nicht umgeschrieben. Details stehen in [ADR-007](../architecture/adr-007-server-ipld.md), [Datenmodell](../reference/data-model.md) und [Sicherheitsarchitektur](./security.md).
+Neue Fachoperationen verwenden `fmblog-operation/v3` mit Schema 3 (historische v2-Vorgänge bleiben lesbar), CIDv1/BLAKE3 und kanonischem DAG-CBOR. Originalprotokolle und PDFs erhalten `raw`-CIDs über ihre Originalbytes. Historische TSA-/SHA-256-Nachweise werden nicht umgeschrieben. Details stehen in [ADR-007](../architecture/adr-007-server-ipld.md), [Datenmodell](../reference/data-model.md) und [Sicherheitsarchitektur](./security.md).
 
 ## Installation und Diagnose
 

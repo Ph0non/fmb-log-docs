@@ -24,7 +24,7 @@ Die verbindliche SQL-Definition steht in `server/migrations/`. Die lokalen Tabel
 
 ## IPLD und Signaturen
 
-Operationen verwenden `fmblog-operation/v2` mit Schema 2. DAG-CBOR kodiert Verweise als IPLD-Links. Die Ed25519-Signatur bindet die kanonische Nutzlast; die CID wird anschließend aus der vollständigen signierten Hülle berechnet. Neue CIDs verwenden BLAKE3 mit 32 Byte Digest. Originaldateien und PDFs verwenden den `raw`-Codec.
+Operationen verwenden `fmblog-operation/v3` mit Schema 3 (historische v2-Vorgänge bleiben lesbar). DAG-CBOR kodiert Verweise als IPLD-Links. Die Ed25519-Signatur bindet die kanonische Nutzlast; die CID wird anschließend aus der vollständigen signierten Hülle berechnet. Neue CIDs verwenden BLAKE3 mit 32 Byte Digest. Originaldateien und PDFs verwenden den `raw`-Codec.
 
 ## Abrechnungen und Reset-Stub
 
