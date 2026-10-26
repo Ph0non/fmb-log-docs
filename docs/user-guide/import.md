@@ -42,6 +42,8 @@ Für neue Messungen bleibt **Neue Messungen** ausgewählt. Mehrere Dateien könn
 
 Für einen Re-Import wählen Sie im selben Bereich die bestehende Messung des gewählten Gebindes und anschließend **Neue Importrevision einlesen**. Das neue Protokoll wird als Revision derselben Messung gespeichert. Frühere Revisionen und Originalprotokolle bleiben erhalten. Ein bereits bekanntes Original wird beim Erstimport nicht versehentlich ein zweites Mal angelegt.
 
+Über **Revision ohne neue Datei** übernehmen Sie die bestehende Messung mit unverändertem Originalprotokoll. In der Vorschau können Sie Bemerkungen hinzufügen oder ändern und bei MicroCont 2 die Messzeit sowie die Nulleffektmesszeit anpassen, auch für einzelne Messpunkte. Beim Speichern entsteht eine neue signierte Revision mit eigener Revisionsnummer. Die bisherigen Zeiten und Bemerkungen bleiben in der vorherigen Revision erhalten. Das Originalprotokoll muss dafür verfügbar sein.
+
 Beim Wechsel von Gebinde oder Messung bleiben ungespeicherte Eingaben geschützt: Sie können weiterarbeiten oder den Entwurf ausdrücklich verwerfen.
 
 Nach dem Speichern bleibt das **Importergebnis** sichtbar. Es unterscheidet übersprungene Dateien, lokal gespeicherte Messungen mit ausstehender Serverbestätigung und abgeglichene Messungen. Gleichzeitige lokale Änderungen lösen ein automatisches erneutes Laden aus; bereits eingegebene Werte bleiben erhalten.
