@@ -1,0 +1,73 @@
+name: Authorize FMB-Log reset
+
+on:
+  workflow_dispatch:
+    inputs:
+      nonce:
+        description: "Reset-Kennung (Nonce) aus Administration → Reset"
+        required: true
+        type: string
+      request_json:
+        description: "Vollständiger Inhalt der exportierten Reset-Anforderung (JSON)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  sign:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: integrity-signing
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Install protocol dependencies
+        run: npm ci --ignore-scripts
+        working-directory: packages/protocol
+      - name: Validate reset request and nonce
+        env:
+          RESET_NONCE: ${{ inputs.nonce }}
+          RESET_REQUEST_JSON: ${{ inputs.request_json }}
+        run: |
+          node --input-type=module <<'JS'
+          import { writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { assertResetLive } from './packages/protocol/src/reset.ts';
+
+          try {
+            const nonce = process.env.RESET_NONCE;
+            const json = process.env.RESET_REQUEST_JSON;
+            if (!nonce || !/^[A-Za-z0-9_-]{43}$/.test(nonce)) throw new Error();
+            if (!json || Buffer.byteLength(json, 'utf8') > 65536) throw new Error();
+            const request = JSON.parse(json);
+            assertResetLive(request);
+            if (request.nonce !== nonce) throw new Error();
+            writeFileSync(join(process.env.RUNNER_TEMP, 'reset-request.json'), JSON.stringify(request), {
+              flag: 'wx', mode: 0o600,
+            });
+          } catch {
+            console.error('Ungültige oder abgelaufene Reset-Anforderung, abweichende Nonce oder Ausgabepfad nicht verfügbar.');
+            process.exitCode = 1;
+          }
+          JS
+      - name: Sign authorization
+        env:
+          INTEGRITY_ROOT_PRIVATE_JWK_BASE64: ${{ secrets.INTEGRITY_ROOT_PRIVATE_JWK_BASE64 }}
+        run: >-
+          node scripts/integrity_authorize_reset.mjs
+          --request "$RUNNER_TEMP/reset-request.json"
+          --out "$RUNNER_TEMP/reset-authorization.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reset-authorization
+          path: ${{ runner.temp }}/reset-authorization.json
+          if-no-files-found: error
+          retention-days: 1
