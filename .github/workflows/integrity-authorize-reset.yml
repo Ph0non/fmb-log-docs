@@ -65,6 +65,8 @@ jobs:
           node scripts/integrity_authorize_reset.mjs
           --request "$RUNNER_TEMP/reset-request.json"
           --out "$RUNNER_TEMP/reset-authorization.json"
+      - name: Show authorization JSON
+        run: cat "$RUNNER_TEMP/reset-authorization.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: reset-authorization
