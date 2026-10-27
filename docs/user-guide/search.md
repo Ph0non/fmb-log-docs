@@ -33,7 +33,7 @@ Wenn sich die konkurrierenden Fassungen während der Bearbeitung ändern, bleibt
 
 ## Integritätsprüfungen
 
-Unter **Administration → Audit** startet **Audit ausführen** einen gemeinsamen Prüflauf für Veröffentlichungskette, zentralen Fachbestand, eigene Arbeit und Abrechnungsnachweise. Beim Öffnen der Seite wird noch keine Prüfung gestartet. Eigene Arbeit umfasst auch lokale, konkurrierende, abgelehnte und archivierte Operationen.
+Unter **Administration → Audit** startet **Audit ausführen** einen gemeinsamen Prüflauf für Veröffentlichungskette, zentralen Fachbestand, eigene Arbeit und Abrechnungsnachweise. Beim Öffnen der Seite wird noch keine Prüfung gestartet. Alle vier Prüfbereiche betreffen ausschließlich die aktuelle Generation. Eigene Arbeit umfasst lokale, konkurrierende und abgelehnte Operationen dieser Generation. Nach einem Reset bildet dessen Root-signierter Beleg den Startpunkt der Veröffentlichungskette; frühere Abrechnungsnachweise werden nicht mehr benötigt.
 
 Die Veröffentlichungskette wird standardmäßig lokal geprüft. Bei Online-Anmeldung können Sie **Veröffentlichungskette vom Server nachladen** auswählen. Die übrigen Prüfbereiche verwenden die vorhandenen Originaldaten; fehlende Dateien werden dadurch nicht nachgeladen.
 

@@ -115,3 +115,5 @@ Gebinde werden einer FMK zugeordnet, nicht einer einzelnen Charge. Beim Anlegen 
 Bestehende Datensätze ohne diese Angaben werden als **Nachpflege erforderlich** angezeigt. Zuerst werden die Chargen der FMK, anschließend die Stoffklassen und Massen der Gebinde ergänzt. Bis dahin sind neue Freigaben und Gebindeabrechnungen für diese Gebinde gesperrt, auch ohne den Filter „nur vollständige Gebinde“. Bestehende Berichte bleiben bei der Migration erhalten; spätere Änderungen an Gebinde-Stammdaten verwenden den üblichen Bestätigungsdialog für betroffene Berichte.
 
 Vor der Nutzung müssen alle synchronisierenden Arbeitsplätze auf die neue Programmversion aktualisiert werden.
+
+Freigabepfade werden ausschließlich bei den Chargen-/Abrechnungsgruppen ausgewählt. Die gemeinsame Pfadliste ergibt sich aus diesen Zuordnungen. Zusatzprüfungen und Geräte-/Jahresbestätigungen werden je verwendetem Pfad einmal gepflegt; SW/KF bleiben in der Jahreskonfiguration. Entfernen aus einer Gruppe erhält die Pfadprüfungen, solange eine andere Gruppe den Pfad verwendet.

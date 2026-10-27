@@ -16,9 +16,9 @@ Ein gemeinsamer Pfad muss für **alle Gebinde und sämtliche gültigen Messungen
 
 ### Messhilfe
 
-Die aufklappbare **Messhilfe** im Gebinde zeigt je zulässigem Pfad die maximal zulässige **Bruttoimpulsrate in Ips** für MicroCont 2 sowie die NV-Freigabewerte einschließlich SW für MC2 und Gammaspektrometrie. Sie können Messdatum, Nulleffekt, Nulleffektmesszeit und Messzeit ändern. Vorgaben sind 5 Ips, 100 s und 10 s. Bei einer ausgewählten Messung hat deren manuell hinterlegtes Messdatum Vorrang.
+Die aufklappbare **Messhilfe** im Gebinde zeigt eine kompakte MC2-Tabelle: Oberflächenpfad, Freigabewert einschließlich SW, Nachweisgrenze (NWG) und maximal zulässige **Bruttoimpulsrate in Ips**. Gemeinsam verwendete Oberflächen-Zusatzpfade erscheinen nur einmal. Änderungen an Messdatum, Nulleffekt, Nulleffektmesszeit und Messzeit lösen eine Neuberechnung aus. Bereits bearbeitete Zeiten bleiben beim Nachladen der Gerätevorgaben erhalten. Der Nulleffekt beginnt bei 5 Ips; Zeiten, Fläche, Faktoren und Effizienzen stammen aus den aktuellen MC2-Gerätevorgaben. Bei einer ausgewählten Messung hat deren manuell hinterlegtes Messdatum Vorrang.
 
-Die MC2-Messhilfe berücksichtigt ausschließlich Oberflächen-Freigabewerte in **Bq/cm²** aus Haupt- und Zusatzpfad. Die Ips-Grenze berücksichtigt die obere Vertrauensgrenze, die Nachweisgrenze und KF/SW. Massenbezogene Freigabewerte werden für MC2 weder angezeigt noch umgerechnet; ohne Oberflächen-Freigabewert wird keine MC2-Impulsratengrenze angegeben. GS-Freigabewerte werden weiterhin in ihrer jeweiligen Einheit angezeigt. Änderungen in der Messhilfe verändern keine gespeicherten Messungen. Ein nicht gemeinsam zulässiger Pfad bleibt entsprechend gekennzeichnet.
+Die MC2-Messhilfe berücksichtigt ausschließlich Oberflächen-Freigabewerte in **Bq/cm²** aus Haupt- und Zusatzpfad. Die Ips-Grenze berücksichtigt die obere Vertrauensgrenze, die Nachweisgrenze und KF/SW. Massenbezogene Freigabewerte werden für MC2 weder angezeigt noch umgerechnet; ohne Oberflächen-Freigabewert wird keine MC2-Impulsratengrenze angegeben. Änderungen in der Messhilfe verändern keine gespeicherten Messungen. Ein nicht gemeinsam zulässiger Pfad bleibt entsprechend gekennzeichnet. Ist die NWG zu hoch, nennt der Hinweis sowohl die NWG als auch den Freigabewert einschließlich SW in Bq/cm².
 
 ## Gebindeübersicht
 

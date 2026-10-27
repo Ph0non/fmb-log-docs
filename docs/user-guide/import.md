@@ -22,7 +22,7 @@ Beim Import werden Stammdaten eines bestehenden Gebindes **nicht** geändert –
 
 Wählen Sie das **Messgerät** (Gammaspektrometrie oder MicroCont 2) und ergänzen Sie die Parameter für die Messungen. **Masse [kg] (Messungen)** und **Fläche [m²] (Messungen)** sind von der Gebindemasse und Gebindeoberfläche getrennt. Die Vorgaben werden beim Einlesen auf die neuen Messungen angewendet. Bei einer neuen Revision gelten die bisherigen Messungsdaten. Das Messgerät kann geändert werden, solange kein Import vorbereitet ist.
 
-Bei der Auswahl eines Gebindes werden Masse und Fläche der zuletzt angelegten aktuellen Messung ohne offenen Konflikt vorbelegt. Die Auswahl **MicroCont 2** trägt **177 cm² = 0,0177 m²** ein; der Wert bleibt editierbar.
+Bei der Auswahl eines Gebindes werden Masse und Fläche der zuletzt angelegten aktuellen Messung ohne offenen Konflikt vorbelegt. Neue **MicroCont-2**-Messungen verwenden die aktuelle Gerätefläche aus **Stammdaten → Messgeräte** (anfangs 177 cm²). Die CSV-Fläche bleibt als Originalwert erhalten; Abweichungen werden in Vorschau und Auswerteprotokoll ausgewiesen.
 
 Eine im RPT enthaltene Probenmenge wird als Messungsmasse oder Messungsfläche übernommen, wenn das entsprechende Feld leer ist. Unterstützt werden g, kg, cm² und m². Bereits eingetragene Werte werden nur nach Ihrer Auswahl im gemeinsamen Mengendialog ersetzt. **Abbrechen** behält die bisherigen Werte. Nicht unterstützte Mengen erscheinen als Hinweis in der Vorschau. Gebindestammdaten bleiben davon unberührt.
 
@@ -50,13 +50,15 @@ Nach dem Speichern bleibt das **Importergebnis** sichtbar. Es unterscheidet übe
 
 Unter **Gebinde** stehen die ISO-11929-Werte beziehungsweise MC2-Messpunkte neben dem Originalprotokoll. Bei MC2 werden die effektive Messeffizienz und der höchste OG-Wert angezeigt; gespeicherte Messungen verwenden ihre gebundene FMK- und Nuklidvektorfassung.
 
-## MicroCont-2-Messzeiten und Messprotokoll
+## MC2-Messparameter und Gerätevorgaben
 
-Die CSV enthält keine Messdauern. Der Import belegt **Messzeit mit 10 s** und **Nulleffektmesszeit mit 100 s** vor. Beide Werte sind vor dem Einlesen und in der Importvorschau editierbar. Unter **Abweichende Zeiten einzelner Punkte** lassen sich Ausnahmen erfassen; Änderungen der gemeinsamen Zeiten erhalten diese Ausnahmen. Nur endliche Werte größer null sind zulässig. Die Zeiten werden mit der Messrevision signiert. Nachträgliche Änderungen erfolgen über eine neue Importrevision; ältere Messungen behalten ihre bisherigen 10/100 s.
+**Stammdaten → Messgeräte** ist für alle angemeldeten Nutzer lesbar. Mit **Messgeräte verwalten** (`devices.manage`) oder als Administrator lassen sich die gemeinsamen Vorgaben von MicroCont 2 bearbeiten: Fläche, Geometrie- und Emissionsfaktor mit relativen Standardunsicherheiten, Standardzeiten und Nuklideffizienzen. **Speichern** übernimmt den Entwurf, **Verwerfen** stellt den vorherigen Stand wieder her. Andere Gruppen erhalten dieses Recht nicht automatisch.
 
-Die Berechnung verwendet die bisherigen nuklidspezifischen Messeffizienzen: Co-60 28 %, Co-57 6 %, Cs-137 38 %, C-14 14 %, Cl-36 36,5 %, Fe-55 0,5 %, Ni-63 3 % und Sr-90 42,5 %. Andere Nuklide tragen mit 0 % bei. Geometriefaktor und Kalibrier-Geometriefaktor betragen jeweils 0,74, die relative Kalibrierunsicherheit 0 und Alpha, Beta sowie Gamma jeweils 0,05. Eine Geräte- oder Kalibrierverwaltung ist damit nicht verbunden.
+**MC2-Messparameter** zeigt Messzeit und Nulleffektmesszeit sowie die beiden Faktoren mit ihren relativen Standardunsicherheiten. Einzelne Punktzeiten stehen im aufklappbaren Detailbereich. Im Importentwurf und in einer neuen Revision können Faktoren und Unsicherheiten mit den vorhandenen Import- beziehungsweise Messungsänderungsrechten angepasst werden. **Individuell** kennzeichnet ausdrücklich gesetzte Werte; **Gerätevorgaben übernehmen** lädt bewusst die aktuellen Vorgaben und setzt Faktoren und Zeiten zurück. Offene Eingaben werden bei Hintergrundaktualisierungen erhalten.
 
-Bei gespeicherten MC2-Messungen lädt **MC2-Messprotokoll** ein eigenständiges PDF für die gewählte Fassung herunter. Es enthält Nettoaktivität und Unsicherheit, Erkennungs- und Nachweisgrenze, besten Schätzwert und Unsicherheit sowie beide Vertrauensgrenzen in Bq/cm². Der Rohwertanhang enthält alle Punkte mit Mess- und Nulleffektzeitpunkt, beiden Messdauern, Impulsraten und Detektorfläche. Die Ausgabe nennt die verwendeten Parameter und lässt Felder für Erstellung und Prüfung frei. Historische Fassungen lassen sich ebenfalls ausgeben; vorhandene Abrechnungen und PDFs werden nicht verändert.
+Neue Importe erhalten aktuelle Gerätevorgaben. Neue Revisionen übernehmen aktuelle Vorgaben und bewahren ausdrückliche Faktorabweichungen und tatsächliche Messzeiten. Gerätestand, effektive Parameter und Originalfläche werden mit der Messrevision signiert. Änderungen an Gerätevorgaben verändern keine bestehenden Messrevisionen, Gültigkeitskennzeichen, Protokolle oder Abrechnungen und erzeugen keine automatischen Revisionen. Bewusst gespeicherte Messungsänderungen durchlaufen weiterhin die Prüfung betroffener Abrechnungen.
+
+Die relativen Standardunsicherheiten von Fläche, Geometrie und Emissionswahrscheinlichkeit werden unabhängig quadratisch kombiniert. Das MC2-Auswerteprotokoll nennt die verwendeten Faktoren, Unsicherheiten, Fläche, Nuklideffizienzen und tatsächlichen Punktzeiten. Historische Daten behalten ihre damaligen Berechnungsregeln.
 
 ## Hinweise
 
