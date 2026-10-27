@@ -22,69 +22,50 @@ ungültige CIDs, ungültige Zeiten und ein anderer Reset-Umfang werden abgewiese
 
 ## Manuelle Action in `Ph0non/fmb-log-docs`
 
-Übernehmen Sie das Script sowie `packages/protocol` einschließlich Lockfile in einen
-geprüften Commit des Dokumentationsrepositorys. Schützen Sie den Hauptbranch und begrenzen
-Sie das bestehende Environment `integrity-signing` auf diesen Branch. Das vorhandene Secret
-`INTEGRITY_ROOT_PRIVATE_JWK_BASE64` bleibt ausschließlich in diesem Environment.
+Der fertige Workflow liegt in `.github/workflows/integrity-authorize-reset.yml`.
+Übernehmen Sie ihn zusammen mit `scripts/integrity_authorize_reset.mjs` und
+`packages/protocol` (inklusive `package.json`, `package-lock.json` und `src`, ohne
+`node_modules`) in das Dokumentationsrepository. Dort fehlen Script und Protokollpaket
+bisher. Das Protokollpaket stellt sicher, dass Action und Anwendung exakt dieselben
+Felder und Signaturdaten verwenden.
 
-Die folgende Vorlage gehört nach `.github/workflows/integrity-authorize-reset.yml`.
-Ersetzen Sie `AUDITED_COMMIT_SHA` durch die vollständige SHA des geprüften Commits.
-Die Action-Versionen sind auf Commit-SHAs festgelegt; vor Übernahme deren Herkunft prüfen.
+Wie der vorhandene Workflow `integrity-certify-dbkey.yml` verwendet die Action das
+Environment `integrity-signing` und das Secret `INTEGRITY_ROOT_PRIVATE_JWK_BASE64`.
+Es werden keine weiteren Secrets benötigt. Der Schlüssel muss zum konfigurierten
+Root-Vertrauensanker des Servers passen. Schützen Sie `main` und begrenzen Sie das
+Environment auf diesen Branch; konfigurieren Sie dort bei Bedarf Required Reviewers.
+Die Action läuft ausschließlich manuell auf `main` und checkt den exakten Commit des
+Workflow-Laufs aus. Node.js 24 kann die gemeinsamen TypeScript-Module direkt laden.
 
-```yaml
-name: Authorize FMB-Log reset
-on:
-  workflow_dispatch:
-    inputs:
-      request_base64url:
-        description: Base64url-encoded reset-request.json (no padding)
-        required: true
-        type: string
-permissions:
-  contents: read
-jobs:
-  sign:
-    runs-on: ubuntu-24.04
-    environment: integrity-signing
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: AUDITED_COMMIT_SHA
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '24'
-      - run: npm ci --ignore-scripts
-        working-directory: packages/protocol
-      - name: Decode request
-        env:
-          RESET_REQUEST: ${{ inputs.request_base64url }}
-        run: |
-          node --input-type=module <<'JS'
-          import { writeFileSync } from 'node:fs';
-          const value = process.env.RESET_REQUEST;
-          if (!value || value.length > 65536 || !/^[A-Za-z0-9_-]+$/.test(value)) process.exit(1);
-          const bytes = Buffer.from(value, 'base64url');
-          if (bytes.toString('base64url') !== value) process.exit(1);
-          writeFileSync('reset-request.json', bytes, { flag: 'wx', mode: 0o600 });
-          JS
-      - name: Sign authorization
-        env:
-          INTEGRITY_ROOT_PRIVATE_JWK_BASE64: ${{ secrets.INTEGRITY_ROOT_PRIVATE_JWK_BASE64 }}
-        run: node scripts/integrity_authorize_reset.mjs --request reset-request.json --out reset-authorization.json
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: reset-authorization
-          path: reset-authorization.json
-          if-no-files-found: error
-          retention-days: 1
-```
+### Ablauf
 
-Es gibt keine Trigger für Push, Pull Requests oder fremde Repository-Ereignisse. Eingabe
-und Secret werden ausschließlich über Umgebungsvariablen übergeben, nicht in Shellcode
-interpoliert. Das Script protokolliert weder Schlüssel noch Anforderung oder Autorisierung.
-Das einzige hochgeladene Artefakt ist die Autorisierung. Das Laufzeit-Secret wird erst nach
-Installation der gesperrten Abhängigkeiten an den Signierschritt übergeben.
+1. In der Anwendung unter **Administration → Reset** eine Anforderung vorbereiten
+   und als JSON exportieren.
+2. In GitHub **Actions → Authorize FMB-Log reset → Run workflow** auf `main` öffnen.
+3. Bei `nonce` die **Reset-Kennung (Nonce)** und bei `request_json` den vollständigen
+   Inhalt der exportierten JSON-Datei einfügen. Keine Base64-Kodierung verwenden.
+4. Nach erfolgreichem Lauf das Artefakt `reset-authorization` herunterladen und
+   `reset-authorization.json` entpacken.
+5. In der Anwendung die Root-Freigabe laden, die Vorschau prüfen und den Reset
+   bestätigen. Bei abgelaufener oder inzwischen überholter Anforderung neu vorbereiten
+   und signieren lassen.
 
-Die Vorlage ist hier dokumentiert; es wurde keine Action im externen Repository veröffentlicht.
+Die Nonce allein genügt nicht: Die Signatur bindet die vollständige Anforderung.
+Ein Abruf per Nonce über `/v1/admin/reset/status/:nonce` benötigt Serverzugriff und
+eine aktuelle Administrator-Sitzung. Der Workflow verwendet deshalb den manuellen
+JSON-Export und prüft, dass seine Nonce mit der separaten Eingabe übereinstimmt.
+Die Anwendung und der Server prüfen beim Import beziehungsweise bei der Ausführung
+Identität, Administrator, Signatur und aktuellen Stand erneut.
+
+Eingaben und Secret werden über Umgebungsvariablen übergeben, nicht in Shellcode
+interpoliert. Das Secret ist nur im Signierschritt verfügbar, nach der Installation
+mit `npm ci --ignore-scripts`. Zusätzliche Felder, ungültige Nonces/CIDs und ungültige
+oder abgelaufene Zeitfenster werden vor dem Signieren abgewiesen. Das Signierskript
+gibt weder Schlüssel noch Anforderung oder Autorisierung aus. Der Workflow lädt nur
+die Freigabedatei als Artefakt mit einem Tag Aufbewahrung hoch. Die manuell eingegebene
+Anforderung ist kein Secret; GitHub erhält ihren Inhalt als Workflow-Eingabe und kann
+ihn in der Anzeige der Schritt-Umgebungsvariablen im Laufprotokoll ausgeben.
+
+Die Action erstellt ausschließlich die Freigabe. Der eigentliche Reset bleibt ein
+separater, bestätigter Schritt in der Anwendung. Es wurde keine Action im externen
+Repository veröffentlicht und kein Reset ausgeführt.

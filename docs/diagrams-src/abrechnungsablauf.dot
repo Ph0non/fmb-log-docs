@@ -1,0 +1,215 @@
+// Fachlicher Ablauf neuer Abrechnungen, Projektstand 2026-10-26.
+// Quellen: packages/reports/src/capturedCalculation.ts;
+// src/lib/{measurementEvaluation,releaseEval,releaseAssessment}.ts;
+// packages/protocol/src/{measurementReferences,yearFactors}.ts;
+// src/lib/reports/containerReport.ts; server/src/reports.ts.
+// Rendern: dot -Tsvg abrechnungsablauf.dot -o abrechnungsablauf.svg
+digraph Abrechnung {
+  graph [
+    charset="UTF-8", rankdir=TB, bgcolor="white", pad=0.25,
+    nodesep=0.4, ranksep=0.55, splines=polyline,
+    fontname="DejaVu Sans", fontsize=19, fontcolor="#20334A",
+    labelloc=t, labeljust=l,
+    label="ABRECHNUNG · Grundlagen, Berechnung und Prüfungen\n"
+  ];
+  node [shape=plain, fontname="DejaVu Sans", fontsize=10];
+  edge [color="#506780", penwidth=1.6, arrowsize=0.8,
+        fontname="DejaVu Sans", fontsize=10, fontcolor="#344C66"];
+
+  auswahl [group="links", label=<
+    <TABLE BORDER="1" COLOR="#A9B8C8" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8">
+      <TR><TD BGCOLOR="#20334A" ALIGN="LEFT"><FONT COLOR="white" POINT-SIZE="13"><B>1 · Auswahl und Datenstand</B></FONT><BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E7F0FA" ALIGN="LEFT"><B>Umfang</B><BR ALIGN="LEFT"/>
+Messobjekte + Abrechnungsdatum wählen.<BR ALIGN="LEFT"/>
+Alle zugehörigen Gebinde und aktuellen gültigen<BR ALIGN="LEFT"/>
+Messversionen, auch bereits abgerechnete, einbeziehen.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FFF2CE" ALIGN="LEFT"><B>Startprüfung</B><BR ALIGN="LEFT"/>
+Online; Recht reports.create; keine Versionskonflikte.<BR ALIGN="LEFT"/>
+Jedes Gebinde vollständig, mit gültiger Messung?<BR ALIGN="LEFT"/>
+Stoffzuordnung und Reststoffmassen gültig?<BR ALIGN="LEFT"/>
+Eine eindeutige Charge je Stoffart innerhalb der FMK?<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FDE7DB" ALIGN="LEFT"><B>Nein → korrigieren; kein Abschluss.</B><BR ALIGN="LEFT"/>
+Ja → konkrete zentrale Datenversionen erfassen.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E7F0FA" ALIGN="LEFT"><B>Eingefrorene Grundlagen</B><BR ALIGN="LEFT"/>
+Messungen, Gebinde, Messobjekte, FMK, NV,<BR ALIGN="LEFT"/>
+Jahresfaktoren, FGW-Katalog und Pfadentscheidungen.<BR ALIGN="LEFT"/>
+Vorschau und PDF verwenden denselben Datenstand.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Messjahr bestimmt NV und Faktoren</B><BR ALIGN="LEFT"/>
+Manuelles Messdatum vor importiertem Datum.<BR ALIGN="LEFT"/>
+NV-Jahr: exakt → nächstälter → frühestes vorhanden.<BR ALIGN="LEFT"/>
+Keine zusätzliche Zerfallskorrektur zum Abrechnungsdatum.<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>
+  >];
+
+  messung [group="mitte", label=<
+    <TABLE BORDER="1" COLOR="#A9B8C8" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8">
+      <TR><TD BGCOLOR="#20334A" ALIGN="LEFT"><FONT COLOR="white" POINT-SIZE="13"><B>2 · Messgrößen und Auswertung</B></FONT><BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E7F0FA" ALIGN="LEFT"><B>Je Messung</B><BR ALIGN="LEFT"/>
+Gerät, Verfahren, Datum, Masse m [kg], Fläche F [m²],<BR ALIGN="LEFT"/>
+Mittelungsobergrenze F_max und Umrechnung c [g/cm²].<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Bezugsgrößen auflösen</B><BR ALIGN="LEFT"/>
+F_eff = min(F, F_max); ohne Obergrenze: F_eff = F.<BR ALIGN="LEFT"/>
+c = m / F_eff / 10; fehlende Größen soweit möglich ableiten.<BR ALIGN="LEFT"/>
+Explizite Werte → Ableitung → FMK-Standardumrechnung.<BR ALIGN="LEFT"/>
+Werte positiv, endlich, widerspruchsfrei? Gerät zugelassen,<BR ALIGN="LEFT"/>
+NV vorhanden und Messung verifizierbar?<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>GS · Gammaspektrometrie</B><BR ALIGN="LEFT"/>
+RPT-Gammasummen: UG, OG, ME, BS; Einheit und NWG.<BR ALIGN="LEFT"/>
+Spezifische Gesamtaktivität = Gammasumme / Gammaanteil.<BR ALIGN="LEFT"/>
+Flächenbezogene GS-Werte mit F / F_eff skalieren;<BR ALIGN="LEFT"/>
+NWG je relevantem Gammanuklid und RPT-Abschnitt.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>MC2 · Oberflächenmessung</B><BR ALIGN="LEFT"/>
+Netto-/Nulleffektrate [Ips], jeweilige Messzeit [s],<BR ALIGN="LEFT"/>
+Detektorfläche [cm²], NV-gewichtete Effizienz, Geometrie,<BR ALIGN="LEFT"/>
+Zähl-/Kalibrierunsicherheit und statistische Parameter.<BR ALIGN="LEFT"/>
+OG und NWG je Messpunkt; größte OG verwenden.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Einheiten und weitere Geräte</B><BR ALIGN="LEFT"/>
+OG_A [Bq/cm²] = OG_M [Bq/g] × c; Bq/m² = Bq/cm² × 10000.<BR ALIGN="LEFT"/>
+Weitere Geräte: gespeicherte Aktivitätssummen auswerten;<BR ALIGN="LEFT"/>
+NWG-Prüfung nur bei entsprechender Verfahrensauswertung.<BR ALIGN="LEFT"/>
+Fehlende Grundlagen → noch nicht bewertbar, niemals Null.<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>
+  >];
+
+  freigabe [group="rechts", label=<
+    <TABLE BORDER="1" COLOR="#A9B8C8" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8">
+      <TR><TD BGCOLOR="#20334A" ALIGN="LEFT"><FONT COLOR="white" POINT-SIZE="13"><B>3 · Pfadprüfung je Messobjekt</B></FONT><BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E7F0FA" ALIGN="LEFT"><B>Gemeinsame Kandidaten aller Gebinde</B><BR ALIGN="LEFT"/>
+Schnittmenge der erlaubten Hauptpfade je Stoffgruppe.<BR ALIGN="LEFT"/>
+Haupt-/Zusatzpfad für Gerät im NV geprüft oder Ausnahme<BR ALIGN="LEFT"/>
+für Messjahr, NV und fachlichen NV-Stand bestätigt?<BR ALIGN="LEFT"/>
+Sonst ist die Kombination noch nicht bewertbar.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Je Messung, Haupt- und Zusatzpfad</B><BR ALIGN="LEFT"/>
+FGW_NV = 1 / Σ(pᵢ / FGWᵢ); pᵢ = Nuklidanteil von 0 bis 1.<BR ALIGN="LEFT"/>
+FGW_eff = FGW_NV × SW; OG_eff = OG / KF.<BR ALIGN="LEFT"/>
+Fehlende Nuklid-FGW → nicht berechenbar; KF &gt; 0 nötig.<BR ALIGN="LEFT"/>
+SW/KF je Jahr, Vorrang: Gerät/Pfad → FMK/Pfad<BR ALIGN="LEFT"/>
+→ Gerät → FMK → Standard 1.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FFF2CE" ALIGN="LEFT"><B>Aktivität UND Verfahrenseignung bestehen?</B><BR ALIGN="LEFT"/>
+OG_eff ≤ FGW_eff; keine manuelle Nichtfreigabe.<BR ALIGN="LEFT"/>
+GS: jede erforderliche NWGᵢ &lt; FGWᵢ × SW.<BR ALIGN="LEFT"/>
+MC2: jede Punkt-NWG &lt; FGW_NV × SW.<BR ALIGN="LEFT"/>
+NWG ohne KF; Gleichheit reicht bei NWG nicht aus.<BR ALIGN="LEFT"/>
+Fehlende Werte: offen; überschrittene Grenze: nicht bestanden.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FFF2CE" ALIGN="LEFT"><B>Ein Pfad für ALLE Messungen ALLER Mitglieder?</B><BR ALIGN="LEFT"/>
+Alle Kandidaten einschließlich Zusatzprüfungen auswerten.<BR ALIGN="LEFT"/>
+Massenpfade vor Flächenpfaden; je Einheit aufsteigend<BR ALIGN="LEFT"/>
+nach min(FGW_NV × SW) über alle Messungen; ohne KF.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E3F1E7" ALIGN="LEFT"><B>Ja:</B> erster gemeinsam bestandener Pfad für alle Gebinde.<BR ALIGN="LEFT"/>
+<B>Nein:</B> kein Pfad; nicht freigabefähig oder noch offen.<BR ALIGN="LEFT"/>
+Beide Ergebnisse mit Gründen in die Abrechnung übernehmen.<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>
+  >];
+
+  blaetter [group="rechts", label=<
+    <TABLE BORDER="1" COLOR="#A9B8C8" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8">
+      <TR><TD BGCOLOR="#20334A" ALIGN="LEFT"><FONT COLOR="white" POINT-SIZE="13"><B>4 · Blattbildung und Gebindedetails</B></FONT><BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Fachliche Blattaufteilung</B><BR ALIGN="LEFT"/>
+FMK + Charge + Freigabepfad.<BR ALIGN="LEFT"/>
+SON und NEM zusätzlich nach Stoffklasse;<BR ALIGN="LEFT"/>
+entsprechende NEM-Klassen zusätzlich nach Metall.<BR ALIGN="LEFT"/>
+Nicht freigabefähige Ergebnisse gesondert ausweisen.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E7F0FA" ALIGN="LEFT"><B>Reststoffmasse</B><BR ALIGN="LEFT"/>
+Nur die dem Blatt zugehörigen Stoffklassenmassen [kg].<BR ALIGN="LEFT"/>
+Erfasste Werte sind bereits netto nach Innentara.<BR ALIGN="LEFT"/>
+Kein erneuter Taraabzug.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Gebindeabrechnung · Details</B><BR ALIGN="LEFT"/>
+Alle ausgewerteten Messungen, Mess-ID, Revision, Datum.<BR ALIGN="LEFT"/>
+Messmasse, wahre/wirksame Fläche und Verfahren.<BR ALIGN="LEFT"/>
+OG, FGW, SW, KF und Hinweise je Messung.<BR ALIGN="LEFT"/>
+Messbezugsmasse und Reststoffmasse nicht verwechseln.<BR ALIGN="LEFT"/>
+Keine Summenzeile in den Gebindedetails.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Nachvollziehbarer Umfang</B><BR ALIGN="LEFT"/>
+Zeitraum aus allen enthaltenen Messungen des Abschnitts,<BR ALIGN="LEFT"/>
+nicht nur aus den später ausgewählten Maxima.<BR ALIGN="LEFT"/>
+Verwendete NV und konkrete Jahresversionen erhalten.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FDE7DB" ALIGN="LEFT"><B>Abrechnung ≠ Freigabe</B><BR ALIGN="LEFT"/>
+Fehlende Grundlagen und negative Ergebnisse bleiben sichtbar.<BR ALIGN="LEFT"/>
+Ein erzeugtes PDF ist kein automatischer Freigabenachweis.<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>
+  >];
+
+  maxima [group="mitte", label=<
+    <TABLE BORDER="1" COLOR="#A9B8C8" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8">
+      <TR><TD BGCOLOR="#20334A" ALIGN="LEFT"><FONT COLOR="white" POINT-SIZE="13"><B>5 · Tagesmaxima und Gesamtaktivität</B></FONT><BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Je Gebinde und Blatt getrennt maximieren</B><BR ALIGN="LEFT"/>
+q_M = OG_M,eff / FGW_M,eff<BR ALIGN="LEFT"/>
+q_A = OG_A,eff / FGW_A,eff<BR ALIGN="LEFT"/>
+Massen- und Flächenmaximum können verschieden sein.<BR ALIGN="LEFT"/>
+Dieselbe maßgebliche Messung nur einmal darstellen;<BR ALIGN="LEFT"/>
+ihre Werte mit den jeweils zugehörigen Faktoren ausgeben.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FFF2CE" ALIGN="LEFT"><B>Auswahlprüfung</B><BR ALIGN="LEFT"/>
+Ungerundete Werte; Quotient nur bei endlichem OG und FGW &gt; 0.<BR ALIGN="LEFT"/>
+Gleichstand: Messzeitpunkt → Mess-ID → Revisionskennung,<BR ALIGN="LEFT"/>
+jeweils aufsteigend; fehlende Zeitpunkte zuletzt.<BR ALIGN="LEFT"/>
+Fehlende erforderliche Vergleiche → Maximum unvollständig.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Aktivität aus der höchsten Massenausschöpfung</B><BR ALIGN="LEFT"/>
+<B>A [Bq] = OG_M,eff [Bq/g] × m_Rest [kg] × 1000</B><BR ALIGN="LEFT"/>
+OG einschließlich KF; Reststoffmasse des Blattanteils.<BR ALIGN="LEFT"/>
+Kein bester Schätzwert, kein erneuter Taraabzug,<BR ALIGN="LEFT"/>
+keine zusätzliche Zerfallskorrektur.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Abschnittssummen</B><BR ALIGN="LEFT"/>
+Gebindeanzahl und Gesamtaktivität je Blattabschnitt.<BR ALIGN="LEFT"/>
+Ungerundet summieren, erst zur Anzeige runden.<BR ALIGN="LEFT"/>
+Nicht berechenbare Aktivität bleibt fehlend;<BR ALIGN="LEFT"/>
+teilweise berechenbare Summe als unvollständig kennzeichnen.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E3F1E7" ALIGN="LEFT"><B>Gemeinsame Vorschau</B><BR ALIGN="LEFT"/>
+Erst Tagesabrechnung mit Maxima, dann Gebindedetails.<BR ALIGN="LEFT"/>
+Werte, Warnungen, Zeitraum und fehlende Grundlagen prüfen.<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>
+  >];
+
+  abschluss [group="links", label=<
+    <TABLE BORDER="1" COLOR="#A9B8C8" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8">
+      <TR><TD BGCOLOR="#20334A" ALIGN="LEFT"><FONT COLOR="white" POINT-SIZE="13"><B>6 · Autorisierung und zentraler Abschluss</B></FONT><BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FFF2CE" ALIGN="LEFT"><B>Gültige frühere Abrechnungen betroffen?</B><BR ALIGN="LEFT"/>
+Ja → ihren vollständigen Ersatz ausdrücklich bestätigen,<BR ALIGN="LEFT"/>
+auch bei nur teilweise erneut ausgewählten Gebinden.<BR ALIGN="LEFT"/>
+Nein → ohne Ersatzbestätigung fortfahren.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#F2EDF7" ALIGN="LEFT"><B>Genau diese Vorschau autorisieren</B><BR ALIGN="LEFT"/>
+Signieren, Zeitstempel und zentralen Abschluss anfordern.<BR ALIGN="LEFT"/>
+Ausgabe erst nach zentraler Bestätigung.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FFF2CE" ALIGN="LEFT"><B>Erneute Prüfung vor Veröffentlichung</B><BR ALIGN="LEFT"/>
+Datenversionen, Auswahl, Rechte und Ersatzumfang unverändert?<BR ALIGN="LEFT"/>
+Signatur, PDF und Zeitstempelnachweis erfolgreich?<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#FDE7DB" ALIGN="LEFT"><B>Nein / Fehler → kein bestätigter neuer Abschluss</B><BR ALIGN="LEFT"/>
+Geänderter Stand: neue Vorschau prüfen und autorisieren.<BR ALIGN="LEFT"/>
+Unklare Abschlussantwort: denselben Vorgang erneut abfragen;<BR ALIGN="LEFT"/>
+keine zweite Abrechnung erzeugen.<BR ALIGN="LEFT"/></TD></TR>
+      <TR><TD BGCOLOR="#E3F1E7" ALIGN="LEFT"><B>Ja → abgeschlossen; PDF ausgeben</B><BR ALIGN="LEFT"/>
+PDF, Snapshot, Autorisierung und Zeitstempel erhalten.<BR ALIGN="LEFT"/>
+Ersetzte Abrechnungen erst jetzt ungültig;<BR ALIGN="LEFT"/>
+historische Originale bleiben unverändert.<BR ALIGN="LEFT"/>
+Spätere relevante Datenänderungen können invalidieren.<BR ALIGN="LEFT"/></TD></TR>
+    </TABLE>
+  >];
+
+  legende [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="4" CELLPADDING="5">
+      <TR>
+<TD BGCOLOR="#E7F0FA">Eingaben</TD><TD BGCOLOR="#F2EDF7">Berechnung / Verarbeitung</TD>
+<TD BGCOLOR="#FFF2CE">Prüfung</TD><TD BGCOLOR="#FDE7DB">Fehler / Hinweis</TD>
+<TD BGCOLOR="#E3F1E7">Ergebnis</TD>
+      </TR>
+      <TR><TD COLSPAN="5"><FONT POINT-SIZE="9">Leserichtung: 1 → 2 → 3 ↓ 4 → 5 → 6 (untere Zeile von rechts nach links).</FONT></TD></TR>
+      <TR><TD COLSPAN="5"><FONT POINT-SIZE="9">NV: Nuklidvektor · FGW: Freigabewert · OG: obere Grenze des Überdeckungsintervalls · NWG: Nachweisgrenze</FONT></TD></TR>
+      <TR><TD COLSPAN="5"><FONT POINT-SIZE="9">SW: Schwellenwertfaktor · KF: Korrekturfaktor · M/A: massen-/flächenspezifisch · Stand: 26.10.2026, aktuelle Projektlogik</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  { rank=same; auswahl; messung; freigabe; }
+  { rank=same; abschluss; maxima; blaetter; }
+
+  auswahl:e -> messung:w [constraint=false];
+  messung:e -> freigabe:w [constraint=false];
+  freigabe:s -> blaetter:n [weight=20];
+  blaetter:w -> maxima:e [constraint=false];
+  maxima:w -> abschluss:e [constraint=false];
+
+  // Unsichtbare Kanten halten die sechs Felder in einem kompakten 3×2-Raster.
+  auswahl -> messung -> freigabe [style=invis, weight=100];
+  abschluss -> maxima -> blaetter [style=invis, weight=100];
+  auswahl -> abschluss [style=invis, weight=20];
+  messung -> maxima [style=invis, weight=20];
+  maxima -> legende [style=invis, weight=20];
+}

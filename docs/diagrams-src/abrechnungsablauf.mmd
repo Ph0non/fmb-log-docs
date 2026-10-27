@@ -1,0 +1,93 @@
+%% Allgemeiner Ablauf neuer Abrechnungen – Stand des Projektcodes: 2026-10-26.
+%% Quellen: packages/reports/src/capturedCalculation.ts; src/lib/releaseAssessment.ts;
+%% src/lib/measurementEvaluation.ts; packages/protocol/src/measurementReferences.ts;
+%% src/lib/releaseEval.ts; src/lib/reports/containerReport.ts; server/src/reports.ts.
+%% Ältere Abrechnungen behalten ihre damalige Berechnung und Darstellung.
+flowchart TD
+    START([Abrechnung erstellen]) --> SELECT["Messobjekte und Abrechnungsdatum wählen<br/>Alle zugehörigen Gebinde und aktuellen gültigen Messversionen<br/>einschließlich bereits abgerechneter Messungen"]
+    SELECT --> READY{"Online, Recht reports.create, konfliktfreier Stand?<br/>Jedes Gebinde vollständig und mit gültiger Messung?<br/>Stoffzuordnung, Reststoffmassen und Chargen gültig?"}
+    READY -->|Nein| STOP([Daten oder Berechtigung korrigieren<br/>Noch kein verbindlicher Abschluss])
+    READY -->|Ja| CAPTURE["Zentrale Datenversionen erfassen<br/>Messungen, Gebinde, Messobjekte, FMK, NV, Faktoren, FGW<br/>Vorschau und späteres PDF auf diesem Stand berechnen"]
+
+    subgraph BASIS["1 · Grundlagen je Messung"]
+        CAPTURE --> YEAR["Messdatum bestimmen: manuell vor importiert<br/>Messjahr bestimmt NV und Jahresfaktoren<br/>NV: exaktes Jahr, sonst nächstälter, sonst frühestes<br/>Abrechnungsdatum bewirkt keine zusätzliche Zerfallskorrektur"]
+        NV["Nuklidvektor: Nuklide und Anteile pᵢ<br/>Gammaanteil, Geräte- und Pfadprüfungen<br/>FGW-Katalog je Nuklid und Pfad"] -.-> YEAR
+        FMK["FMK: zugelassene Geräte, Haupt- und Zusatzpfade<br/>Pfade je Stoffgruppe, Chargen, Standardumrechnung<br/>Jahresbezogene Ausnahmebestätigungen"] -.-> YEAR
+        YEAR --> REF["Messbezugsgrößen auflösen<br/>Masse m in kg, wahre Fläche F in m², Mittelungsobergrenze<br/>Wirksame Fläche F_eff = min(F, Obergrenze)<br/>Umrechnung c in g/cm² = m / F_eff / 10"]
+        SIZE["Messung: Gerät, Probenahmeverfahren, Datum<br/>Masse, Fläche, maximale Mittelungsfläche, Umrechnung<br/>Explizite Werte vor Ableitung; sonst FMK-Umrechnung<br/>Fehlende Masse oder Fläche daraus ableiten, soweit möglich"] -.-> REF
+        REF --> REFCHECK{"Bezugsgrößen positiv, endlich und widerspruchsfrei?<br/>Benötigte Fläche und Umrechnung verfügbar?<br/>Gerät zugelassen, NV vorhanden, Messung verifizierbar?"}
+        REFCHECK -->|Nein| PENDING["Betroffene Prüfung noch nicht bewertbar<br/>Grund und fehlende Werte dokumentieren<br/>Fehlende Werte niemals als Null einsetzen"]
+        REFCHECK -->|Ja| METHOD{"Messverfahren?"}
+    end
+
+    subgraph MEASUREMENT["2 · Aktivitäten und Nachweisgrenzen"]
+        METHOD -->|GS| GS["Gammaaktivitäten aus RPT: UG, OG, ME, BS<br/>Gesamtaktivität spezifisch = Gammasumme / Gammaanteil<br/>Flächenbezogene GS-Werte: Skalierung mit F / F_eff<br/>NWG je relevantem Gammanuklid und RPT-Abschnitt"]
+        METHOD -->|MC2| MC2["Netto- und Nulleffektimpulsrate, jeweilige Messzeit<br/>Detektorfläche, NV-gewichtete Effizienz, Geometriefaktoren<br/>Zähl- und Kalibrierunsicherheit, statistische Parameter<br/>OG und NWG je Messpunkt; größte OG verwenden"]
+        METHOD -->|Weitere Geräte| OTHER["Gespeicherte Aktivitätssummen, Einheit und Gammaanteil<br/>Gemeinsame Aktivitätsauswertung<br/>Separate NWG-Prüfung nur bei vorhandener Verfahrensauswertung"]
+        GS --> UNITS["Vergleichbare spezifische Aktivitäten bilden<br/>OG_M in Bq/g und OG_A in Bq/cm²<br/>OG_A = OG_M × c; Bq/m² = Bq/cm² × 10000<br/>Für die Freigabe zählt OG, nicht der beste Schätzwert"]
+        MC2 --> UNITS
+        OTHER --> UNITS
+    end
+
+    subgraph RELEASE["3 · Gemeinsame Freigabeentscheidung je Messobjekt"]
+        UNITS --> CANDIDATES["Gemeinsame Hauptpfade aller Gebinde ermitteln<br/>Massenpfade vor Flächenpfaden<br/>Je Einheit aufsteigend nach kleinstem FGW_NV × SW<br/>über die enthaltenen Messungen; KF beeinflusst diese Sortierung nicht"]
+        CANDIDATES --> APPROVED{"Haupt- und Zusatzpfad für Gerät im NV geprüft<br/>oder passende FMK-Ausnahme bestätigt?<br/>Bindung an Messjahr, NV-Version und fachlichen NV-Stand"}
+        APPROVED -->|Nein| PENDING
+        APPROVED -->|Ja| LIMIT["Je Messung sowie Haupt- und Zusatzpfad berechnen<br/>FGW_NV = 1 / Σ(pᵢ / FGWᵢ), pᵢ als Anteil 0 bis 1<br/>FGW_eff = FGW_NV × SW<br/>OG_eff = OG / KF; KF muss größer 0 sein"]
+        FACTORS["SW und KF für Messjahr und Gerät<br/>Vorrang je Faktor: Gerät/Pfad → FMK/Pfad<br/>→ Gerät → FMK → Standard 1<br/>Fehlende Nuklid-FGW verhindern die Grenzwertberechnung"] -.-> LIMIT
+        LIMIT --> TEST{"Alle erforderlichen Prüfungen bestanden?<br/>Aktivität: OG_eff ≤ FGW_eff<br/>GS: jede erforderliche NWGᵢ &lt; FGWᵢ × SW<br/>MC2: jede Punkt-NWG &lt; FGW_NV × SW<br/>NWG ohne KF; keine manuelle Nichtfreigabe"}
+        TEST -->|Fehlende Grundlage| PENDING
+        TEST -->|Nein| FAILED["Pfad nicht bestanden<br/>Überschreitung, ungeeignetes Verfahren<br/>oder manuelle Nichtfreigabe mit Grund"]
+        TEST -->|Ja| PASS["Pfad für diese Messung bestanden"]
+        PASS --> OBJECT
+        FAILED --> OBJECT
+        PENDING --> OBJECT
+        OBJECT{"Besteht ein gemeinsamer Pfad<br/>für sämtliche gültigen Messungen aller Gebinde?<br/>Alle Kandidaten und Zusatzprüfungen berücksichtigen"}
+        OBJECT -->|Ja| ASSIGN["Ersten gemeinsam bestandenen Pfad zuweisen<br/>Derselbe Hauptpfad für alle Mitglieder"]
+        OBJECT -->|Nein| NORELEASE["Kein Freigabepfad zuweisen<br/>Nicht freigabefähig oder noch nicht abschließend bewertbar<br/>Gründe in Auswertung und Bericht erhalten"]
+    end
+
+    subgraph REPORT["4 · Abrechnungswerte und Vorschau"]
+        ASSIGN --> SHEETS
+        NORELEASE --> SHEETS
+        SHEETS["Blätter nach FMK, Charge und Pfad bilden<br/>SON und NEM zusätzlich nach Stoffklasse<br/>Bei entsprechender NEM-Klasse zusätzlich nach Metall<br/>Nicht freigabefähige Ergebnisse gesondert ausweisen"]
+        SHEETS --> DETAILS["Gebindeabrechnung · Details<br/>Alle ausgewerteten Messungen mit Datum und Kennung<br/>Messmasse, wahre und wirksame Fläche, Verfahren<br/>OG, FGW, SW, KF und Hinweise; keine Summenzeile"]
+        SHEETS --> MAXIMA["Tagesabrechnung · Maximalwerte je Gebinde und Blatt<br/>q_M = OG_M,eff / FGW_M,eff<br/>q_A = OG_A,eff / FGW_A,eff<br/>Massen- und Flächenmaximum getrennt auswählen<br/>Dieselbe Messung nur einmal darstellen"]
+        MAXIMA --> TIES["Auswahl anhand ungerundeter Werte<br/>Bei Gleichstand: Messzeitpunkt, Mess-ID, Revisionskennung<br/>Werte und Faktoren jeweils aus der zugehörigen Messung<br/>Fehlende erforderliche Vergleiche: Maximum unvollständig"]
+        MASS["Reststoffmasse des jeweiligen Blattanteils in kg<br/>Erfasste Stoffklassenmassen sind bereits netto nach Innentara<br/>Keine Innentara erneut abziehen"] -.-> ACTIVITY
+        TIES --> ACTIVITY["Gesamtaktivität aus dem Massenmaximum<br/>A in Bq = OG_M,eff × Reststoffmasse in kg × 1000<br/>Keine zusätzliche Zerfallskorrektur zum Abrechnungsdatum<br/>Nicht berechenbare Aktivität bleibt fehlend"]
+        ACTIVITY --> SUMS["Je Blattabschnitt Gebindeanzahl und Aktivitäten summieren<br/>Ungerundet rechnen; erst die Anzeige runden<br/>Teilweise berechenbare Summe als unvollständig kennzeichnen<br/>Zeitraum aus allen Messungen, verwendete NV dokumentieren"]
+        DETAILS --> PREVIEW
+        SUMS --> PREVIEW["Eingefrorene Vorschau prüfen<br/>Zuerst Tagesmaxima, danach Gebindedetails<br/>Prüfergebnisse, Warnungen und fehlende Grundlagen beachten<br/>Eine erstellte Abrechnung bedeutet nicht automatisch Freigabefähigkeit"]
+    end
+
+    subgraph FINISH["5 · Autorisierung, Abschluss und Nachweis"]
+        PREVIEW --> REPLACE{"Bereits gültige Abrechnungen betroffen?"}
+        REPLACE -->|Ja| CONFIRM["Vollständigen Ersatz der betroffenen Abrechnungen bestätigen<br/>Auch bisherige Abrechnungsanteile außerhalb der Neuauswahl betroffen"]
+        REPLACE -->|Nein| AUTHORIZE
+        CONFIRM --> AUTHORIZE["Genau diese Vorschau autorisieren und signieren<br/>Zeitstempeln und zentralen Abschluss anfordern"]
+        AUTHORIZE --> RECHECK{"Versionen, Auswahl, Rechte und Ersatzumfang<br/>beim zentralen Abschluss weiterhin gültig?<br/>Signatur, PDF und Zeitstempelnachweis erfolgreich?"}
+        RECHECK -->|Nein oder Fehler| RETRY["Kein neuer bestätigter Abschluss<br/>Bei geändertem Stand neue Vorschau prüfen<br/>Bei unklarer Abschlussantwort denselben Vorgang erneut abfragen"]
+        RECHECK -->|Ja| DONE([Zentral abgeschlossen · PDF ausgeben<br/>PDF, Snapshot, Autorisierung und Zeitstempel gemeinsam erhalten<br/>Ersetzte Abrechnungen erst jetzt ungültig; Originale bleiben erhalten])
+    end
+
+    subgraph LEGEND["Legende"]
+        LINPUT["Eingaben / Stammdaten"]:::input
+        LCALC["Berechnung / Verarbeitung"]:::calc
+        LCHECK{"Prüfung / Entscheidung"}:::check
+        LWARN["Hinweis / fehlende Grundlage"]:::warn
+        LRESULT([Ergebnis]):::result
+    end
+
+    classDef input fill:#dbeafe,stroke:#527da5,color:#132f4c;
+    classDef calc fill:#ede3f3,stroke:#9276a3,color:#352240;
+    classDef check fill:#fff2cc,stroke:#bc9835,color:#493b13;
+    classDef warn fill:#ffead5,stroke:#c88a38,color:#573811;
+    classDef result fill:#dcf4df,stroke:#4f8a5a,color:#193b20;
+    classDef blocked fill:#fbe0df,stroke:#bc5955,color:#5c2421;
+    class SELECT,NV,FMK,SIZE,FACTORS,MASS input;
+    class CAPTURE,YEAR,REF,GS,MC2,OTHER,UNITS,CANDIDATES,LIMIT,SHEETS,DETAILS,MAXIMA,TIES,ACTIVITY,SUMS,PREVIEW,CONFIRM,AUTHORIZE calc;
+    class READY,REFCHECK,METHOD,APPROVED,TEST,OBJECT,REPLACE,RECHECK check;
+    class PENDING,NORELEASE,RETRY warn;
+    class START,PASS,ASSIGN,DONE result;
+    class STOP,FAILED blocked;
