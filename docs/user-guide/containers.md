@@ -18,7 +18,7 @@ Ein gemeinsamer Pfad muss für **alle Gebinde und sämtliche gültigen Messungen
 
 Die aufklappbare **Messhilfe** im Gebinde zeigt je zulässigem Pfad die maximal zulässige **Bruttoimpulsrate in Ips** für MicroCont 2 sowie die NV-Freigabewerte einschließlich SW für MC2 und Gammaspektrometrie. Sie können Messdatum, Nulleffekt, Nulleffektmesszeit und Messzeit ändern. Vorgaben sind 5 Ips, 100 s und 10 s. Bei einer ausgewählten Messung hat deren manuell hinterlegtes Messdatum Vorrang.
 
-Die Ips-Grenze berücksichtigt die obere Vertrauensgrenze, KF/SW und Zusatzprüfungen. Die verwendete Umrechnung wird angezeigt. Änderungen in der Messhilfe verändern keine gespeicherten Messungen. Ein nicht gemeinsam zulässiger Pfad bleibt entsprechend gekennzeichnet.
+Die MC2-Messhilfe berücksichtigt ausschließlich Oberflächen-Freigabewerte in **Bq/cm²** aus Haupt- und Zusatzpfad. Die Ips-Grenze berücksichtigt die obere Vertrauensgrenze, die Nachweisgrenze und KF/SW. Massenbezogene Freigabewerte werden für MC2 weder angezeigt noch umgerechnet; ohne Oberflächen-Freigabewert wird keine MC2-Impulsratengrenze angegeben. GS-Freigabewerte werden weiterhin in ihrer jeweiligen Einheit angezeigt. Änderungen in der Messhilfe verändern keine gespeicherten Messungen. Ein nicht gemeinsam zulässiger Pfad bleibt entsprechend gekennzeichnet.
 
 ## Gebindeübersicht
 

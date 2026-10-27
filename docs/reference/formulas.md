@@ -55,6 +55,6 @@ Details und Beispiel: [Gebindeabrechnung](../user-guide/reports.md). Entscheidun
 
 ## 7) MC2-Messhilfe
 
-Für eine angenommene Bruttoimpulsrate wird der Nulleffekt abgezogen und mit der bestehenden MC2-Auswertung die obere Vertrauensgrenze berechnet. Gesucht wird die größte nichtnegative Bruttoimpulsrate, die alle erforderlichen Pfadprüfungen erfüllt. Dazu entspricht die zulässige unkorrigierte OG je Prüfung `NV-Freigabewert × SW × KF`. Die engste Primär-/Zusatzgrenze bestimmt die zulässige Rate; die Anzeige wird auf 0,01 Ips abgerundet.
+Für eine angenommene Bruttoimpulsrate wird der Nulleffekt abgezogen und mit der bestehenden MC2-Auswertung die obere Vertrauensgrenze berechnet. Die MC2-Messhilfe verwendet ausschließlich Oberflächen-Freigabewerte in Bq/cm² aus Haupt- und Zusatzpfad (OF, 3a, 4a, 5b). Massenbezogene Freigabewerte werden weder umgerechnet noch für die Impulsratengrenze verwendet. Die Nachweisgrenze muss kleiner als `NV-Freigabewert × SW` sein. Die zulässige unkorrigierte OG entspricht je Oberflächenprüfung `NV-Freigabewert × SW × KF`. Die engste Oberflächengrenze bestimmt die zulässige Rate; die Anzeige wird auf 0,01 Ips abgerundet.
 
-Standardwerte: Nulleffekt 5 Ips, Nulleffektmesszeit 100 s, Messzeit 10 s. Die Detektorfläche beträgt 177 cm². Fehlende Bezugsgrößen oder Freigabewerte ergeben keine geschätzte Grenze.
+Standardwerte: Nulleffekt 5 Ips, Nulleffektmesszeit 100 s, Messzeit 10 s. Die Detektorfläche beträgt 177 cm². Ohne Oberflächen-Freigabewert wird keine Impulsratengrenze angegeben. Bezugsmasse und Umrechnungsfaktor sind für die MC2-Messhilfe nicht erforderlich.
