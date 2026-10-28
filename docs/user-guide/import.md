@@ -50,7 +50,13 @@ Nach dem Speichern bleibt das **Importergebnis** sichtbar. Es unterscheidet übe
 
 Unter **Gebinde** stehen die ISO-11929-Werte beziehungsweise MC2-Messpunkte neben dem Originalprotokoll. Bei MC2 werden die effektive Messeffizienz und der höchste OG-Wert angezeigt; gespeicherte Messungen verwenden ihre gebundene FMK- und Nuklidvektorfassung.
 
+Vollständige RPT-Protokolle mit leerer ISO-Nuklidtabelle oder ausschließlich Nukliden außerhalb des gemeinsamen Stammdatenkatalogs für Nuklidvektoren und Freigabewerte werden als bestätigter Nullbefund importiert. **Keine Nuklide über EKG** bezieht sich dabei auf die ausgewerteten Nuklide. Die vollständigen Originalzeilen bleiben erhalten; Benutzerbemerkungen werden nicht ersetzt. Enthält die Tabelle auch relevante Gamma-Nuklide, werden deren Werte regulär ausgewertet. Ein Nullbefund ersetzt nicht die sonstigen Voraussetzungen für eine Freigabe, insbesondere die Prüfung der Nachweisgrenzen.
+
 ## MC2-Messparameter und Gerätevorgaben
+
+Die MC2-Messparameter stehen im Import und in der Messungsansicht in einer eigenen Card. Der Button **MC2-Parameter in neuer Revision bearbeiten** gehört zum Kopf dieses Bereichs; **Gerätevorgaben übernehmen** steht bei den Parametern.
+
+Die Mittelungs-/Bezugsmasse wird mit höchstens vier Nachkommastellen angezeigt. Im aktiven Eingabefeld bleibt der vollständige Wert bearbeitbar. Diese Formatierung rundet weder gespeicherte Werte noch Berechnungen.
 
 **Stammdaten → Messgeräte** ist für alle angemeldeten Nutzer lesbar. Mit **Messgeräte verwalten** (`devices.manage`) oder als Administrator lassen sich die gemeinsamen Vorgaben von MicroCont 2 bearbeiten: Fläche, Geometrie- und Emissionsfaktor mit relativen Standardunsicherheiten, Standardzeiten und Nuklideffizienzen. **Speichern** übernimmt den Entwurf, **Verwerfen** stellt den vorherigen Stand wieder her. Andere Gruppen erhalten dieses Recht nicht automatisch.
 

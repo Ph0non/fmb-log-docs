@@ -30,6 +30,10 @@ Die vier Messgeräte werden über direkt sichtbare Checkboxen ausgewählt; mehre
 
 ## Freigabepfade (Reihenfolge)
 
+Wählen Sie zuerst die **zulässigen Freigabepfade** für die gesamte FMK. Darunter ordnen Sie diese im Checkbox-Raster den **Abrechnungsgruppen** zu. Neue Pfade und neue Gruppen sind zunächst nicht zugeordnet. Ein allgemeiner Pfad darf ohne Gruppenzuordnung hinterlegt bleiben; das Entfernen des letzten Hakens erhält seine Zusatzprüfung und Bestätigungen. Wird ein Pfad aus der allgemeinen Auswahl entfernt, entfallen auch seine Gruppenzuordnungen im Entwurf. Erst **Speichern** übernimmt die Änderungen.
+
+**Zusatzprüfungen und Geräte-/Jahresbestätigungen** stehen im aufklappbaren Detailbereich unter der Zuordnung. Sie werden je allgemeinem Pfad einmal gepflegt, auch wenn mehrere Gruppen ihn verwenden.
+
 Die FMK hinterlegt die zulässigen Freigabepfade je Abrechnungsgruppe. Die Reihenfolge wird automatisch bestimmt: zuerst Hauptpfade in Bq/g, danach Hauptpfade in Bq/cm², jeweils aufsteigend nach **NV-Freigabewert × SW**. KF beeinflusst die Prüfung, aber nicht die Reihenfolge. Bei mehreren Messjahren beziehungsweise Messgeräten zählt je Pfad der kleinste dieser Werte über die gültigen Messungen des Messobjekts. Gleichstände werden nach dem zentralen Pfadkatalog aufgelöst.
 
 Ein Messobjekt erhält den ersten gemeinsamen Pfad, den sämtliche gültigen Messungen aller zugehörigen Gebinde einschließlich Zusatzprüfungen bestehen. Die manuelle Sortierung mit Pfeilen entfällt. Zulässige Pfade und ihre Zusatzprüfungen bleiben einstellbar.
