@@ -22,7 +22,7 @@ Beim Import werden Stammdaten eines bestehenden Gebindes **nicht** geändert –
 
 Wählen Sie das **Messgerät** (Gammaspektrometrie oder MicroCont 2) und ergänzen Sie die Parameter für die Messungen. **Masse [kg] (Messungen)** und **Fläche [m²] (Messungen)** sind von der Gebindemasse und Gebindeoberfläche getrennt. Die Vorgaben werden beim Einlesen auf die neuen Messungen angewendet. Bei einer neuen Revision gelten die bisherigen Messungsdaten. Das Messgerät kann geändert werden, solange kein Import vorbereitet ist.
 
-Bei der Auswahl eines Gebindes werden Masse und Fläche der zuletzt angelegten aktuellen Messung ohne offenen Konflikt vorbelegt. Neue **MicroCont-2**-Messungen verwenden die aktuelle Gerätefläche aus **Stammdaten → Messgeräte** (anfangs 177 cm²). Die CSV-Fläche bleibt als Originalwert erhalten; Abweichungen werden in Vorschau und Auswerteprotokoll ausgewiesen.
+Bei der Auswahl eines Gebindes wird die Masse der letzten konfliktfreien Messung mit passendem Gerät und Probenahmeverfahren vorbelegt. Die Fläche startet mit der Vorgabe des gewählten Verfahrens. Neue **MicroCont-2**-Messungen verwenden die aktuelle Gerätefläche aus **Stammdaten → Messgeräte** (anfangs 177 cm²). Die CSV-Fläche bleibt als Originalwert erhalten; Abweichungen werden in Vorschau und Auswerteprotokoll ausgewiesen.
 
 Eine im RPT enthaltene Probenmenge wird als Messungsmasse oder Messungsfläche übernommen, wenn das entsprechende Feld leer ist. Unterstützt werden g, kg, cm² und m². Bereits eingetragene Werte werden nur nach Ihrer Auswahl im gemeinsamen Mengendialog ersetzt. **Abbrechen** behält die bisherigen Werte. Nicht unterstützte Mengen erscheinen als Hinweis in der Vorschau. Gebindestammdaten bleiben davon unberührt.
 
@@ -35,6 +35,12 @@ Falls im Protokoll Messwerte in unterschiedlichen Einheiten vorkommen (z. B. mas
 Anschließend wählen Sie die zum Messgerät passenden Dateien aus. Die Dateiauswahl unterstützt **Mehrfachauswahl** – weitere Auswahlen werden **zur Liste hinzugefügt**, nicht ersetzt.
 
 Für jede neue Messung schlägt FMB Log automatisch eine **Mess-ID** vor. Sie können diese vor dem Speichern anpassen. Für eine neue Revision wählen Sie ausdrücklich die bestehende Messung aus.
+
+## Standardwerte und einzelne Messungen
+
+**Standardwerte für neue Messungen** gelten für alle anschließend eingelesenen Dateien. Unter **Einstellungen der ausgewählten Messung** ändern Sie die Werte nur für die dort benannte Messung. Die beiden Bereiche sind deshalb keine doppelte Abfrage.
+
+Wischteste und Kratzproben starten mit **300 cm² (0,03 m²)** als wahrer Messfläche und maximaler Mittelungsfläche. Beide Angaben bleiben änderbar. Beim Wechsel von MC2 zurück zur Gammaspektrometrie wird die passende Vorgabe wiederhergestellt. Die MC2-Gerätefläche beträgt standardmäßig 177 cm². Bestehende Messungen werden nicht pauschal umgestellt; neue Importrevisionen übernehmen ihre bisherigen Einstellungen.
 
 ## Neue Messungen und Importrevisionen
 
@@ -64,7 +70,7 @@ Die Mittelungs-/Bezugsmasse wird mit höchstens vier Nachkommastellen angezeigt.
 
 Neue Importe erhalten aktuelle Gerätevorgaben. Neue Revisionen übernehmen aktuelle Vorgaben und bewahren ausdrückliche Faktorabweichungen und tatsächliche Messzeiten. Gerätestand, effektive Parameter und Originalfläche werden mit der Messrevision signiert. Änderungen an Gerätevorgaben verändern keine bestehenden Messrevisionen, Gültigkeitskennzeichen, Protokolle oder Abrechnungen und erzeugen keine automatischen Revisionen. Bewusst gespeicherte Messungsänderungen durchlaufen weiterhin die Prüfung betroffener Abrechnungen.
 
-Die relativen Standardunsicherheiten von Fläche, Geometrie und Emissionswahrscheinlichkeit werden unabhängig quadratisch kombiniert. Das MC2-Auswerteprotokoll nennt die verwendeten Faktoren, Unsicherheiten, Fläche, Nuklideffizienzen und tatsächlichen Punktzeiten. Historische Daten behalten ihre damaligen Berechnungsregeln.
+Die relativen Standardunsicherheiten von Fläche, Geometrie und Emissionswahrscheinlichkeit werden unabhängig quadratisch kombiniert. Das MC2-Auswerteprotokoll nennt die verwendeten Faktoren, Unsicherheiten, Fläche, Nuklideffizienzen und tatsächlichen Punktzeiten. Bereits ausgestellte Abrechnungen behalten ihre damaligen Berechnungsregeln; aktuelle Auswertungen historischer Messungen verwenden die aktuelle Nettoeffektregel.
 
 ## Hinweise
 

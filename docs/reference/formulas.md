@@ -58,3 +58,11 @@ Details und Beispiel: [Gebindeabrechnung](../user-guide/reports.md). Entscheidun
 Für eine angenommene Bruttoimpulsrate wird der Nulleffekt abgezogen und mit der bestehenden MC2-Auswertung die obere Vertrauensgrenze berechnet. Die MC2-Messhilfe verwendet ausschließlich Oberflächen-Freigabewerte in Bq/cm² aus Haupt- und Zusatzpfad (OF, 3a, 4a, 5b). Massenbezogene Freigabewerte werden weder umgerechnet noch für die Impulsratengrenze verwendet. Die Nachweisgrenze muss kleiner als `NV-Freigabewert × SW` sein. Die zulässige unkorrigierte OG entspricht je Oberflächenprüfung `NV-Freigabewert × SW × KF`. Die engste Oberflächengrenze bestimmt die zulässige Rate; die Anzeige wird auf 0,01 Ips abgerundet.
 
 Standardwerte: Nulleffekt 5 Ips, Nulleffektmesszeit 100 s, Messzeit 10 s. Die Detektorfläche beträgt 177 cm². Ohne Oberflächen-Freigabewert wird keine Impulsratengrenze angegeben. Bezugsmasse und Umrechnungsfaktor sind für die MC2-Messhilfe nicht erforderlich.
+
+## 8) Negative Nettoeffekte
+
+Für aktuelle Auswertungen gilt bei MC2 und Gammaspektrometrie gleichermaßen: Ein negativer Nettoeffekt geht effektiv als 0 ein. Das gilt unabhängig vom Importdatum.
+
+Bei MC2 wird die effektive Nettoimpulsrate auf mindestens 0 begrenzt. Die statistische Unsicherheit verwendet weiterhin die gemessenen Brutto- und Hintergrundzählraten; Nachweisgrenzen und Konfidenzgrenzen werden weiterhin berechnet. Bei GS wird jeder negative ME-Wert im Originalprotokoll vor der Summenbildung auf 0 begrenzt. UG, OG und BS bleiben unverändert. Originalprotokolle und signierte Messdaten werden nicht überschrieben. Fehlt ein benötigtes Original, wird die Auswertung als nicht verfügbar angezeigt.
+
+Neue Abrechnungen verwenden Berichtssnapshot v8. Er enthält die für die GS-Prüfung benötigten Originalprotokolle innerhalb der bestehenden Größenbegrenzung. Bereits ausgestellte Abrechnungen bis v7 bleiben mit ihren damaligen Rechenregeln prüfbar. Beim Rollout zuerst die Clients mit v8-Leseunterstützung aktualisieren, danach den Server auf v8-Erstellung umstellen; offene ältere Abrechnungsvorbereitungen müssen neu erstellt werden.

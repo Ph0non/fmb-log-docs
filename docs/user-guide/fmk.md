@@ -8,7 +8,7 @@ Eine FMK enthält typischerweise:
 
 - einen **Nuklidvektor (NV)** als fachliche Grundlage,
 - ein oder mehrere **Messgeräte** (welche Protokolle/Verfahren in dieser FMK vorkommen dürfen),
-- die **Reihenfolge** der Freigabepfade (Prüfpfade),
+- die **Chargen** und die ihnen zugeordneten **Freigabepfadkombinationen**,
 - optionale Standardwerte (Umrechnung $g/cm^2$, Bezugsmasse/‑fläche),
 - sowie **SW/KF** als Korrekturen pro Jahr und ggf. geräte-/pfadspezifisch.
 
@@ -28,13 +28,19 @@ Die vier Messgeräte werden über direkt sichtbare Checkboxen ausgewählt; mehre
 
 ![FMK-Stammdaten mit Chargen und Messgeräteauswahl](../screenshots/fmk-stammdaten.png)
 
-## Freigabepfade (Reihenfolge)
+## Freigabepfade festlegen und zuordnen
 
-Wählen Sie zuerst die **zulässigen Freigabepfade** für die gesamte FMK. Darunter ordnen Sie diese im Checkbox-Raster den **Abrechnungsgruppen** zu. Neue Pfade und neue Gruppen sind zunächst nicht zugeordnet. Ein allgemeiner Pfad darf ohne Gruppenzuordnung hinterlegt bleiben; das Entfernen des letzten Hakens erhält seine Zusatzprüfung und Bestätigungen. Wird ein Pfad aus der allgemeinen Auswahl entfernt, entfallen auch seine Gruppenzuordnungen im Entwurf. Erst **Speichern** übernimmt die Änderungen.
+Legen Sie zuerst die **Chargen** in den FMK-Stammdaten an. Darunter wählen Sie die **Pfadkombinationen für die FMK** aus; Hauptpfad und optionaler Zusatz werden direkt nebeneinander gepflegt.
 
-**Zusatzprüfungen und Geräte-/Jahresbestätigungen** stehen im aufklappbaren Detailbereich unter der Zuordnung. Sie werden je allgemeinem Pfad einmal gepflegt, auch wenn mehrere Gruppen ihn verwenden.
+Im anschließenden Bereich **Freigabepfade den Chargen zuordnen** erhält jede Charge eine Karte. Kreuzen Sie dort die vollständigen Kombinationen an, beispielsweise `1a + OF`. SON und NEM haben jeweils eine gemeinsame Auswahl für die gesamte Charge; eine Unterteilung nach Stoffklassen oder Metallen ist hier nicht nötig. Dieselbe Kombination darf mehreren Chargen zugeordnet werden.
 
-Die FMK hinterlegt die zulässigen Freigabepfade je Abrechnungsgruppe. Die Reihenfolge wird automatisch bestimmt: zuerst Hauptpfade in Bq/g, danach Hauptpfade in Bq/cm², jeweils aufsteigend nach **NV-Freigabewert × SW**. KF beeinflusst die Prüfung, aber nicht die Reihenfolge. Bei mehreren Messjahren beziehungsweise Messgeräten zählt je Pfad der kleinste dieser Werte über die gültigen Messungen des Messobjekts. Gleichstände werden nach dem zentralen Pfadkatalog aufgelöst.
+Neue Chargen starten ohne Zuordnung. **Alle übernehmen** wählt sämtliche vorausgewählten Kombinationen für die betreffende Charge aus. Jede Charge muss vor dem **Speichern** mindestens eine Kombination besitzen; andernfalls wird die erste unvollständige Charge hervorgehoben und fokussiert. Die Zuordnung bleibt bei einem Wechsel der Stoffart derselben Charge erhalten.
+
+Ein allgemeiner Pfad darf ohne Chargenzuordnung hinterlegt bleiben. Das Entfernen des letzten Hakens erhält seine Zusatzprüfung und Bestätigungen, verhindert aber das Speichern einer dadurch leeren Charge. Wird eine Kombination aus der FMK-Vorauswahl entfernt, entfallen auch ihre Zuordnungen im Entwurf; ein Hinweis nennt die betroffenen Chargen. Erst **Speichern** übernimmt die Änderungen.
+
+Änderungen am Zusatz gelten für alle zugeordneten Chargen. Erforderliche Ausnahmebestätigungen müssen anschließend erneuert werden. **Prüfungen je Messjahr und Gerät** stehen im aufklappbaren Bereich unter der Zuordnung und werden je allgemeinem Pfad einmal gepflegt.
+
+Die Reihenfolge wird automatisch bestimmt: zuerst Hauptpfade in Bq/g, danach Hauptpfade in Bq/cm², jeweils aufsteigend nach **NV-Freigabewert × SW**. KF beeinflusst die Prüfung, aber nicht die Reihenfolge. Bei mehreren Messjahren beziehungsweise Messgeräten zählt je Pfad der kleinste dieser Werte über die gültigen Messungen des Messobjekts. Gleichstände werden nach dem zentralen Pfadkatalog aufgelöst.
 
 Ein Messobjekt erhält den ersten gemeinsamen Pfad, den sämtliche gültigen Messungen aller zugehörigen Gebinde einschließlich Zusatzprüfungen bestehen. Die manuelle Sortierung mit Pfeilen entfällt. Zulässige Pfade und ihre Zusatzprüfungen bleiben einstellbar.
 
@@ -59,7 +65,7 @@ Eine Ausnahme gilt nur für **FMK, Messjahr, verwendeten NV, Messgerät und Haup
 
 Beispiel F050: Für Gammaspektrometrie kann `1a + OF` in A01/2030 geprüft sein, während A01/2023 eine Ausnahme benötigt. In diesem Fall **Messjahr 2023** wählen und ausschließlich diese Kombination bestätigen.
 
-### Pfad‑Kombinationen (z. B. „1a (mit OF)“)
+### Pfad‑Kombinationen (z. B. „1a + OF“)
 
 Einige Freigabepfade erfordern zusätzlich die Einhaltung eines zweiten Pfades (oft **OF** als oberflächenspezifischer Pfad). In der FMK können Sie pro Pfad optional einen **Sekundärpfad** hinterlegen. In der Gebindeabrechnung wird dies als „Pfad (mit Sekundärpfad)“ dargestellt.
 
@@ -104,7 +110,7 @@ Bei konkurrierenden Fassungen wählen Sie die gewünschten SW- und KF-Werte einz
 ::: info Zusammenfassung (FMK)
 - FMK verbindet NV, Messgeräte und zulässige Pfade zu einem einheitlichen Auswerte‑Set.
 - Pfade werden automatisch geordnet; der erste gemeinsam bestandene Pfad wird dem gesamten Messobjekt zugewiesen.
-- Optionaler Sekundärpfad ermöglicht Kombinationen wie „1a (mit OF)“.
+- Optionaler Sekundärpfad ermöglicht Kombinationen wie „1a + OF“.
 - SW/KF werden pro Jahr (aus Messdatum) und optional je Gerät/Pfad angewandt.
 :::
 
@@ -120,4 +126,8 @@ Bestehende Datensätze ohne diese Angaben werden als **Nachpflege erforderlich**
 
 Vor der Nutzung müssen alle synchronisierenden Arbeitsplätze auf die neue Programmversion aktualisiert werden.
 
-Freigabepfade werden ausschließlich bei den Chargen-/Abrechnungsgruppen ausgewählt. Die gemeinsame Pfadliste ergibt sich aus diesen Zuordnungen. Zusatzprüfungen und Geräte-/Jahresbestätigungen werden je verwendetem Pfad einmal gepflegt; SW/KF bleiben in der Jahreskonfiguration. Entfernen aus einer Gruppe erhält die Pfadprüfungen, solange eine andere Gruppe den Pfad verwendet.
+## Änderungen für Messungen gemeinsam prüfen
+
+Bei einer gespeicherten FMK öffnet **Änderungen für Messungen prüfen** die aktuellen Messungen mit veralteter FMK-Zuordnung über alle Gebinde hinweg. Wählen Sie bis zu 100 Messungen und anschließend **Messungen prüfen und übernehmen**. Fachliche Änderungen und betroffene Abrechnungen werden im vorhandenen gemeinsamen Prüfdialog angezeigt. Bei mehr Messungen bearbeiten Sie weitere Gruppen.
+
+Auch Messungen vollständiger Gebinde können ihre FMK-Bindung aktualisieren. Messwerte, individuelle Einstellungen und Vollständigkeitsstatus bleiben erhalten. Versionskonflikte müssen vor der gemeinsamen Übernahme geklärt werden; eine zwischenzeitlich geänderte Auswahl muss erneut geladen und geprüft werden.

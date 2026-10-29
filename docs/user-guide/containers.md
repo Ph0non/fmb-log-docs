@@ -1,5 +1,9 @@
 # Gebinde & Messungen
 
+**Erfassung vollständig** lässt sich direkt im sichtbaren Stammdatenbereich umschalten und mit **Status speichern** übernehmen. Dafür ist weiterhin das Importrecht erforderlich. Andere Stammdaten ändern Sie über **Stammdaten bearbeiten**.
+
+Ein vollständiges Gebinde nimmt weder neue Importe noch bestehende Messungen aus anderen Gebinden auf. Speichern Sie seinen Status zuerst wieder als unvollständig. Änderungen an bereits zugehörigen Messungen, insbesondere die Prüfung einer neuen FMK-Fassung, erfordern keine Wiederöffnung.
+
 Ein **Messobjekt** fasst Gebinde einer FMK unter einer eindeutigen **MeObj-Nr.** zusammen. Jedes Gebinde enthält genau eine Stoffklasse; bei NEM01/NEM02 zusätzlich genau eine Metallart. Messungen (aus Protokollen) werden immer einem Gebinde zugeordnet, damit Sie später:
 
 - alle Messungen eines Gebindes gesammelt sehen,
