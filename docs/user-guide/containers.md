@@ -26,7 +26,11 @@ Die MC2-Messhilfe berücksichtigt ausschließlich Oberflächen-Freigabewerte in 
 
 ## Gebindeübersicht
 
-Unter **Gebinde** finden Sie eine tabellarische Übersicht. Über die Filterzeile können Sie schnell nach Gebindenummer, Datenblatt oder FMK suchen. Ein Klick auf eine Zeile öffnet die Detailansicht.
+Unter **Gebinde** finden Sie eine tabellarische Übersicht mit Gebindenummer, Messobjekt, FMK, Vollständigkeit, Freigabestatus und Messungszahl. Im Dienstbetrieb kommen Export und Speicherstatus hinzu. Die Gebindenummer ist eine Schaltfläche und lässt sich auch mit der Tastatur öffnen. Die Filterzeile grenzt die Liste ein.
+
+Unter **Spalten** schalten Sie unter anderem **Datenblatt**, **Herkunft** und **Nachpflege erforderlich** hinzu. Die Gebindenummer bleibt immer sichtbar. Spaltenbreiten lassen sich am Tabellenkopf anpassen; breite Sonderansichten scrollen innerhalb der Tabelle. Lange Nummern und Statusmeldungen werden umgebrochen. Ein Hinweis über der Tabelle macht auf nötige Nachpflege aufmerksam und öffnet die zugehörige Spalte.
+
+Im Dienstbetrieb merkt sich dieser Browser Spaltenbreiten und Sichtbarkeit getrennt je Dienst und Benutzer. **Spaltenansicht zurücksetzen** stellt die Standardspalten wieder her; Filter, Sortierung und Auswahl bleiben erhalten. **Filter zurücksetzen** ist eine eigene Aktion. Wenn der Browser die lokale Speicherung sperrt, bleibt die Spaltenauswahl für die laufende Ansicht nutzbar.
 
 Die Spalte **Messungen** zählt bewusst nur die **aktuellen Revisionen**. Das macht die Übersicht übersichtlich, auch wenn einzelne Messungen im Laufe der Zeit aktualisiert wurden.
 
@@ -53,7 +57,11 @@ In der Detailansicht bearbeiten und prüfen Sie ein Gebinde. Typische Aufgaben s
 - Messungen auswählen und Protokolle/ISO-Werte prüfen,
 - Messungen bei Bedarf als **ungültig** markieren (mit Begründung).
 
-Die Messungsliste kann zwischen **aktuelle Revisionen** und **alle Revisionen** umgeschaltet werden. So bleibt die Arbeitsansicht übersichtlich, während die Historie jederzeit verfügbar ist.
+Im Dienstbetrieb zeigt der Kopf Gebindenummer, Arbeitskontext und Speicherstatus. Die Stammdaten sind je nach verfügbarer Breite in einer, zwei oder drei Spalten zusammengefasst. **Weitere Stammdaten** öffnet Herkunft, Datenblattnummer und Materialaufteilung. Aktive Sperren und Nachpflegewarnungen bleiben bereits in der Zusammenfassung sichtbar.
+
+Direkt danach folgt die Messungsliste mit **Weitere Messungen importieren**, Filtern, Auswahl und **Verlauf anzeigen**. Die aufklappbaren Bereiche **Oberflächen zuordnen** und **Raster der ausgewählten Gebindeversion** folgen dahinter. Hinweise und Fehler werden auch am geschlossenen Rasterbereich angekündigt. Das Zuklappen verwirft keine ungespeicherte Zuordnung; der gezielte Einstieg über ausgewählte Messungen öffnet und fokussiert die Zuordnung.
+
+**Gebinde löschen** liegt unter **Weitere Aktionen** und benötigt weiterhin die Löschberechtigung und eine ausdrückliche Bestätigung. **Status speichern** am Schalter für die vollständige Erfassung bleibt unabhängig von **Stammdaten bearbeiten**.
 
 ### Stammdaten am Gebinde ändern
 

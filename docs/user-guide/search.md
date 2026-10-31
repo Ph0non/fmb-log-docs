@@ -1,8 +1,16 @@
 # Suche & Nachweise
 
-Öffnen Sie **Suche** in der Hauptnavigation. Die Suche verwendet den lokal verfügbaren Bestand und zeigt dessen Generation und Veröffentlichungsstand an. Sie umfasst in der aktuellen Generation auch historische Versionen und Konfliktzweige.
+Öffnen Sie **Suche** in der Hauptnavigation. Geben Sie beispielsweise eine Gebindenummer, Mess-ID, Abrechnung-ID oder einen Fingerprint ein und wählen Sie **Suchen**. Ohne abgeschickten Suchbegriff werden noch keine Ergebnistabellen angezeigt.
+
+Während der Suche bleiben der abgeschickte Begriff, die bisherige Trefferzahl und der Fortschritt sichtbar. Teilergebnisse werden laufend ergänzt. Gefüllte Gruppen zeigen Name und Trefferzahl; leere Gruppen erscheinen als kurze Textzeile. Gibt es insgesamt keine Treffer, erscheint eine gemeinsame Meldung. Gebindeabrechnungen stehen nur mit entsprechender Berechtigung zur Verfügung. Fehlende Originale oder nicht prüfbare Nachweise werden als unvollständige Suche gekennzeichnet.
+
+Ein Suchfehler bleibt direkt am Suchfeld sichtbar, bis Sie ihn schließen oder erneut suchen. **Erneut suchen** verwendet den Begriff im Suchfeld; Sie können ihn vorher korrigieren. Auch ein wiederholter gleicher Fehler wird erneut angezeigt. Ein Fehler gilt nicht als Suche ohne Treffer. **Zurücksetzen** bricht eine laufende Suche ab und leert Begriff und Ergebnisse.
+
+Öffnen Sie einen Treffer über seine Zeile oder den Öffnen-Button. **Zurück zu Suchergebnissen** stellt den abgeschickten Begriff, Tabellenfilter, Sortierung und Fokus wieder her. Neu eingetippter, noch nicht abgeschickter Text ändert die Beschriftung vorhandener Ergebnisse nicht.
 
 ## Suchen und eine Version öffnen
+
+Die zusätzliche **Versionssuche** unter **Administration → Audit → Versionen und Nachweise** verwendet den lokal verfügbaren Bestand und zeigt dessen Generation und Veröffentlichungsstand an. Sie umfasst in der aktuellen Generation auch historische Versionen und Konfliktzweige.
 
 1. Den **Suchbereich** wählen: **Aktuelle Generation** oder **Eigene archivierte Arbeit nach Reset**.
 2. Fachliche ID, Bezeichnung, Operations-ID, CID oder Signatur eingeben und **Suchen** wählen.
