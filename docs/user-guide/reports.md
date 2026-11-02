@@ -29,7 +29,7 @@ Die gemeinsame Pfadentscheidung berücksichtigt sämtliche Mitglieder eines Mess
 
 Im PDF stehen Logo, mittiger Titelblock und Angaben zu Datum/Prüfung/Seite nebeneinander mit gemeinsamem oberen Abstand. Die Fingerprints erscheinen ausschließlich in der Kurzform `XXX-YYY-ZZZ`. Der vollständige Datenstand des QR-Codes ist in Vorschau und Historie direkt beim Fingerprint aufklappbar. Im PDF stehen die Fingerprints im rechten Fußbereich untereinander unmittelbar links vom QR-Code; die Fußnoten stehen links.
 
-Die Hauptüberschriften lauten **Tagesabrechnung** und **Gebindeabrechnung**, ohne Teilnummer oder Datum im Titel. Darunter steht **Maximalwerte** beziehungsweise **Details**. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“. Beide Abrechnungen haben eine eigene Seitennummerierung `1/N`, die jeweils über alle zugehörigen Blätter läuft.
+Die Hauptüberschriften lauten **Tagesabrechnung** und **Gebindeabrechnung**, ohne Teilnummer oder Datum im Titel. Darunter stehen Blattzuordnung, Freigabepfad, Messzeitraum und NV. Das Erstellungsdatum bleibt im bisherigen Kopfzeilenblock neben „Geprüft“. Beide Abrechnungen haben eine eigene Seitennummerierung `1/N`, die jeweils über alle zugehörigen Blätter läuft.
 
 Die Blätter werden nach FMK, Charge und Freigabepfad aufgeteilt. **SON und NEM werden zusätzlich nach Stoffklasse getrennt.** Beispiele:
 
@@ -47,25 +47,29 @@ Pro FMK ist eine Charge je Stoffart erforderlich. Mehrere Chargen derselben Stof
 
 ## Gebindeabrechnung – Details
 
-Dieser Teil enthält jede ausgewertete Messung. **Masse und Fläche gehören zur Messung**, nicht zum gesamten Gebinde. Die gemeinsame Fußnote steht an erster Stelle (Fußnote **1**):
+Dieser Teil enthält jede ausgewertete Messung. **Masse in g und Fläche in cm² gehören zur Messung**, nicht zum gesamten Gebinde. Die gemeinsame Fußnote trägt die Nummer **2**:
 
-> gemessene/beprobte Größe, ggf. umgerechnet.
+> Masse und Fläche: gemessene/beprobte Mittelungsgröße, ggf. umgerechnet.
+
+Die in die Tagesabrechnung übernommenen Messungen sind jeweils in der gesamten Zeile kursiv gesetzt. Oberhalb der Tabelle steht dazu:
+
+> Messungen mit höchster massen- und/oder flächenspezifischer Ausschöpfung des jeweiligen Freigabewertes für ein Gebinde sind kursiv hervorgehoben.
 
 Die Gebindeabrechnung enthält keine Summenzeile.
 
 ## Tagesabrechnung – Maximalwerte
 
-Pro Gebinde und Blattabschnitt erscheint **eine maßgebliche Messung**. Ausschlaggebend ist die größere massen- oder flächenspezifische Ausschöpfung:
+Pro Gebinde und Blattabschnitt erscheinen die **maßgeblichen Messungen für Masse und Fläche**. Beide können aus derselben Messung stammen. Je Dimension wird die höchste Ausschöpfung ausgewählt:
 
 $$
-q = \max\left(\frac{OG_M}{FGW_M},\frac{OG_A}{FGW_A}\right)
+q_M = \frac{OG_M}{FGW_M},\qquad q_A = \frac{OG_A}{FGW_A}
 $$
 
-Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten Werte. Alle Messwerte und Faktoren der Zeile stammen aus derselben Messung. Die Mess-ID und das Messdatum machen die Quelle nachvollziehbar. Die Auswahlregel steht als unnummerierter Hinweis **„Auswahl je Gebinde“** direkt unter Zeitraum und NV oberhalb der Tabelle; sie ist keine Fußnote am Untertitel. Bei Gleichstand entscheiden aufsteigend Messzeitpunkt, Mess-ID und Revisionskennung.
+Verwendet werden die bereits um KF beziehungsweise SW angepassten, ungerundeten Werte. Die maßgebliche OG ist je Dimension fett hervorgehoben; FGW, SW und KF gehören zur jeweils ausgewählten Messung. Mess-ID, Messverfahren, Messdatum und Mittelungsmasse stehen bei zwei unterschiedlichen Messungen untereinander. Die Auswahlregel mit der Formulierung **„massen- und/oder flächenspezifischen Ausschöpfung“** steht als unnummerierter Hinweis **„Auswahl je Gebinde“** direkt unter Zeitraum und NV oberhalb der Tabelle. Bei Gleichstand entscheiden aufsteigend Messzeitpunkt, Mess-ID und Revisionskennung.
 
-Der Untertitel nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen.
+Der Untertitel beider Abrechnungen nennt den Zeitraum vom frühesten bis zum spätesten enthaltenen Messdatum sowie die verwendeten Nuklidvektoren. Der Zeitraum umfasst **alle Messungen des Abschnitts**, nicht nur die ausgewählten Maximalwertmessungen. Fehlende Messdaten werden als unvollständiger Zeitraum gekennzeichnet.
 
-Die NV-Angabe im Untertitel der Tagesabrechnung nennt nur die Namen (zum Beispiel `NV: A01`), ohne Jahreszusatz. Mehrere Jahresversionen desselben NV werden einmal aufgeführt. Der Messzeitraum enthält weiterhin vollständige Datumsangaben; die tatsächlichen NV-Jahresversionen bleiben in den gespeicherten Daten nachvollziehbar.
+Die NV-Angabe im Untertitel beider Abrechnungen nennt nur die Namen (zum Beispiel `NV: A01`), ohne Jahreszusatz. Mehrere Jahresversionen desselben NV werden einmal aufgeführt. Der Messzeitraum enthält weiterhin vollständige Datumsangaben; die tatsächlichen NV-Jahresversionen bleiben in den gespeicherten Daten nachvollziehbar.
 
 ### Reststoffmasse und Gesamtaktivität
 
@@ -75,19 +79,19 @@ Die Fußnote zur Reststoffmasse lautet:
 
 > Reststoffmasse = Nettomasse (Nettomasse ReVK) - Innentara (= Innentara ReVK, wenn vorhanden)
 
-Die zusätzliche Gesamtaktivität wird aus der **angezeigten OG_M einschließlich KF-Anpassung** berechnet. Die Berechnung verwendet den Wert vor Anzeigerundung:
+Die zusätzliche Gesamtaktivität wird aus der **angezeigten OG<sub>M</sub> mit der höchsten massenspezifischen Ausschöpfung einschließlich KF-Anpassung** berechnet. Die Berechnung verwendet den Wert vor Anzeigerundung:
 
 $$
 A_{\mathrm{Gebindeanteil}}[\mathrm{Bq}] = OG_M[\mathrm{Bq/g}] \cdot m_{\mathrm{Reststoffanteil}}[\mathrm{kg}] \cdot 1000
 $$
 
-Die Zeile am Abschnittsende zeigt **Summe** links, die **Gebindeanzahl** in der Gebindespalte und die **Gesamtaktivität** in ihrer eigenen Spalte. In der Vorschau bleiben diese Abschnittssummen auch bei aktiven Tabellenfiltern erhalten. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Die Tagesabrechnung zeigt die Reststoffmasse. Masse und Fläche der ausgewählten Messung stehen ausschließlich in den Details der Gebindeabrechnung.
+Die Zeile am Abschnittsende zeigt **Summe** links, die **Gebindeanzahl** in der Gebindespalte und die **Gesamtaktivität** in ihrer eigenen Spalte. In der Vorschau bleiben diese Abschnittssummen auch bei aktiven Tabellenfiltern erhalten. Die Aktivitätssumme wird aus ungerundeten Zahlen gebildet. Die Tagesabrechnung zeigt die Reststoffmasse in kg und nach der Gesamtaktivität die Mittelungsmasse jeder ausgewählten Messung in g. Die Mittelungsmassen werden nicht summiert. Die Überschrift wird als „Mittelungs-“ / „masse“ umgebrochen; Fußnote 4 erläutert: „Mittelungsmasse: direkt gewogen oder berechnet.“
 
 ### Beispiel einer Mischgebindeabrechnung
 
-Ein Gebinde enthält 10 kg CST und 20 kg SON13. Messung A schöpft massenspezifisch 80 % und flächenspezifisch 20 % aus. Messung B erreicht 50 % beziehungsweise 90 %. **Messung B ist maßgeblich**, weil 90 % die höchste Ausschöpfung ist.
+Ein Gebinde enthält 10 kg CST und 20 kg SON13. Messung A schöpft massenspezifisch 80 % und flächenspezifisch 20 % aus. Messung B erreicht 50 % beziehungsweise 90 %. **Messung A ist für Masse, Messung B für Fläche maßgeblich.** Beide Messzeilen sind in der Gebindeabrechnung kursiv hervorgehoben.
 
-Bei einer angezeigten OG_M von 0,5 Bq/g ergeben sich auf dem CST-Blatt 5.000 Bq und auf dem SON13-Blatt 10.000 Bq. Die beiden Anteile ergeben zusammen 15.000 Bq; die volle Gebindemasse wird nicht auf jedem Blatt erneut angesetzt.
+Bei einer angezeigten OG<sub>M</sub> der Messung A von 0,5 Bq/g ergeben sich auf dem CST-Blatt 5.000 Bq und auf dem SON13-Blatt 10.000 Bq. Die beiden Anteile ergeben zusammen 15.000 Bq; die volle Gebindemasse wird nicht auf jedem Blatt erneut angesetzt.
 
 ![Maximalwerte im PDF](../screenshots/gebindeabrechnung-pdf.png)
 
@@ -99,13 +103,15 @@ Nicht berechenbare Werte bleiben als solche gekennzeichnet und werden nicht durc
 
 Die nummerierten Fußnoten beginnen je Abrechnung bei 1 und werden auf Folgeseiten mit derselben Zuordnung wiederholt. Die Markierungen im Tabellenkopf sind kleiner und hochgestellt.
 
-| Abrechnung | Fußnote 1 | Fußnote 2 | Fußnote 3 |
-| --- | --- | --- | --- |
-| Gebindeabrechnung | Masse und Fläche | OG | — |
-| Tagesabrechnung | Reststoffmasse | Gesamtaktivität | OG |
+| Abrechnung | Fußnote 1 | Fußnote 2 | Fußnote 3 | Fußnote 4 | Fußnote 5 |
+| --- | --- | --- | --- | --- | --- |
+| Gebindeabrechnung | Messverfahren | Masse und Fläche | OG | — | — |
+| Tagesabrechnung | Messverfahren | Reststoffmasse | Gesamtaktivität | Mittelungsmasse | OG |
+
+Die Messverfahren-Fußnote erläutert für W und K: **Messfläche ≥ Mittelungsfläche = 300 cm²**. Die Fußnoten folgen der ersten Verwendung von links nach rechts. Historische Darstellungen ohne Mittelungsmassenspalte behalten eine lückenlose Nummerierung.
 
 - **M**: massenspezifisch; **A**: flächenspezifisch. OG, FGW, SW und KF tragen diese Indizes.
-- **OG** (Fußnote 2 in der Gebindeabrechnung, Fußnote 3 in der Tagesabrechnung): „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 11929“.
+- **OG** (Fußnote 3 in der Gebindeabrechnung, Fußnote 5 in der Tagesabrechnung): „Obere Grenze Überdeckungsintervall der spez. Aktivität nach DIN 11929“.
 - **\***: unter Berücksichtigung des Korrekturfaktors (KF).
 - **\*\***: unter Berücksichtigung des Schwellenwertes (SW).
 - Die Maximalwertauswahl, Aktivitätsformel und anteilige Behandlung von Mischgebinden werden unmittelbar auf der Abrechnung erläutert.
