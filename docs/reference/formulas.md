@@ -66,3 +66,18 @@ Für aktuelle Auswertungen gilt bei MC2 und Gammaspektrometrie gleichermaßen: E
 Bei MC2 wird die effektive Nettoimpulsrate auf mindestens 0 begrenzt. Die statistische Unsicherheit verwendet weiterhin die gemessenen Brutto- und Hintergrundzählraten; Nachweisgrenzen und Konfidenzgrenzen werden weiterhin berechnet. Bei GS wird jeder negative ME-Wert im Originalprotokoll vor der Summenbildung auf 0 begrenzt. UG, OG und BS bleiben unverändert. Originalprotokolle und signierte Messdaten werden nicht überschrieben. Fehlt ein benötigtes Original, wird die Auswertung als nicht verfügbar angezeigt.
 
 Neue Abrechnungen verwenden Berichtssnapshot v8. Er enthält die für die GS-Prüfung benötigten Originalprotokolle innerhalb der bestehenden Größenbegrenzung. Bereits ausgestellte Abrechnungen bis v7 bleiben mit ihren damaligen Rechenregeln prüfbar. Beim Rollout zuerst die Clients mit v8-Leseunterstützung aktualisieren, danach den Server auf v8-Erstellung umstellen; offene ältere Abrechnungsvorbereitungen müssen neu erstellt werden.
+
+
+## Entnahmefaktor bei GS-Wischtests und GS-Kratzproben
+
+Sofern der Entnahmefaktor $f_E$ noch nicht in der gammaspektrometrischen Auswertung berücksichtigt wurde, gilt für UG, OG, ME, BS, EKG und NWG:
+
+$$
+x_{\mathrm{korr}} = \frac{x}{f_E}, \qquad 0 < f_E \le 1
+$$
+
+Die Standardwerte sind **0,1** für Wischtests, **0,8** für Kratzproben auf glatten und **0,6** auf rauen Oberflächen. Die Werte sind editierbar. Bei aktivierter Checkbox zur bereits erfolgten Berücksichtigung entfällt diese zusätzliche Division. Fehlende Werte bleiben fehlend und Null bleibt Null. Die bestehende Behandlung negativer ME-Werte erfolgt vor der Entnahmekorrektur.
+
+Flächenskalierung, Entnahmefaktor und FMK-Korrekturfaktor wirken jeweils einmal auf die Auswertung. Freigabewerte werden durch den Entnahmefaktor nicht verändert. Rohwerte und Originaldateien werden nicht überschrieben. Aktuelle Berechnungen verwenden die Standardwerte auch für bekannte Wischtests/Kratzproben ohne gespeicherte Entnahmeangaben; unbekannte Probenahmeverfahren werden nicht automatisch zugeordnet.
+
+Berichtssnapshots ab Version 9 enthalten die Entnahmekorrektur. Ältere Berichte werden weiterhin mit der damaligen Berechnung geprüft und behalten ihren Status.

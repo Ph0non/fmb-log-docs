@@ -87,3 +87,12 @@ Die relativen Standardunsicherheiten von Fläche, Geometrie und Emissionswahrsch
 3. Messdaten prüfen oder gezielt eine bestehende Messung für eine Importrevision auswählen
 4. Import starten
 :::
+
+
+### Entnahmefaktor bei Wischtests und Kratzproben
+
+Für GS-Wischtests ist der Entnahmefaktor mit **0,1** vorbelegt. Bei GS-Kratzproben wählen Sie **Glatt** (Standard, **0,8**) oder **Rau** (**0,6**). Jeder Wechsel der Oberflächenbeschaffenheit setzt den zugehörigen Standardwert ein; danach können Sie den Faktor wieder ändern. Zulässig sind Werte größer 0 bis einschließlich 1.
+
+Die Checkbox **„Entnahmefaktor bereits bei der gammaspektrometrischen Auswertung berücksichtigt“** ist zunächst ausgeschaltet. Aktivieren Sie sie, wenn das Originalprotokoll bereits korrigierte Werte enthält. Andernfalls dividiert die Anwendung die Aktivitätswerte und charakteristischen Grenzen durch den Entnahmefaktor. Die Angaben gelten in den Importstandardwerten, der einzelnen Importvorschau und der Messungsbearbeitung.
+
+Bestehende Wischtests ohne Entnahmeangaben werden mit 0,1, bestehende Kratzproben mit 0,8 (glatt) und ausgeschalteter Checkbox ausgewertet. Prüfen Sie diese Vorgaben, wenn der Faktor bereits im Original berücksichtigt wurde. Originalprotokolle bleiben erhalten. Bereits erstellte Berichte behalten ihre damaligen Ergebnisse und ihren Status; aktuelle Bewertungen und neue Berichte verwenden die Entnahmekorrektur.
