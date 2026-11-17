@@ -72,6 +72,16 @@ Neue Importe erhalten aktuelle Gerätevorgaben. Neue Revisionen übernehmen aktu
 
 Die relativen Standardunsicherheiten von Fläche, Geometrie und Emissionswahrscheinlichkeit werden unabhängig quadratisch kombiniert. Das MC2-Auswerteprotokoll nennt die verwendeten Faktoren, Unsicherheiten, Fläche, Nuklideffizienzen und tatsächlichen Punktzeiten. Bereits ausgestellte Abrechnungen behalten ihre damaligen Berechnungsregeln; aktuelle Auswertungen historischer Messungen verwenden die aktuelle Nettoeffektregel.
 
+## Bekannte MC2-Protokolle ergänzen
+
+Wurde eine MC2-CSV bereits importiert, hält die Anwendung zunächst an. Sie zeigt, wie viele Originalmesswerte aktuell gültigen Messungen zugeordnet sind, in welchen Gebinden diese liegen und wie viele Punkte noch frei sind. Wählen Sie **Datei überspringen** oder ausdrücklich **Noch nicht zugeordnete Messwerte zuordnen**. Sind alle Punkte belegt, steht nur das Überspringen zur Verfügung.
+
+Im Ergänzungsdialog bleiben gespeicherte Zuordnungen sichtbar und schreibgeschützt. Einzel- und Sammelaktionen bearbeiten ausschließlich freie oder im aktuellen Entwurf vorbereitete Punkte. Jeder neue Punkt erhält genau ein Zielgebinde; bis zum Speichern können Sie dieses Ziel ändern. Nicht verwendete Punkte bleiben für einen späteren Ergänzungsimport frei. Ein anderer Gebindename gibt einen bereits belegten Punkt nicht frei. Historische, ungültige und gelöschte Messungen zählen nicht als aktuelle Belegung.
+
+Die Vorschau nennt nur die Ergänzung, beispielsweise **8 neue Messwerte für 2 Gebinde; 4 weiterhin nicht zugeordnet**. Gespeichert werden neue Messungen; bestehende Messungen, Revisionen und Zuordnungen bleiben unverändert. Beim verbindlichen Speichern wird die Belegung erneut geprüft. Hat inzwischen jemand einen vorgesehenen Punkt zugeordnet, wird die Speichereinheit vollständig angehalten. Prüfen und bestätigen Sie den aktualisierten Entwurf erneut. Im Serverbetrieb gilt das für die gemeinsam bestätigte Speichergruppe.
+
+Die serverseitige Belegungsabfrage benötigt eine Verbindung zum Server. Bei älteren Teilimporten ohne eindeutige Originalpositionen kann die Ergänzung gesperrt sein; die Anwendung nennt dann den Grund.
+
 ## Hinweise
 
 - Das Gebinde benötigt eine passende **FMK**. Für die Vorschau werden deren Nuklidvektoren und Faktoren für das jeweilige Messjahr verwendet.
